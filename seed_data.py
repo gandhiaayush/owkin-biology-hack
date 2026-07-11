@@ -28,10 +28,10 @@ SEED_RECORDS = [
         source="Sanz et al. 2014, PLoS ONE",
         source_type="primary_study",
         claim=(
-            "β-ionone promotes invasiveness in LNCaP cells; "
-            "α-ionone sustains LNCaP growth"
+            "β-ionone promotes invasiveness in LNCaP cells (2.75x invasion index increase); "
+            "α-ionone alone has no effect but abrogates β-ionone's pro-invasive effect when co-administered"
         ),
-        mechanism="Not fully characterized — endpoint is invasiveness, not proliferation",
+        mechanism="PI3K-gamma / Gbeta-gamma G-protein pathway (invasion index assay, not proliferation)",
         direction="tumor_promoting",
         direction_context="activation_effect",
         cancer_type="prostate_cancer",
@@ -40,10 +40,12 @@ SEED_RECORDS = [
         independent_replications=None,
         gene="OR51E2",
         confidence_note=(
-            "UNVERIFIED — full text not yet read. "
-            "Endpoint may differ from Neuhaus (invasiveness vs. proliferation). "
-            "α-ionone vs. β-ionone ligand distinction unresolved. "
-            "Person A must verify before demo."
+            "VERIFIED (Person A, full text read): Sanz measures INVASIVENESS, not proliferation -- "
+            "a different endpoint from Neuhaus's proliferation assay. The Sanz authors themselves note "
+            "their beta-ionone result is 'not in agreement with' Neuhaus, but frame it as two "
+            "potentially co-occurring phenotypes (reduced proliferation + increased invasiveness is a "
+            "known cancer biology pattern) rather than a strict same-endpoint contradiction. See "
+            "data/receptors/or51e2.json for full verification notes."
         ),
     ),
     EvidenceRecord(
