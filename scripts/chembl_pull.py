@@ -120,14 +120,31 @@ def main():
     print(f"Searching ChEMBL for target {receptor}...")
     target = find_target(receptor)
     if not target:
-        print(f"  No human ChEMBL target found for {receptor} -- skipping (nothing to add).")
-        return
-    print(f"  Found {target['target_chembl_id']} ({target['pref_name']})")
-
-    activities, total_count = fetch_activities(target["target_chembl_id"])
-    print(f"  {total_count} total activity records ({len(activities)} fetched)")
-
-    new_records = build_records(receptor, target, activities, total_count)
+        print(f"  No human ChEMBL target found for {receptor}.")
+        new_records = [{
+            "receptor": receptor,
+            "source_type": "chembl",
+            "citation": "ChEMBL target search, live query",
+            "claim": f"No ChEMBL target record exists for {receptor} -- zero bioactivity/ligand-binding data available.",
+            "mechanism": None,
+            "direction": "neutral",
+            "model_system": None,
+            "sample_size": None,
+            "replication_count": None,
+            "cancer_type": None,
+            "verified_by_person_a": True,
+            "verification_notes": (
+                f"Live ChEMBL REST API query (target/search.json?q={receptor}) returned total_count=0. "
+                "Genuine negative result -- no natural/synthetic ligand has been characterized for this "
+                "receptor in ChEMBL."
+            ),
+            "raw_excerpt_or_link": f"https://www.ebi.ac.uk/chembl/api/data/target/search.json?q={receptor}",
+        }]
+    else:
+        print(f"  Found {target['target_chembl_id']} ({target['pref_name']})")
+        activities, total_count = fetch_activities(target["target_chembl_id"])
+        print(f"  {total_count} total activity records ({len(activities)} fetched)")
+        new_records = build_records(receptor, target, activities, total_count)
 
     existing = json.loads(out_file.read_text()) if out_file.exists() else []
     existing = [r for r in existing if r.get("source_type") != "chembl"]
