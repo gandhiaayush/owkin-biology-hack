@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS evidence (
     direction_context       TEXT NOT NULL CHECK(direction_context IN (
                                 'activation_effect','expression_pattern','genetic_alteration'
                             )) DEFAULT 'activation_effect',
+    endpoint                TEXT NOT NULL DEFAULT 'not specified',
     cancer_type             TEXT NOT NULL DEFAULT 'prostate_cancer',
     model_system_raw        TEXT NOT NULL,
     model_system_normalized TEXT NOT NULL,
