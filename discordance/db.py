@@ -52,19 +52,15 @@ def _normalize_model_system(raw: str) -> str:
 
 def _extract_citation_key(source: str) -> str:
     """
-    Normalize a citation string down to (first_author_surname, year) so the same
-    paper cited two different ways -- e.g. 'Neuhaus et al. 2009, J Biol Chem' vs.
-    'Neuhaus EM, Zhang W, Gelis L, Deng Y, Noldus J, Hatt H (2009). "Activation of
-    an olfactory receptor..." J Biol Chem 284(24):16218-16225.' -- collide on the
-    same key instead of being treated as two distinct sources.
-
-    This is intentionally loose (first alphabetic token + first 4-digit year found).
-    It will over-collide in rare cases (e.g. two different 2009 papers where the
-    first author's surname happens to match another author's surname elsewhere in
-    a differently-formatted citation), but under-colliding (silently double-counting
-    the same paper as two independent sources) is the worse failure mode for an
-    evidence-weighting system, so this errs toward merging.
+    Normalize a citation to a dedup key. When a DOI is present in the source
+    string, use it directly — DOIs are globally unique, so two papers with
+    different DOIs by the same author in the same year (e.g. Kim et al. 2025a/b)
+    will not falsely collide. Fall back to (first_author, year) when no DOI.
     """
+    doi_match = re.search(r"\bdoi[:\s]+(10\.[^\s,;\"']+)", source, re.IGNORECASE)
+    if doi_match:
+        return doi_match.group(1).lower().rstrip(".")
+
     year_match = re.search(r"(19|20)\d{2}", source)
     year = year_match.group(0) if year_match else "unknown-year"
     author_match = re.match(r"\s*([A-Za-z][A-Za-z\-]*)", source)

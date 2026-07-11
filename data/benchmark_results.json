@@ -15,8 +15,7 @@
       "cancer_type": "prostate",
       "verified_by_person_a": true,
       "verification_notes": "Cross-checked against CLAUDE.md Section 6 table and the friend's (Bansal/Gudisay) Literature_Review.docx summary, which independently confirms cell lines, ligands, and MAPK/Ca2+ mechanism in more methodological detail than the bare citation. Single primary study on this specific claim (no independent replication located yet) -- treat as unreplicated pending further search.",
-      "raw_excerpt_or_link": "doi:10.1074/jbc.M109.012096; corroborating summary in data/intake/or51e2/Literature Review.docx",
-      "endpoint": "proliferation"
+      "raw_excerpt_or_link": "doi:10.1074/jbc.M109.012096; corroborating summary in data/intake/or51e2/Literature Review.docx"
     },
     "abstract_length": 1006,
     "code_extraction": {
@@ -28,28 +27,28 @@
     },
     "code_scores": {
       "direction": 1,
-      "endpoint": 1.0,
+      "endpoint": 0.0,
       "mechanism": 1.0,
       "model_system": 0,
       "cancer_type": 1,
-      "overall": 0.8
+      "overall": 0.6
     },
     "llm_extraction": {
       "cancer_type": "prostate cancer",
       "direction": "tumor-suppressive",
-      "endpoint": "proliferation",
-      "mechanism": "MAPK activation",
-      "model_system": "prostate cancer cells",
+      "endpoint": "cell proliferation",
+      "mechanism": "MAPK family activation",
+      "model_system": "prostate cancer cells (endogenous receptor)",
       "confidence": "high",
-      "extraction_notes": "The abstract explicitly states that activation of PSGR (OR51E2) by beta-ionone resulted in \"activation of members of the MAPK family and inhibition of cell proliferation\" in prostate cancer cells. The direction is clearly tumor-suppressive based on the demonstrated inhibition of proliferation. The mechanism includes MAPK activation, which the abstract associates with the inhibitory effect. The abstract does not test other endpoints like apoptosis, invasiveness, or in vivo tumor growth."
+      "extraction_notes": "The abstract explicitly states that activation of endogenous OR51E2/PSGR by beta-ionone resulted in MAPK family activation and inhibition of cell proliferation. The mechanism links MAPK activation to the proliferation-inhibitory effect. The study measured proliferation in vitro using cancer cell lines, not in vivo tumor growth or other endpoints."
     },
     "llm_scores": {
       "direction": 1,
-      "endpoint": 1.0,
+      "endpoint": 0.0,
       "mechanism": 0.5,
       "model_system": 1,
       "cancer_type": 1,
-      "overall": 0.9
+      "overall": 0.7
     }
   },
   {
@@ -68,8 +67,7 @@
       "cancer_type": "prostate",
       "verified_by_person_a": true,
       "verification_notes": "RESOLVED (priority-one verification task from CLAUDE.md Section 6/12): pulled and read the actual Sanz et al. 2014 full text via PLoS ONE (not the friend's intake materials -- a similarly titled melanoma paper in Literature_Review.docx is a different study, Gelis et al. 2017, see below; do not conflate). Sanz measures INVASIVENESS (collagen-gel invasion index), not proliferation -- a different endpoint from Neuhaus 2009's proliferation assay. The Sanz authors explicitly acknowledge the apparent conflict in their own discussion: beta-ionone's pro-invasive effect here is 'not in agreement with the results of Neuhaus et al.' on proliferation, and they frame this as two distinct, potentially co-occurring phenotypes (reduced proliferation + increased invasiveness is a recognized cancer biology pattern), not necessarily a same-endpoint contradiction. CONCLUSION: this is a real, citable divergence in the literature on whether activating OR51E2 is net beneficial or harmful therapeutically, but it is nuanced rather than a flat contradiction -- both effects (anti-proliferative AND pro-invasive) could be simultaneously true. Present it to Person B/the demo as 'evidence is contested on clinical implication, though the mechanism papers do not strictly contradict each other on a shared endpoint' rather than a clean two-sided contradiction.",
-      "raw_excerpt_or_link": "doi:10.1371/journal.pone.0085110",
-      "endpoint": "invasiveness"
+      "raw_excerpt_or_link": "doi:10.1371/journal.pone.0085110"
     },
     "abstract_length": 1352,
     "code_extraction": {
@@ -81,20 +79,20 @@
     },
     "code_scores": {
       "direction": 1,
-      "endpoint": 1.0,
+      "endpoint": 0.0,
       "mechanism": 0.0,
       "model_system": 1,
       "cancer_type": 1,
-      "overall": 0.8
+      "overall": 0.6
     },
     "llm_extraction": {
       "cancer_type": "prostate cancer",
       "confidence": "high",
       "direction": "tumor-promoting",
-      "endpoint": "metastasis emergence and spreading",
+      "endpoint": "cell invasiveness and metastasis emergence",
       "mechanism": "PI3 kinase gamma dependent signaling pathway",
-      "model_system": "LNCaP cells in NSG immunodeficient mice (xenograft)",
-      "extraction_notes": "The abstract focuses primarily on LNCaP prostate cancer cells and uses PSGR (Prostate Specific G protein-coupled Receptor) stimulation with beta-ionone as the primary in vivo study. An in vitro assay measured cell invasion through collagen gels in enterochromaffin tumor cells and LNCaP cells, but the in vivo endpoint explicitly measured was metastasis emergence and spreading. The mechanism (PI3K-gamma pathway) is stated as involved in tumor cell invasiveness promotion triggered by OR stimulation."
+      "model_system": "LNCaP cells and NSG immunodeficient mice xenograft",
+      "extraction_notes": "The abstract studies multiple model systems: (1) enterochromaffin tumor cells with transfected ORs stimulated in vitro (collagen gel invasion), and (2) LNCaP prostate cancer cells with endogenously overexpressed PSGR receptor tested both in vitro (invasion assay) and in vivo (subcutaneous xenograft with metastasis assessment). The primary focus is on prostate cancer (LNCaP). The specific olfactory receptor is PSGR (Prostate Specific G protein-coupled Receptor), and the agonist is beta-ionone. Both in vitro invasion and in vivo metastasis emergence were promoted by OR stimulation."
     },
     "llm_scores": {
       "direction": 1,
@@ -121,8 +119,7 @@
       "cancer_type": "prostate",
       "verified_by_person_a": true,
       "verification_notes": "Confirmed via PubMed/Oncogenesis record (PMID 25111863; PMC5189964) -- study design, NF-kB mechanism, and xenograft growth-promotion finding all match CLAUDE.md Section 6 summary.",
-      "raw_excerpt_or_link": "doi:10.1038/oncsis.2014.29",
-      "endpoint": "tumor growth (in vivo xenograft/PIN formation)"
+      "raw_excerpt_or_link": "doi:10.1038/oncsis.2014.29"
     },
     "abstract_length": 1273,
     "code_extraction": {
@@ -134,28 +131,28 @@
     },
     "code_scores": {
       "direction": 1,
-      "endpoint": 0.33,
+      "endpoint": 0.0,
       "mechanism": 1.0,
       "model_system": 1,
       "cancer_type": 1,
-      "overall": 0.87
+      "overall": 0.8
     },
     "llm_extraction": {
       "cancer_type": "prostate cancer",
-      "model_system": "PSGR transgenic mouse model and LnCaP xenograft",
-      "endpoint": "tumor growth (xenograft size) and prostatic intraepithelial neoplasia formation",
+      "endpoint": "tumor growth (xenograft)",
+      "mechanism": "NF-kappaB pathway; PI3K/AKT pathway",
+      "model_system": "PSGR transgenic mouse model; LnCaP xenografts",
       "direction": "tumor-promoting",
-      "mechanism": "NF-kappaB (RELA) activation, PI3K/AKT pathway",
       "confidence": "high",
-      "extraction_notes": "The abstract explicitly states that PSGR-overexpressing LnCaP xenografts formed larger tumors and that PSGR overexpression induced prostatic intraepithelial neoplasia lesions. The mechanism is clearly identified as NF-kappaB/RELA activation downstream of PSGR signaling, with PI3K/AKT described as mediating this regulation in part. The tumor-promoting role is unambiguously stated."
+      "extraction_notes": "The abstract explicitly states that PSGR overexpression induced premalignant lesions (PIN) in transgenic mice and that PSGR-overexpressing LnCaP cells formed larger tumors in xenografts. The mechanism identified is NF-kappaB activation downstream of PSGR, with collaborative involvement of the PI3K/AKT pathway. The tumor-promoting direction is unambiguous based on the xenograft data showing larger tumors with PSGR overexpression. The study uses two complementary model systems: the transgenic mouse (in vivo PIN development) and the xenograft model (direct tumor growth comparison)."
     },
     "llm_scores": {
       "direction": 1,
-      "endpoint": 0.67,
-      "mechanism": 1.0,
+      "endpoint": 0.0,
+      "mechanism": 0.0,
       "model_system": 1,
       "cancer_type": 1,
-      "overall": 0.93
+      "overall": 0.6
     }
   },
   {
@@ -174,8 +171,7 @@
       "cancer_type": "prostate",
       "verified_by_person_a": true,
       "verification_notes": "Confirmed via PubMed/PMC (PMC8024707) and J Biol Chem fulltext -- ligand-specificity finding and explicit controversy statement both match CLAUDE.md Section 6 summary. This paper's own ligand-specificity data (OR51E2 = acetate/propionate, not beta-ionone) is itself a relevant data point for interpreting whether Neuhaus/Sanz's beta-ionone results generalize.",
-      "raw_excerpt_or_link": "doi:10.1016/j.jbc.2021.100475",
-      "endpoint": "proliferation"
+      "raw_excerpt_or_link": "doi:10.1016/j.jbc.2021.100475"
     },
     "abstract_length": 1794,
     "code_extraction": {
@@ -187,33 +183,33 @@
     },
     "code_scores": {
       "direction": 1,
-      "endpoint": 1.0,
+      "endpoint": 0.0,
       "mechanism": 0.0,
       "model_system": 1,
       "cancer_type": 1,
-      "overall": 0.8
+      "overall": 0.6
     },
     "llm_extraction": {
-      "direction": "tumor-suppressive",
-      "endpoint": "proliferation",
-      "mechanism": "cAMP-independent signaling; upregulation of p27, p21, p53; ERK1/2 activation",
-      "model_system": "LNCaP cells (prostate cancer cell line)",
       "cancer_type": "prostate cancer",
+      "model_system": "LNCaP cells (prostate cancer cell line)",
+      "endpoint": "cell proliferation",
+      "direction": "tumor-suppressive",
+      "mechanism": "upregulation of p27, p21, p53; increased annexin V staining; stimulated ERK1/2",
       "confidence": "high",
-      "extraction_notes": "The abstract studies two olfactory receptors (OR51E1 and OR51E2) ectopically expressed in LNCaP cells. The primary finding is that overexpression of OR51E1 or OR51E2 suppressed LNCaP cell proliferation. The abstract explicitly states that cAMP elevation alone is not sufficient for cytostasis (since OR2AT4, beta2-adrenergic receptor, and forskolin did not suppress proliferation despite raising cAMP). The mechanism involves upregulation of cell cycle inhibitors (p27, p21) and pro-apoptotic markers (p53, annexin V staining) and ERK1/2 activation. Cytotoxicity was specific to LNCaP cells (not observed in HEK293 cells). The abstract also notes that butyrate stimulation and endogenous OR51E1 knockdown findings support the proliferation-suppressive effect, though the main evidence comes from overexpression studies."
+      "extraction_notes": "The abstract studies two ectopic ORs (OR51E1 and OR51E2). The primary endpoint is cell proliferation measured through growth inhibition assays and upregulation of cell cycle/death markers. The mechanism involves cAMP-independent pathways (since beta2-adrenergic receptor and forskolin did not suppress proliferation despite raising cAMP). The tumor-suppressive effect is specific to the LNCaP prostate cancer cell line, as HEK293 cells were not affected. The study is in vitro using an inducible expression system, not in vivo xenografts."
     },
     "llm_scores": {
       "direction": 1,
-      "endpoint": 1.0,
-      "mechanism": 0.02,
+      "endpoint": 0.0,
+      "mechanism": 0.0,
       "model_system": 1,
       "cancer_type": 1,
-      "overall": 0.8
+      "overall": 0.6
     }
   },
   {
     "citation_key": "Gelis et al. 2017",
-    "doi": "10.1111/exd.13245",
+    "doi": "10.1111/exd.13316",
     "ground_truth": {
       "receptor": "OR51E2",
       "source_type": "literature",
@@ -227,41 +223,40 @@
       "cancer_type": "melanoma",
       "verified_by_person_a": true,
       "verification_notes": "Sourced from the friend's (Bansal/Gudisay) Literature_Review.docx summary, cross-checked against the title/journal (Exp Dermatol 26:569-576) to confirm this is Gelis et al. 2017, NOT Sanz et al. 2014 -- the two have superficially similar-sounding titles ('functional expression...melanoma' vs. 'promotion of cancer cell invasiveness...') but are distinct studies with distinct findings; do not conflate. Direction (tumor-suppressive) is consistent with Neuhaus 2009 and Pronin & Slepak 2021, adding a second cancer-type data point in the same direction.",
-      "raw_excerpt_or_link": "doi:10.1111/exd.13245; summarized in data/intake/or51e2/Literature Review.docx",
-      "endpoint": "proliferation and apoptosis"
+      "raw_excerpt_or_link": "doi:10.1111/exd.13316; summarized in data/intake/or51e2/Literature Review.docx"
     },
-    "abstract_length": 1160,
+    "abstract_length": 1026,
     "code_extraction": {
       "direction": "tumor-suppressive",
       "endpoint": "proliferation",
-      "mechanism": "NF-kB",
-      "model_system": "xenograft",
-      "cancer_type": null
+      "mechanism": "not specified",
+      "model_system": "melanoma cells",
+      "cancer_type": "melanoma"
     },
     "code_scores": {
       "direction": 1,
-      "endpoint": 0.5,
-      "mechanism": 0.0,
-      "model_system": 0,
-      "cancer_type": 1,
-      "overall": 0.5
-    },
-    "llm_extraction": {
-      "cancer_type": "null",
-      "direction": "unclear",
-      "endpoint": "TARC and RANTES expression; human beta defensin 3 expression",
-      "mechanism": "not specified",
-      "model_system": "human keratinocytes (single- and 3D-cultured)",
-      "confidence": "low",
-      "extraction_notes": "This abstract does not match the provided citation. The citation title mentions \"olfactory receptors in human primary melanoma and melanoma metastasis,\" but the abstract provided discusses Wy14643 (a PPAR\u03b1 agonist) effects on keratinocytes in the context of atopic dermatitis and barrier function. There is a complete mismatch between citation and abstract text. The abstract contains no information about olfactory receptors or cancer biology. The model system is non-cancerous (keratinocytes). No clear direction of effect on tumor biology can be determined because this is not a cancer study."
-    },
-    "llm_scores": {
-      "direction": 0,
       "endpoint": 0.0,
       "mechanism": 0.0,
       "model_system": 1,
-      "cancer_type": 0,
-      "overall": 0.2
+      "cancer_type": 1,
+      "overall": 0.6
+    },
+    "llm_extraction": {
+      "cancer_type": "melanoma",
+      "model_system": "cultured melanoma cells derived from metastatic and vertical-growth phase (VGP) melanoma; melanoma tissue sections",
+      "endpoint": "proliferation (cell growth), apoptosis, migration",
+      "direction": "tumor-suppressive",
+      "mechanism": "intracellular Ca2+ signaling",
+      "confidence": "high",
+      "extraction_notes": "The abstract clearly states that OR51E2 activation inhibits growth via apoptotic processes and decreases migration. However, the mechanistic detail focuses on Ca2+ signaling as the upstream event; the downstream molecular pathway beyond calcium is not specified. The receptor is upregulated in melanoma vs. normal melanocytes, which might initially suggest a tumor-promoting role, but the functional studies (growth inhibition and reduced migration upon activation) indicate a tumor-suppressive net effect when the receptor is activated by its ligand beta-ionone."
+    },
+    "llm_scores": {
+      "direction": 1,
+      "endpoint": 0.0,
+      "mechanism": 1.0,
+      "model_system": 1,
+      "cancer_type": 1,
+      "overall": 0.8
     }
   }
 ]

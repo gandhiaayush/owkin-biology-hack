@@ -598,5 +598,37 @@
     "verified_by_person_a": true,
     "raw_excerpt_or_link": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL193482/",
     "verification_notes": "Live ChEMBL REST API pull, single assay record (activity_id=19491389), document_year=2018. Ligand-potency data point, not an independent claim about cancer biology direction."
+  },
+  {
+    "receptor": "OR51E2",
+    "source_type": "literature",
+    "citation": "Kim JS et al. (2025). \"beta-Ionone suppresses colorectal tumorigenesis by activating OR51E2, a potential tumor suppressor.\" Phytomedicine. doi:10.1016/j.phymed.2025.156599",
+    "claim": "beta-Ionone activates OR51E2 in colorectal cancer cells, elevating intracellular Ca2+, inhibiting MEK/ERK phosphorylation, suppressing proliferation, inducing apoptosis, and reducing xenograft tumor growth in an OR51E2-dependent manner.",
+    "mechanism": "Ca2+ elevation \u2192 MEK/ERK inhibition; OR51E2 mRNA downregulated in CRC via m6A modification (METTL3/14-YTHDF axis); STM2457 (METTL3 inhibitor) restores OR51E2 expression and suppresses proliferation",
+    "direction": "tumor-suppressive",
+    "model_system": "CRC cell lines (OR51E2 knockdown); xenograft nude mice (5 and 10 mg/kg beta-ionone)",
+    "endpoint": "proliferation and apoptosis",
+    "sample_size": null,
+    "replication_count": 1,
+    "cancer_type": "colorectal",
+    "verified_by_person_a": false,
+    "verification_notes": "AUTO-EXTRACTED from PubMed abstract (PMID 40088737). Full text not yet read. Key claims (Ca2+/MEK-ERK mechanism, xenograft reduction, m6A regulatory mechanism) match abstract text. Direction and endpoint are clear from abstract. Queue for Person A full-text verification before use in high-confidence claims.",
+    "raw_excerpt_or_link": "doi:10.1016/j.phymed.2025.156599"
+  },
+  {
+    "receptor": "OR51E2",
+    "source_type": "literature",
+    "citation": "Kim JS et al. (2025). \"Propionate suppresses colitis-associated colorectal cancer in mice by Or51e2.\" Biomedicine & pharmacotherapy. doi:10.1016/j.biopha.2025.118268",
+    "claim": "Propionate (SCFA) activates Or51e2 in colorectal cancer, increasing cAMP, inhibiting cell proliferation, inducing apoptosis, and suppressing MEK/ERK signaling; in vivo, propionate reduced tumor burden in AOM/DSS colitis-associated CRC model in WT but not Or51e2-knockout mice.",
+    "mechanism": "Propionate \u2192 Or51e2 \u2192 cAMP elevation \u2192 MEK/ERK suppression; loss of effect in Or51e2 KO mice confirms receptor dependence; propionate is a SCFA from dietary fiber fermentation",
+    "direction": "tumor-suppressive",
+    "model_system": "CT26 murine CRC cells; AOM/DSS colitis-associated CRC model (WT and Or51e2 KO mice)",
+    "endpoint": "proliferation and apoptosis",
+    "sample_size": null,
+    "replication_count": 1,
+    "cancer_type": "colorectal",
+    "verified_by_person_a": false,
+    "verification_notes": "AUTO-EXTRACTED from PubMed abstract (PMID 40532574). Full text not yet read. The KO mouse validation is particularly strong evidence \u2014 loss of propionate effect in Or51e2 KO confirms receptor-specific mechanism, not off-target. Direction and endpoint are clear. Queue for Person A full-text verification before use in high-confidence claims.",
+    "raw_excerpt_or_link": "doi:10.1016/j.biopha.2025.118268"
   }
 ]

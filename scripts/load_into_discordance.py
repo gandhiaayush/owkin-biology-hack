@@ -48,7 +48,14 @@ CANCER_TYPE_MAP = {
     "prostate": "prostate_cancer",
     "melanoma": "melanoma",
     "pan-cancer": "pan_cancer",
+    "pan_cancer": "pan_cancer",
+    "colorectal": "colorectal_cancer",
+    "colon": "colorectal_cancer",
+    "colorectal_cancer": "colorectal_cancer",
     "kidney chromophobe (KICH)": "kidney_chromophobe",
+    "kidney_chromophobe": "kidney_chromophobe",
+    "lung": "lung_cancer",
+    "ovarian": "ovarian_cancer",
     None: "unknown",
 }
 
