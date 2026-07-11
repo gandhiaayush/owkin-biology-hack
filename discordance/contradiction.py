@@ -20,6 +20,22 @@ _DIVERGENCE_PATTERNS = {
 }
 
 
+def _endpoint_key(suppressive: list[EvidenceRecord], promoting: list[EvidenceRecord]) -> bool:
+    """
+    Returns True only when every record on both sides has a *known* (not "not
+    specified") endpoint AND all those endpoints are identical. Returns False as
+    soon as we can confirm the endpoints differ. When endpoint data is missing on
+    either side, we can't confirm either way -- default to True (assume same
+    endpoint / flat contradiction) rather than silently downgrading language on an
+    assumption. Endpoint must be positively confirmed different to soften framing.
+    """
+    all_records = suppressive + promoting
+    known_endpoints = {r.endpoint for r in all_records if r.endpoint != "not specified"}
+    if len(known_endpoints) >= 2:
+        return False
+    return True
+
+
 def _model_system_key(suppressive: list[EvidenceRecord], promoting: list[EvidenceRecord]) -> str:
     s_models = {r.model_system for r in suppressive}
     p_models = {r.model_system for r in promoting}
@@ -37,10 +53,26 @@ def generate_divergence_hypothesis(
     promoting: list[EvidenceRecord],
 ) -> str:
     model_key = _model_system_key(suppressive, promoting)
-    base = _DIVERGENCE_PATTERNS.get(
-        (model_key, "different_direction"),
-        "Opposing directional claims detected. Review model systems, endpoints, and ligand specificity.",
-    )
+    same_endpoint = _endpoint_key(suppressive, promoting)
+
+    if not same_endpoint:
+        s_endpoints = sorted({r.endpoint for r in suppressive if r.endpoint != "not specified"})
+        p_endpoints = sorted({r.endpoint for r in promoting if r.endpoint != "not specified"})
+        base = (
+            f"CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures "
+            f"{', '.join(s_endpoints) or 'an unspecified endpoint'}; promoting evidence measures "
+            f"{', '.join(p_endpoints) or 'an unspecified endpoint'}. This is contested on overall "
+            "clinical/therapeutic implication, but not a strict same-endpoint contradiction — both "
+            "effects could be simultaneously true (e.g. reduced proliferation alongside increased "
+            "invasiveness is a recognized cancer biology pattern). Do not present as a flat two-sided "
+            "contradiction; present as divergent evidence on distinct outcomes."
+        )
+    else:
+        base = _DIVERGENCE_PATTERNS.get(
+            (model_key, "different_direction"),
+            "Opposing directional claims detected. Review model systems, endpoints, and ligand specificity.",
+        )
+
     notes = []
     for r in suppressive + promoting:
         if r.confidence_note and ("controversy" in r.confidence_note.lower() or "ligand" in r.confidence_note.lower()):
@@ -81,6 +113,7 @@ def detect_contradictions(
             suppressive_records=suppressive,
             promoting_records=promoting,
             same_model_system=_model_system_key(suppressive, promoting) == "same_model",
+            same_endpoint=_endpoint_key(suppressive, promoting),
             divergence_hypothesis=hypothesis,
             deadlock=deadlock,
         )
