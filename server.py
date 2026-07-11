@@ -21,7 +21,7 @@ from mcp.server.elicitation import AcceptedElicitation
 from discordance import (
     init_db, insert_record, get_records,
     detect_contradictions, compute_direction_scores, generate_rules,
-    EvidenceRecord,
+    EvidenceRecord, query_subgraph, tension_map_from_records,
 )
 from discordance.elicitation import should_trigger_elicitation, build_elicitation_question
 
@@ -43,6 +43,10 @@ class EvidenceInput(BaseModel):
     mechanism: str = Field(default="not specified", description="Pathway or molecular mechanism")
     direction: Literal["tumor_suppressive", "tumor_promoting", "neutral"]
     direction_context: Literal["activation_effect", "expression_pattern", "genetic_alteration"] = "activation_effect"
+    endpoint: str = Field(
+        default="not specified",
+        description="Biological outcome measured, e.g. proliferation, invasiveness, tumor_growth",
+    )
     cancer_type: str = Field(default="prostate_cancer")
     model_system: str = Field(description="e.g. LNCaP, xenograft, TCGA-PRAD")
     sample_size: Optional[int] = None
@@ -73,6 +77,7 @@ def add_evidence(evidence: EvidenceInput) -> dict:
         mechanism=evidence.mechanism,
         direction=evidence.direction,
         direction_context=evidence.direction_context,
+        endpoint=evidence.endpoint,
         cancer_type=evidence.cancer_type,
         model_system=evidence.model_system,
         sample_size=evidence.sample_size,
@@ -137,12 +142,14 @@ async def query_graph(
             "contradictions": [],
             "elicitation_triggered": False,
             "elicitation_response": None,
+            "subgraph": {"nodes": [], "edges": [], "counts": {}},
             "tension_map_data": {"nodes": [], "edges": []},
         }
 
     scores = compute_direction_scores(records)
     contradictions = detect_contradictions(records)
     rules = generate_rules(records)
+    subgraph = query_subgraph(records, gene=gene, cancer_type=cancer_type)
 
     elicitation_triggered = False
     elicitation_response = None
@@ -191,8 +198,6 @@ async def query_graph(
         for c in contradictions
     ]
 
-    tension_map = _build_tension_map(gene, cancer_type, scores, contradictions)
-
     return {
         "gene": gene,
         "cancer_type": cancer_type,
@@ -203,54 +208,31 @@ async def query_graph(
         "contradictions": contradiction_data,
         "elicitation_triggered": elicitation_triggered,
         "elicitation_response": elicitation_response,
-        "tension_map_data": tension_map,
+        "open_world_note": subgraph["open_world_note"],
+        "subgraph": {
+            "counts": subgraph["counts"],
+            "scores": subgraph["scores"],
+            "claims": subgraph["claims"],
+            "tensions": subgraph["tensions"],
+        },
+        "tension_map_data": subgraph["tension_map_data"],
     }
 
 
-def _build_tension_map(gene, cancer_type, scores, contradictions) -> dict:
-    nodes = [
-        {"id": gene, "label": gene, "type": "gene", "consensus_status": scores.consensus_status},
-        {"id": cancer_type, "label": cancer_type.replace("_", " ").title(), "type": "cancer_type"},
-    ]
-    edges = []
-    is_contested = bool(contradictions)
-
-    if scores.suppressive.records:
-        nodes.append({
-            "id": "tumor_suppressive", "label": "Tumor Suppressive",
-            "type": "direction", "color_hint": "green",
-        })
-        edges.append({
-            "from": gene, "to": "tumor_suppressive",
-            "weight": round(scores.suppressive.score, 3),
-            "contested": is_contested,
-            "sources": [r.source for r in scores.suppressive.records],
-            "mechanism": "; ".join(
-                {r.mechanism for r in scores.suppressive.records if r.mechanism != "not specified"}
-            ) or "not specified",
-        })
-
-    if scores.promoting.records:
-        nodes.append({
-            "id": "tumor_promoting", "label": "Tumor Promoting",
-            "type": "direction", "color_hint": "red",
-        })
-        edges.append({
-            "from": gene, "to": "tumor_promoting",
-            "weight": round(scores.promoting.score, 3),
-            "contested": is_contested,
-            "sources": [r.source for r in scores.promoting.records],
-            "mechanism": "; ".join(
-                {r.mechanism for r in scores.promoting.records if r.mechanism != "not specified"}
-            ) or "not specified",
-        })
-
-    edges.append({
-        "from": gene, "to": cancer_type,
-        "weight": 1.0, "type": "expressed_in",
-    })
-
-    return {"nodes": nodes, "edges": edges}
+@mcp.tool()
+def get_tension_map(gene: str, cancer_type: str = "prostate_cancer") -> dict:
+    """
+    Return the ontology-aligned evidence graph for visualization (Person C tension map).
+    Nodes: Receptor, Claim, Paper, ModelSystem, Endpoint, Direction, …
+    Edges carry weights and contested flags. Does not merge opposing claims.
+    """
+    records = get_records(gene, cancer_type)
+    if not records:
+        return {"gene": gene, "cancer_type": cancer_type, "nodes": [], "edges": []}
+    payload = tension_map_from_records(records)
+    payload["gene"] = gene
+    payload["cancer_type"] = cancer_type
+    return payload
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
-evidence.db
-__pycache__/
-*.pyc
-.venv/
-*.egg-info/
 dist/
+*.egg-info/
+evidence.db
+evidence.db-journal
+*.pyc
+__pycache__/
 .pytest_cache/
+.venv/

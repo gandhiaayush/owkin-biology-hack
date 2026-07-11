@@ -75,7 +75,9 @@ def generate_divergence_hypothesis(
 
     notes = []
     for r in suppressive + promoting:
-        if r.confidence_note and ("controversy" in r.confidence_note.lower() or "ligand" in r.confidence_note.lower()):
+        if r.confidence_note and (
+            "controversy" in r.confidence_note.lower() or "ligand" in r.confidence_note.lower()
+        ):
             notes.append(f"Note from {r.source.split(',')[0]}: {r.confidence_note[:120]}")
     if notes:
         base += " Additionally: " + " | ".join(notes)
@@ -87,11 +89,8 @@ def detect_contradictions(
     direction_context_filter: str = "activation_effect",
 ) -> list[ContradictionPair]:
     """
-    Given a list of evidence records (already filtered to one gene+cancer_type),
-    return ContradictionPair objects for each direction conflict found.
-
-    Only compares records with the same direction_context to avoid false positives
-    (e.g. a TCGA expression record vs. a functional activation record).
+    Given evidence for one gene (+ optional cancer filter upstream), return
+    ContradictionPair objects for opposing directions under the same direction_context.
     """
     filtered = [r for r in records if r.direction_context == direction_context_filter]
 
@@ -103,7 +102,6 @@ def detect_contradictions(
 
     hypothesis = generate_divergence_hypothesis(suppressive, promoting)
 
-    # Deadlock: neither side has more than 60% of record count (simple heuristic pre-scoring)
     total = len(suppressive) + len(promoting)
     ratio = len(suppressive) / total
     deadlock = 0.4 <= ratio <= 0.6

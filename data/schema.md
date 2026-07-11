@@ -12,6 +12,7 @@ array under `data/receptors/<receptor>.json`.
   "mechanism": "Free-text mechanism, or null if not applicable/not yet known",
   "direction": "tumor-suppressive | tumor-promoting | neutral | unclear",
   "model_system": "e.g. LNCaP cells (endogenous receptor)",
+  "endpoint": "e.g. 'proliferation', 'invasiveness', 'apoptosis', 'migration' -- optional, default 'not specified'",
   "sample_size": null,
   "replication_count": null,
   "cancer_type": "prostate",
@@ -37,3 +38,7 @@ array under `data/receptors/<receptor>.json`.
   source (source paper full text, or actual API response), not from a bare citation match.
 - `cancer_type` — use `null` for non-cancer model systems (e.g. RPE cells) that are still relevant
   context for interpreting a ligand's mechanism.
+- `endpoint` — the actual biological outcome measured (proliferation, invasiveness, …). Two
+  activation-effect claims can still fail as a *same-endpoint* contradiction if they measured
+  different things (Neuhaus vs Sanz). Leave `"not specified"` when unclear; contradiction logic
+  only softens framing when endpoints are positively confirmed to differ.

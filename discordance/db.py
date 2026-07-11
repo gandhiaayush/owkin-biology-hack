@@ -141,6 +141,7 @@ def get_all_records() -> list[EvidenceRecord]:
 
 
 def _row_to_record(row: sqlite3.Row) -> EvidenceRecord:
+    keys = row.keys()
     return EvidenceRecord(
         id=row["id"],
         source=row["source"],
@@ -149,7 +150,7 @@ def _row_to_record(row: sqlite3.Row) -> EvidenceRecord:
         mechanism=row["mechanism"],
         direction=row["direction"],
         direction_context=row["direction_context"],
-        endpoint=row["endpoint"],
+        endpoint=row["endpoint"] if "endpoint" in keys else "not specified",
         cancer_type=row["cancer_type"],
         model_system=row["model_system_normalized"],
         sample_size=row["sample_size"],
