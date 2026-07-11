@@ -1,6 +1,7 @@
 from __future__ import annotations
 import hashlib
 import os
+import re
 import sqlite3
 from pathlib import Path
 from typing import Optional
@@ -49,28 +50,69 @@ def _normalize_model_system(raw: str) -> str:
     return _MODEL_SYSTEM_NORMALIZATION.get(raw.lower().strip(), raw.strip())
 
 
-def _source_hash(gene: str, source: str, direction: str) -> str:
-    key = f"{gene.lower()}|{source.lower()}|{direction.lower()}"
+def _extract_citation_key(source: str) -> str:
+    """
+    Normalize a citation string down to (first_author_surname, year) so the same
+    paper cited two different ways -- e.g. 'Neuhaus et al. 2009, J Biol Chem' vs.
+    'Neuhaus EM, Zhang W, Gelis L, Deng Y, Noldus J, Hatt H (2009). "Activation of
+    an olfactory receptor..." J Biol Chem 284(24):16218-16225.' -- collide on the
+    same key instead of being treated as two distinct sources.
+
+    This is intentionally loose (first alphabetic token + first 4-digit year found).
+    It will over-collide in rare cases (e.g. two different 2009 papers where the
+    first author's surname happens to match another author's surname elsewhere in
+    a differently-formatted citation), but under-colliding (silently double-counting
+    the same paper as two independent sources) is the worse failure mode for an
+    evidence-weighting system, so this errs toward merging.
+    """
+    year_match = re.search(r"(19|20)\d{2}", source)
+    year = year_match.group(0) if year_match else "unknown-year"
+    author_match = re.match(r"\s*([A-Za-z][A-Za-z\-]*)", source)
+    first_author = author_match.group(1).lower() if author_match else "unknown-author"
+    return f"{first_author}-{year}"
+
+
+_CITATION_STYLE_SOURCE_TYPES = {"primary_study", "review"}
+
+
+def _source_hash(gene: str, source: str, direction: str, source_type: str = "primary_study") -> str:
+    """
+    For citation-style sources (primary_study, review), normalize to (first
+    author, year) so the same paper cited two different ways collides correctly.
+
+    For everything else (database_derived, patent, preliminary), the source
+    string is a description, not a citation -- e.g. "GDC API cnvs endpoint,
+    gene ENSG00000167332, TCGA-KICH cohort, live pull" vs. the same endpoint
+    for a different cohort. These don't share an "Author Year" structure, and
+    the two share no year at all, so normalizing them the same way silently
+    collapses genuinely distinct records (this was caught by testing against
+    real TCGA pulls -- see CLAUDE.md/commit history). Hash the full string instead.
+    """
+    if source_type in _CITATION_STYLE_SOURCE_TYPES:
+        key_part = _extract_citation_key(source)
+    else:
+        key_part = source.lower().strip()
+    key = f"{gene.lower()}|{key_part}|{direction.lower()}"
     return hashlib.sha256(key.encode()).hexdigest()[:16]
 
 
 def insert_record(r: EvidenceRecord) -> Optional[int]:
     """Insert one evidence record. Returns the new row id, or None if duplicate (ignored)."""
     normalized = _normalize_model_system(r.model_system)
-    h = _source_hash(r.gene, r.source, r.direction)
+    h = _source_hash(r.gene, r.source, r.direction, r.source_type)
     with _connect() as conn:
         cur = conn.execute(
             """
             INSERT OR IGNORE INTO evidence (
                 source_hash, source, source_type, claim, mechanism,
-                direction, direction_context, cancer_type,
+                direction, direction_context, endpoint, cancer_type,
                 model_system_raw, model_system_normalized,
                 sample_size, independent_replications, gene, confidence_note
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """,
             (
                 h, r.source, r.source_type, r.claim, r.mechanism,
-                r.direction, r.direction_context, r.cancer_type,
+                r.direction, r.direction_context, r.endpoint, r.cancer_type,
                 r.model_system, normalized,
                 r.sample_size, r.independent_replications,
                 r.gene, r.confidence_note,
@@ -111,6 +153,7 @@ def _row_to_record(row: sqlite3.Row) -> EvidenceRecord:
         mechanism=row["mechanism"],
         direction=row["direction"],
         direction_context=row["direction_context"],
+        endpoint=row["endpoint"],
         cancer_type=row["cancer_type"],
         model_system=row["model_system_normalized"],
         sample_size=row["sample_size"],
