@@ -96,6 +96,7 @@ def add_evidence(evidence: EvidenceInput) -> dict:
             "suppressive_sources": [r.source for r in c.suppressive_records],
             "promoting_sources": [r.source for r in c.promoting_records],
             "same_model_system": c.same_model_system,
+            "same_endpoint": c.same_endpoint,
             "divergence_hypothesis": c.divergence_hypothesis,
             "deadlock": c.deadlock,
         })
@@ -183,6 +184,7 @@ async def query_graph(
             "suppressive_sources": [r.source for r in c.suppressive_records],
             "promoting_sources": [r.source for r in c.promoting_records],
             "same_model_system": c.same_model_system,
+            "same_endpoint": c.same_endpoint,
             "divergence_hypothesis": c.divergence_hypothesis,
             "deadlock": c.deadlock,
         }
