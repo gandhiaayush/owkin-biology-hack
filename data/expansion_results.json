@@ -1,0 +1,488 @@
+[
+  {
+    "receptor": "OR51E2",
+    "papers_found": 20,
+    "papers_processed": 20,
+    "inserted": 20,
+    "results": [
+      {
+        "pmid": "38296675",
+        "citation": "Wu C Xu M Dong J Cui W Yuan S (2024). \"The structure and function of olfactory r",
+        "year": "2024",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "neutral",
+          "endpoint": "not specified",
+          "mechanism": "not specified",
+          "model_system": "not specified",
+          "cancer_type": "unknown",
+          "claim": "The structure and function of olfactory receptors."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "36922591",
+        "citation": "Billesbolle CB de March CA van der Velden WJC Ma N Tewari J Del Torrent CL Li L ",
+        "year": "2023",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "neutral",
+          "endpoint": "not specified",
+          "mechanism": "not specified",
+          "model_system": "not specified",
+          "cancer_type": "unknown",
+          "claim": "Structural basis of odorant recognition by a human odorant receptor."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "40588561",
+        "citation": "Marelli G Morina N Puccio S Iovino M Pandini M Portale F Carvetta M Mishra D Dia",
+        "year": "2025",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_promoting",
+          "endpoint": "expression",
+          "mechanism": "not specified",
+          "model_system": "not specified",
+          "cancer_type": "prostate_cancer",
+          "claim": "Chemosensor receptors are lipid-detecting regulators of macrophage function in cancer."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "27280498",
+        "citation": "Rodriguez M Siwko S Liu M (2016). \"Prostate-Specific G-Protein Coupled Receptor,",
+        "year": "2016",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_promoting",
+          "endpoint": "invasiveness",
+          "mechanism": "G-protein",
+          "model_system": "transgenic mouse",
+          "cancer_type": "prostate_cancer",
+          "claim": "Prostate-Specific G-Protein Coupled Receptor, an Emerging Biomarker Regulating Inflammation and Prostate Cancer Invasion."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "35538397",
+        "citation": "Sakellakis M (2022). \"Orphan receptors in prostate cancer.\" The Prostate. doi:10",
+        "year": "2022",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_promoting",
+          "endpoint": "proliferation",
+          "mechanism": "NF-\u03baB",
+          "model_system": "not specified",
+          "cancer_type": "prostate_cancer",
+          "claim": "Orphan receptors in prostate cancer."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "39478229",
+        "citation": "de March CA Ma N Billesbolle CB Tewari J Llinas Del Torrent C van der Velden WJC",
+        "year": "2024",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "neutral",
+          "endpoint": "not specified",
+          "mechanism": "NF-\u03baB",
+          "model_system": "ovarian cancer cell line",
+          "cancer_type": "unknown",
+          "claim": "Engineered odorant receptors illuminate the basis of odour discrimination."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "38719475",
+        "citation": "Abaffy T Fu O Harume-Nagai M Goldenberg JM Kenyon V Kenakin T (2024). \"Intracell",
+        "year": "2024",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "neutral",
+          "endpoint": "expression",
+          "mechanism": "NF-\u03baB",
+          "model_system": "not specified",
+          "cancer_type": "unknown",
+          "claim": "Intracellular Allosteric Antagonist of the Olfactory Receptor OR51E2."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "34545457",
+        "citation": "Mermer P Strotmann J Kummer W Paddenberg R (2021). \"Olfactory receptor Olfr78 (p",
+        "year": "2021",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "neutral",
+          "endpoint": "expression",
+          "mechanism": "not specified",
+          "model_system": "transgenic mouse",
+          "cancer_type": "prostate_cancer",
+          "claim": "Olfactory receptor Olfr78 (prostate-specific G protein-coupled receptor PSGR) expression in arterioles supplying skeletal and cardiac muscles and in arterioles feeding some murine organs."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "40532574",
+        "citation": "Kim JS Jeong MY Yoon YE Kim Y Lee I Choi JW Lee HL Shin MJ Hong S Chi SG Lee SJ ",
+        "year": "2025",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_suppressive",
+          "endpoint": "proliferation",
+          "mechanism": "Ca2+ signaling",
+          "model_system": "not specified",
+          "cancer_type": "colorectal_cancer",
+          "claim": "Propionate suppresses colitis-associated colorectal cancer in mice by Or51e2."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "16149059",
+        "citation": "Weng J Ma W Mitchell D Zhang J Liu M (2005). \"Regulation of human prostate-speci",
+        "year": "2005",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_promoting",
+          "endpoint": "tumor growth (in vivo)",
+          "mechanism": "G-protein",
+          "model_system": "not specified",
+          "cancer_type": "prostate_cancer",
+          "claim": "Regulation of human prostate-specific G-protein coupled receptor, PSGR, by two distinct promoters and growth factors."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "12732197",
+        "citation": "Vanti WB Nguyen T Cheng R Lynch KR George SR O'Dowd BF (2003). \"Novel human G-pr",
+        "year": "2003",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "neutral",
+          "endpoint": "expression",
+          "mechanism": "G-protein",
+          "model_system": "not specified",
+          "cancer_type": "prostate_cancer",
+          "claim": "Novel human G-protein-coupled receptors."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "40128715",
+        "citation": "Thomsen MT Busk M Zhang D Chiu CL Zhao H Garcia-Marques FJ Bermudez A Pitteri S ",
+        "year": "2025",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_promoting",
+          "endpoint": "proliferation",
+          "mechanism": "NF-\u03baB",
+          "model_system": "xenograft",
+          "cancer_type": "prostate_cancer",
+          "claim": "The olfactory receptor OR51E2 regulates prostate cancer aggressiveness and modulates STAT3 in prostate cancer cells and in xenograft tumors."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "16491480",
+        "citation": "Wang J Weng J Cai Y Penland R Liu M Ittmann M (2006). \"The prostate-specific G-p",
+        "year": "2006",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_promoting",
+          "endpoint": "expression",
+          "mechanism": "NF-\u03baB",
+          "model_system": "not specified",
+          "cancer_type": "prostate_cancer",
+          "claim": "The prostate-specific G-protein coupled receptors PSGR and PSGR2 are prostate cancer biomarkers that are complementary to alpha-methylacyl-CoA racemase."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "29167480",
+        "citation": "Wolf S Jovancevic N Gelis L Pietsch S Hatt H Gerwert K (2017). \"Dynamical Bindin",
+        "year": "2017",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_promoting",
+          "endpoint": "not specified",
+          "mechanism": "G-protein",
+          "model_system": "not specified",
+          "cancer_type": "prostate_cancer",
+          "claim": "Dynamical Binding Modes Determine Agonistic and Antagonistic Ligand Effects in the Prostate-Specific G-Protein Coupled Receptor (PSGR)."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "31913697",
+        "citation": "Kotlo K Anbazhagan AN Priyamvada S Jayawardena D Kumar A Chen Y Xia Y Finn PW Pe",
+        "year": "2020",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_promoting",
+          "endpoint": "tumor growth (in vivo)",
+          "mechanism": "not specified",
+          "model_system": "not specified",
+          "cancer_type": "prostate_cancer",
+          "claim": "The olfactory G protein-coupled receptor (Olfr-78/OR51E2) modulates the intestinal response to colitis."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "36313302",
+        "citation": "Xu X Khater M Wu G (2022). \"The olfactory receptor OR51E2 activates ERK1/2 throu",
+        "year": "2022",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_promoting",
+          "endpoint": "expression",
+          "mechanism": "MAPK/ERK",
+          "model_system": "not specified",
+          "cancer_type": "prostate_cancer",
+          "claim": "The olfactory receptor OR51E2 activates ERK1/2 through the Golgi-localized Gbetagamma-PI3Kgamma-ARF1 pathway in prostate cancer cells."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "30928381",
+        "citation": "Xie H Liu T Chen J Yang Z Xu S Fan Y Zeng J Chen Y Ma Z Gao Y He D Li L (2019). ",
+        "year": "2019",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_suppressive",
+          "endpoint": "proliferation",
+          "mechanism": "NF-\u03baB",
+          "model_system": "not specified",
+          "cancer_type": "prostate_cancer",
+          "claim": "Activation of PSGR with beta-ionone suppresses prostate cancer progression by blocking androgen receptor nuclear translocation."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "40088737",
+        "citation": "Kim JS Cho S Jeong MY Rivera-Piza A Kim Y Wu C Yoon YE Lee I Choi JW Lee HL Shin",
+        "year": "2025",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_suppressive",
+          "endpoint": "proliferation",
+          "mechanism": "Ca2+ signaling",
+          "model_system": "xenograft",
+          "cancer_type": "colorectal_cancer",
+          "claim": "beta-Ionone suppresses colorectal tumorigenesis by activating OR51E2, a potential tumor suppressor."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "33164833",
+        "citation": "Li Y Li Q Li D Gu J Qian D Qin X Chen Y (2021). \"Exosome carrying PSGR promotes ",
+        "year": "2021",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "tumor_promoting",
+          "endpoint": "invasiveness",
+          "mechanism": "G-protein",
+          "model_system": "LNCaP",
+          "cancer_type": "prostate_cancer",
+          "claim": "Exosome carrying PSGR promotes stemness and epithelial-mesenchymal transition of low aggressive prostate cancer cells."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "20672322",
+        "citation": "Rigau M Morote J Mir MC Ballesteros C Ortega I Sanchez A Colas E Garcia M Ruiz A",
+        "year": "2010",
+        "extracted": {
+          "receptor": "OR51E2",
+          "direction": "neutral",
+          "endpoint": "expression",
+          "mechanism": "G-protein",
+          "model_system": "not specified",
+          "cancer_type": "prostate_cancer",
+          "claim": "PSGR and PCA3 as biomarkers for the detection of prostate cancer in urine."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      }
+    ]
+  },
+  {
+    "receptor": "OR2H1",
+    "papers_found": 4,
+    "papers_processed": 4,
+    "inserted": 4,
+    "results": [
+      {
+        "pmid": "40643465",
+        "citation": "Di Nicuolo F Teveroni E Devigili A Gasparini C Urbani A Ghi T Pontecorvi A Milar",
+        "year": "2025",
+        "extracted": {
+          "receptor": "OR2H1",
+          "direction": "neutral",
+          "endpoint": "migration",
+          "mechanism": "Ca2+ signaling",
+          "model_system": "not specified",
+          "cancer_type": "unknown",
+          "claim": "Exploring OR2H1-Mediated Sperm Chemotaxis: Development and Application of a Novel Microfluidic Device."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "21293383",
+        "citation": "Orozco G Barton A Eyre S Ding B Worthington J Ke X Thomson W (2011). \"HLA-DPB1-C",
+        "year": "2011",
+        "extracted": {
+          "receptor": "OR2H1",
+          "direction": "neutral",
+          "endpoint": "not specified",
+          "mechanism": "not specified",
+          "model_system": "TCGA cohort",
+          "cancer_type": "unknown",
+          "claim": "HLA-DPB1-COL11A2 and three additional xMHC loci are independently associated with RA in a UK cohort."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "35499393",
+        "citation": "Martin AL Anadon CM Biswas S Mine JA Handley KF Payne KK Mandal G Chaurio RA Pow",
+        "year": "2022",
+        "extracted": {
+          "receptor": "OR2H1",
+          "direction": "tumor_promoting",
+          "endpoint": "expression",
+          "mechanism": "CAR-T immunotherapy",
+          "model_system": "not specified",
+          "cancer_type": "lung_cancer",
+          "claim": "Olfactory Receptor OR2H1 Is an Effective Target for CAR T Cells in Human Epithelial Tumors."
+        },
+        "gt_score": {
+          "direction": 1,
+          "endpoint": 0.0
+        },
+        "gt_matched": true
+      },
+      {
+        "pmid": "23209447",
+        "citation": "Tang M Lautenberger JA Gao X Sezgin E Hendrickson SL Troyer JL David VA Guan L M",
+        "year": "2012",
+        "extracted": {
+          "receptor": "OR2H1",
+          "direction": "neutral",
+          "endpoint": "not specified",
+          "mechanism": "not specified",
+          "model_system": "TCGA cohort",
+          "cancer_type": "unknown",
+          "claim": "The principal genetic determinants for nasopharyngeal carcinoma in China involve the HLA class I antigen recognition groove."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      }
+    ]
+  },
+  {
+    "receptor": "OR51B4",
+    "papers_found": 2,
+    "papers_processed": 2,
+    "inserted": 2,
+    "results": [
+      {
+        "pmid": "25774687",
+        "citation": "Zhang C Zhao H Li J Liu H Wang F Wei Y Su J Zhang D Liu T Zhang Y (2015). \"The i",
+        "year": "2015",
+        "extracted": {
+          "receptor": "OR51B4",
+          "direction": "neutral",
+          "endpoint": "expression",
+          "mechanism": "NF-\u03baB",
+          "model_system": "not specified",
+          "cancer_type": "colorectal_cancer",
+          "claim": "The identification of specific methylation patterns across different cancers."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "28273117",
+        "citation": "Weber L Al-Refae K Ebbert J Jagers P Altmuller J Becker C Hahn S Gisselmann G Ha",
+        "year": "2017",
+        "extracted": {
+          "receptor": "OR51B4",
+          "direction": "tumor_promoting",
+          "endpoint": "proliferation",
+          "mechanism": "Ca2+ signaling",
+          "model_system": "not specified",
+          "cancer_type": "colorectal_cancer",
+          "claim": "Activation of odorant receptor in colorectal cancer cells leads to inhibition of cell proliferation and apoptosis."
+        },
+        "gt_score": {
+          "direction": 0,
+          "endpoint": 0.0
+        },
+        "gt_matched": true
+      }
+    ]
+  },
+  {
+    "receptor": "OR2C3",
+    "papers_found": 2,
+    "papers_processed": 2,
+    "inserted": 2,
+    "results": [
+      {
+        "pmid": "39892222",
+        "citation": "Shen Z Zhao Y Xu X Yang H He S Ma J Zhang S Hou P Sui F (2025). \"Single-cell RNA",
+        "year": "2025",
+        "extracted": {
+          "receptor": "OR2C3",
+          "direction": "tumor_suppressive",
+          "endpoint": "tumor growth (in vivo)",
+          "mechanism": "MAPK/ERK",
+          "model_system": "not specified",
+          "cancer_type": "unknown",
+          "claim": "Single-cell RNA sequencing integrated with bulk RNA sequencing analysis of clock circadian regulator with prognostic and immune microenvironment in thyroid cancer."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      },
+      {
+        "pmid": "28492065",
+        "citation": "Ranzani M Iyer V Ibarra-Soria X Del Castillo Velasco-Herrera M Garnett M Logan D",
+        "year": "2017",
+        "extracted": {
+          "receptor": "OR2C3",
+          "direction": "tumor_promoting",
+          "endpoint": "expression",
+          "mechanism": "not specified",
+          "model_system": "ovarian cancer cell line",
+          "cancer_type": "melanoma",
+          "claim": "Revisiting olfactory receptors as putative drivers of cancer."
+        },
+        "gt_score": null,
+        "gt_matched": false
+      }
+    ]
+  }
+]
