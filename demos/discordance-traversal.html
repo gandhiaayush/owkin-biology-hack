@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Discordance — Weighted Graph Traversal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0b1218;
+      --panel: #121c24;
+      --panel-2: #18242f;
+      --line: #2a3b48;
+      --muted: #8aa0b2;
+      --text: #e7eef5;
+      --lit: #d4a017;
+      --tcga: #2f9e8b;
+      --mosaic: #3d7ea6;
+      --support: #4caf8f;
+      --oppose: #d2665a;
+      --tension: #e8a05c;
+      --gene: #9fc5e0;
+      --pathway: #b7d4a8;
+      --outcome: #f0c987;
+      --niche: #c9b6e4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: "Sora", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 10% -10%, #163246 0%, transparent 55%),
+        radial-gradient(900px 600px at 100% 0%, #1a2f28 0%, transparent 50%),
+        linear-gradient(180deg, #0a1016 0%, #0e1620 45%, #0b1218 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(138, 160, 178, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(138, 160, 178, 0.05) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(circle at 50% 30%, black 20%, transparent 75%);
+    }
+
+    .shell {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .brand h1 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      letter-spacing: -0.03em;
+      font-weight: 700;
+    }
+
+    .brand p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 52ch;
+      line-height: 1.45;
+    }
+
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button {
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+
+    button:hover { background: var(--panel-2); border-color: #3d5366; }
+    button:active { transform: translateY(1px); }
+    button.primary {
+      background: linear-gradient(180deg, #245868, #1a3f4c);
+      border-color: #3d7a8c;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    .stage, .side {
+      background: linear-gradient(180deg, rgba(24, 36, 47, 0.92), rgba(18, 28, 36, 0.96));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 560px;
+    }
+
+    svg {
+      width: 100%;
+      height: 560px;
+      display: block;
+    }
+
+    .legend {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: calc(100% - 28px);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(11, 18, 24, 0.72);
+      border: 1px solid var(--line);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .side {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .side-header {
+      padding: 16px 18px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .side-header h2 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .side-header p {
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+
+    .steps {
+      list-style: none;
+      padding: 10px 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow: auto;
+      max-height: 420px;
+    }
+
+    .step {
+      padding: 12px 12px 12px 14px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: rgba(11, 18, 24, 0.35);
+      opacity: 0.45;
+      transition: opacity 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    }
+
+    .step.active {
+      opacity: 1;
+      border-color: #3d5a6e;
+      background: rgba(45, 78, 96, 0.28);
+    }
+
+    .step.done {
+      opacity: 0.75;
+    }
+
+    .step .kicker {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .step .title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .step .body {
+      font-size: 0.8rem;
+      color: #b7c6d4;
+      line-height: 1.4;
+    }
+
+    .result {
+      margin: 0 12px 14px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px dashed #6b5130;
+      background: linear-gradient(180deg, rgba(232, 160, 92, 0.12), rgba(18, 28, 36, 0.4));
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .result.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .result h3 {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      color: var(--tension);
+    }
+
+    .result p {
+      font-size: 0.8rem;
+      color: #d5c3a8;
+      line-height: 1.45;
+    }
+
+    .weights {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .weight-card {
+      background: rgba(11, 18, 24, 0.55);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+
+    .weight-card .label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .weight-card .value {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .progress {
+      height: 3px;
+      background: #1a2833;
+      margin-top: 16px;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress > span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--tcga), var(--tension));
+      transition: width 0.35s ease;
+    }
+
+    /* SVG element styles */
+    .edge {
+      fill: none;
+      stroke-linecap: round;
+      opacity: 0.28;
+      transition: opacity 0.35s ease, stroke-width 0.35s ease;
+    }
+
+    .edge.lit { stroke: var(--lit); }
+    .edge.tcga { stroke: var(--tcga); }
+    .edge.mosaic { stroke: var(--mosaic); }
+
+    .edge.active {
+      opacity: 1;
+      filter: drop-shadow(0 0 4px rgba(255,255,255,0.12));
+    }
+
+    .edge.dim { opacity: 0.12; }
+
+    .edge.conflict {
+      stroke: var(--oppose);
+      opacity: 1;
+    }
+
+    .edge.support-final {
+      stroke: var(--support);
+      opacity: 0.9;
+    }
+
+    .flow {
+      fill: none;
+      stroke-linecap: round;
+      stroke-dasharray: 8 160;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .node-ring {
+      fill: none;
+      stroke-width: 1.5;
+      opacity: 0.9;
+    }
+
+    .node-core {
+      transition: transform 0.3s ease, filter 0.3s ease;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .node.active .node-core {
+      filter: drop-shadow(0 0 10px rgba(231, 238, 245, 0.25));
+      transform: scale(1.08);
+    }
+
+    .node.visited .node-ring {
+      stroke-width: 2.5;
+    }
+
+    .label-text {
+      font-family: "Sora", sans-serif;
+      font-size: 12px;
+      fill: var(--text);
+      font-weight: 600;
+    }
+
+    .sublabel {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9px;
+      fill: var(--muted);
+    }
+
+    .weight-badge {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      fill: #dce7f0;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .weight-badge.show { opacity: 1; }
+
+    .pulse {
+      fill: none;
+      stroke: rgba(231, 238, 245, 0.45);
+      stroke-width: 1.5;
+      opacity: 0;
+    }
+
+    .query-banner {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(11, 18, 24, 0.78);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .query-banner strong {
+      color: #9fd0c4;
+      font-weight: 600;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <h1>Discordance</h1>
+        <p>Animated walkthrough of weighted evidence traversal — from a research question to a surfaced tension, not a silent merge.</p>
+      </div>
+      <div class="controls">
+        <button class="primary" id="playBtn">Play traversal</button>
+        <button id="stepBtn">Step</button>
+        <button id="resetBtn">Reset</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="stage" aria-label="Knowledge graph animation">
+        <div class="query-banner">
+          <span class="mono" style="color: var(--muted); font-size: 0.72rem;">QUERY</span><br />
+          Is <strong>CXCL13</strong> associated with better outcomes in bladder cancer — or only in a specific immune niche?
+        </div>
+
+        <svg id="graph" viewBox="0 0 760 560" role="img" aria-label="Weighted evidence graph">
+          <defs>
+            <marker id="arrowSupport" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#4caf8f" />
+            </marker>
+            <marker id="arrowOppose" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d2665a" />
+            </marker>
+            <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="3" result="b" />
+              <feMerge>
+                <feMergeNode in="b" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- Edges (drawn first) -->
+          <g id="edges"></g>
+          <g id="flows"></g>
+          <g id="nodes"></g>
+          <g id="badges"></g>
+        </svg>
+
+        <div class="legend">
+          <div class="chip"><span class="dot" style="background: var(--lit)"></span>Literature (weak)</div>
+          <div class="chip"><span class="dot" style="background: var(--tcga)"></span>TCGA (strong)</div>
+          <div class="chip"><span class="dot" style="background: var(--mosaic)"></span>MOSAIC spatial</div>
+          <div class="chip"><span class="dot" style="background: var(--oppose)"></span>Opposes</div>
+          <div class="chip"><span class="dot" style="background: var(--support)"></span>Supports</div>
+        </div>
+      </section>
+
+      <aside class="side">
+        <div class="side-header">
+          <h2>Traversal log</h2>
+          <p>Watch weights accumulate as the agent hops evidence edges, then adjudicates conflict.</p>
+          <div class="progress"><span id="progressBar"></span></div>
+        </div>
+        <ol class="steps" id="steps"></ol>
+        <div class="result" id="result">
+          <h3>End result · Context tension</h3>
+          <p>
+            Literature and TCGA lean “CXCL13 → better survival,” but MOSAIC shows the signal is confined to
+            TLS-rich niches — not a generic tumor-wide effect. Discordance flags this instead of averaging it away.
+          </p>
+          <div class="weights">
+            <div class="weight-card">
+              <div class="label">Support mass</div>
+              <div class="value" style="color: var(--support)" id="supportMass">0.00</div>
+            </div>
+            <div class="weight-card">
+              <div class="label">Context caveat</div>
+              <div class="value" style="color: var(--tension)" id="caveatMass">0.00</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <p class="footer-note">
+      Example subgraph for pitch rehearsal — not live MOSAIC/TCGA numbers. Edge weights illustrate evidence class:
+      single-paper claim (0.25), multi-cohort TCGA pattern (0.80), spatial niche specificity (0.85).
+    </p>
+  </div>
+
+  <script>
+    const nodes = [
+      { id: "q", label: "Research Q", sub: "bladder / survival", x: 110, y: 290, color: "#7f93a4", r: 28 },
+      { id: "cxcl13", label: "CXCL13", sub: "gene", x: 280, y: 180, color: "var(--gene)", r: 26 },
+      { id: "tls", label: "TLS niche", sub: "spatial context", x: 280, y: 400, color: "var(--niche)", r: 24 },
+      { id: "bcell", label: "B-cell recruit", sub: "pathway", x: 470, y: 160, color: "var(--pathway)", r: 26 },
+      { id: "survival", label: "Better OS", sub: "outcome", x: 650, y: 250, color: "var(--outcome)", r: 28 },
+      { id: "generic", label: "Tumor-wide↑", sub: "overclaim", x: 470, y: 390, color: "#c98989", r: 24 },
+    ];
+
+    const edges = [
+      { id: "e1", from: "q", to: "cxcl13", source: "lit", weight: 0.25, dir: "support", d: "M 135 275 C 180 220, 220 190, 254 180" },
+      { id: "e2", from: "cxcl13", to: "bcell", source: "lit", weight: 0.30, dir: "support", d: "M 305 170 C 360 150, 410 150, 444 158" },
+      { id: "e3", from: "bcell", to: "survival", source: "lit", weight: 0.28, dir: "support", d: "M 495 155 C 555 170, 600 210, 624 236" },
+      { id: "e4", from: "cxcl13", to: "survival", source: "tcga", weight: 0.80, dir: "support", d: "M 305 175 C 420 90, 560 120, 625 230" },
+      { id: "e5", from: "q", to: "tls", source: "mosaic", weight: 0.70, dir: "support", d: "M 125 312 C 170 360, 220 390, 256 398" },
+      { id: "e6", from: "tls", to: "cxcl13", source: "mosaic", weight: 0.85, dir: "support", d: "M 280 376 C 275 320, 275 260, 280 206" },
+      { id: "e7", from: "tls", to: "generic", source: "mosaic", weight: 0.85, dir: "oppose", d: "M 304 400 C 360 410, 410 405, 446 395" },
+      { id: "e8", from: "generic", to: "survival", source: "mosaic", weight: 0.75, dir: "oppose", d: "M 493 375 C 555 340, 600 300, 630 268" },
+    ];
+
+    const steps = [
+      {
+        kicker: "01 · Seed",
+        title: "Start at the research question",
+        body: "Agent enters the graph at the question node, not at a pre-merged answer.",
+        activateNodes: ["q"],
+        activateEdges: [],
+        flow: null,
+        support: 0,
+        caveat: 0,
+      },
+      {
+        kicker: "02 · Literature hop",
+        title: "Weak claim: CXCL13 → better OS",
+        body: "A single-paper narrative edge (weight 0.25–0.30) sketches a supportive path through B-cell recruitment.",
+        activateNodes: ["q", "cxcl13", "bcell", "survival"],
+        activateEdges: ["e1", "e2", "e3"],
+        flow: ["e1", "e2", "e3"],
+        support: 0.28,
+        caveat: 0,
+      },
+      {
+        kicker: "03 · TCGA hop",
+        title: "Strong cohort pattern reinforces",
+        body: "TCGA survival association (weight 0.80) adds a direct supportive edge. Support mass rises sharply.",
+        activateNodes: ["cxcl13", "survival"],
+        activateEdges: ["e1", "e2", "e3", "e4"],
+        flow: ["e4"],
+        support: 0.86,
+        caveat: 0,
+      },
+      {
+        kicker: "04 · MOSAIC hop",
+        title: "Spatial context enters",
+        body: "Traversal reaches TLS niche evidence. CXCL13 is enriched in tertiary lymphoid structures — a local niche, not bulk tumor.",
+        activateNodes: ["q", "tls", "cxcl13"],
+        activateEdges: ["e5", "e6", "e4"],
+        flow: ["e5", "e6"],
+        support: 0.86,
+        caveat: 0.40,
+      },
+      {
+        kicker: "05 · Conflict edge",
+        title: "Opposing claim: not tumor-wide",
+        body: "MOSAIC opposes the generic “tumor-wide CXCL13↑” interpretation (weight 0.85). Same gene, different meaning.",
+        activateNodes: ["tls", "generic", "survival"],
+        activateEdges: ["e4", "e7", "e8"],
+        flow: ["e7", "e8"],
+        support: 0.86,
+        caveat: 0.82,
+      },
+      {
+        kicker: "06 · Adjudicate",
+        title: "Balanced masses → tension, not merge",
+        body: "Support ≈ caveat. Discordance stops, flags a context tension, and (in MCP) can elicit researcher judgment.",
+        activateNodes: ["cxcl13", "tls", "survival", "generic"],
+        activateEdges: ["e4", "e7", "e8"],
+        flow: null,
+        support: 0.86,
+        caveat: 0.82,
+        finale: true,
+      },
+    ];
+
+    const svg = document.getElementById("graph");
+    const edgesG = document.getElementById("edges");
+    const flowsG = document.getElementById("flows");
+    const nodesG = document.getElementById("nodes");
+    const badgesG = document.getElementById("badges");
+    const stepsEl = document.getElementById("steps");
+    const resultEl = document.getElementById("result");
+    const progressBar = document.getElementById("progressBar");
+    const supportMass = document.getElementById("supportMass");
+    const caveatMass = document.getElementById("caveatMass");
+
+    function edgeMid(d) {
+      // Approximate label anchor from path string control points
+      const nums = d.match(/-?\d+(\.\d+)?/g).map(Number);
+      if (nums.length >= 8) {
+        return { x: (nums[0] + nums[6]) / 2 + (nums[2] - nums[0]) * 0.15, y: (nums[1] + nums[7]) / 2 + (nums[3] - nums[1]) * 0.1 };
+      }
+      return { x: nums[0], y: nums[1] };
+    }
+
+    // Render edges
+    edges.forEach((e) => {
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("id", e.id);
+      path.setAttribute("class", `edge ${e.source}`);
+      path.setAttribute("d", e.d);
+      path.setAttribute("stroke-width", 2 + e.weight * 4);
+      if (e.dir === "oppose") path.setAttribute("stroke-dasharray", "6 6");
+      edgesG.appendChild(path);
+
+      const flow = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      flow.setAttribute("id", `flow-${e.id}`);
+      flow.setAttribute("class", `flow ${e.source}`);
+      flow.setAttribute("d", e.d);
+      flow.setAttribute("stroke", e.dir === "oppose" ? "#d2665a" : getComputedStyle(document.documentElement).getPropertyValue(`--${e.source}`).trim() || "#9fd0c4");
+      flow.setAttribute("stroke-width", 3);
+      flowsG.appendChild(flow);
+
+      const mid = edgeMid(e.d);
+      const badge = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      badge.setAttribute("id", `badge-${e.id}`);
+      badge.setAttribute("class", "weight-badge");
+      badge.setAttribute("x", mid.x);
+      badge.setAttribute("y", mid.y);
+      badge.setAttribute("text-anchor", "middle");
+      badge.textContent = `w=${e.weight.toFixed(2)}`;
+      badgesG.appendChild(badge);
+    });
+
+    // Render nodes
+    nodes.forEach((n) => {
+      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      g.setAttribute("id", `node-${n.id}`);
+      g.setAttribute("class", "node");
+
+      const pulse = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      pulse.setAttribute("class", "pulse");
+      pulse.setAttribute("cx", n.x);
+      pulse.setAttribute("cy", n.y);
+      pulse.setAttribute("r", n.r);
+      g.appendChild(pulse);
+
+      const core = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      core.setAttribute("class", "node-core");
+      core.setAttribute("cx", n.x);
+      core.setAttribute("cy", n.y);
+      core.setAttribute("r", n.r);
+      core.setAttribute("fill", "#15202a");
+      core.setAttribute("stroke", n.color);
+      core.setAttribute("stroke-width", "2.5");
+      g.appendChild(core);
+
+      const ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      ring.setAttribute("class", "node-ring");
+      ring.setAttribute("cx", n.x);
+      ring.setAttribute("cy", n.y);
+      ring.setAttribute("r", n.r + 6);
+      ring.setAttribute("stroke", n.color);
+      ring.setAttribute("opacity", "0.35");
+      g.appendChild(ring);
+
+      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      label.setAttribute("class", "label-text");
+      label.setAttribute("x", n.x);
+      label.setAttribute("y", n.y + n.r + 18);
+      label.setAttribute("text-anchor", "middle");
+      label.textContent = n.label;
+      g.appendChild(label);
+
+      const sub = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      sub.setAttribute("class", "sublabel");
+      sub.setAttribute("x", n.x);
+      sub.setAttribute("y", n.y + n.r + 30);
+      sub.setAttribute("text-anchor", "middle");
+      sub.textContent = n.sub;
+      g.appendChild(sub);
+
+      nodesG.appendChild(g);
+    });
+
+    // Steps UI
+    steps.forEach((s, i) => {
+      const li = document.createElement("li");
+      li.className = "step";
+      li.id = `step-${i}`;
+      li.innerHTML = `<div class="kicker">${s.kicker}</div><div class="title">${s.title}</div><div class="body">${s.body}</div>`;
+      stepsEl.appendChild(li);
+    });
+
+    let stepIndex = -1;
+    let playing = false;
+    let timer = null;
+
+    function clearFlows() {
+      edges.forEach((e) => {
+        const f = document.getElementById(`flow-${e.id}`);
+        f.style.opacity = "0";
+        f.style.animation = "none";
+      });
+    }
+
+    function animateFlow(ids) {
+      clearFlows();
+      (ids || []).forEach((id, idx) => {
+        const f = document.getElementById(`flow-${id}`);
+        f.style.opacity = "1";
+        f.style.strokeDasharray = "10 180";
+        f.style.strokeDashoffset = "0";
+        f.animate(
+          [
+            { strokeDashoffset: "0", opacity: 0.2 },
+            { strokeDashoffset: "-190", opacity: 1 },
+            { strokeDashoffset: "-380", opacity: 0.2 },
+          ],
+          { duration: 1400, delay: idx * 180, iterations: 2, easing: "linear" }
+        );
+      });
+    }
+
+    function pulseNode(id) {
+      const g = document.getElementById(`node-${id}`);
+      const pulse = g.querySelector(".pulse");
+      pulse.animate(
+        [
+          { r: 20, opacity: 0.6 },
+          { r: 42, opacity: 0 },
+        ],
+        { duration: 900, easing: "ease-out" }
+      );
+    }
+
+    function applyStep(i) {
+      stepIndex = i;
+      const s = steps[i];
+
+      // Steps list
+      document.querySelectorAll(".step").forEach((el, idx) => {
+        el.classList.toggle("active", idx === i);
+        el.classList.toggle("done", idx < i);
+      });
+
+      // Edges
+      edges.forEach((e) => {
+        const el = document.getElementById(e.id);
+        const badge = document.getElementById(`badge-${e.id}`);
+        el.classList.remove("active", "dim", "conflict", "support-final");
+        badge.classList.remove("show");
+
+        if (!s.activateEdges.includes(e.id)) {
+          el.classList.add("dim");
+          return;
+        }
+        el.classList.add("active");
+        badge.classList.add("show");
+        if (s.finale) {
+          if (e.dir === "oppose") el.classList.add("conflict");
+          else if (e.id === "e4") el.classList.add("support-final");
+        }
+      });
+
+      // Nodes
+      nodes.forEach((n) => {
+        const el = document.getElementById(`node-${n.id}`);
+        el.classList.toggle("active", s.activateNodes.includes(n.id));
+        el.classList.toggle("visited", s.activateNodes.includes(n.id));
+      });
+      s.activateNodes.forEach(pulseNode);
+
+      animateFlow(s.flow);
+
+      supportMass.textContent = s.support.toFixed(2);
+      caveatMass.textContent = s.caveat.toFixed(2);
+      progressBar.style.width = `${((i + 1) / steps.length) * 100}%`;
+
+      if (s.finale) resultEl.classList.add("show");
+      else resultEl.classList.remove("show");
+    }
+
+    function reset() {
+      playing = false;
+      clearTimeout(timer);
+      stepIndex = -1;
+      clearFlows();
+      resultEl.classList.remove("show");
+      progressBar.style.width = "0%";
+      supportMass.textContent = "0.00";
+      caveatMass.textContent = "0.00";
+      document.querySelectorAll(".step").forEach((el) => el.classList.remove("active", "done"));
+      edges.forEach((e) => {
+        const el = document.getElementById(e.id);
+        el.classList.remove("active", "dim", "conflict", "support-final");
+        document.getElementById(`badge-${e.id}`).classList.remove("show");
+      });
+      nodes.forEach((n) => {
+        const el = document.getElementById(`node-${n.id}`);
+        el.classList.remove("active", "visited");
+      });
+      document.getElementById("playBtn").textContent = "Play traversal";
+    }
+
+    function nextStep() {
+      if (stepIndex >= steps.length - 1) {
+        playing = false;
+        document.getElementById("playBtn").textContent = "Replay";
+        return false;
+      }
+      applyStep(stepIndex + 1);
+      return stepIndex < steps.length - 1;
+    }
+
+    async function play() {
+      if (playing) return;
+      if (stepIndex >= steps.length - 1 || stepIndex === -1) reset();
+      playing = true;
+      document.getElementById("playBtn").textContent = "Playing…";
+
+      const run = () => {
+        const more = nextStep();
+        if (more && playing) timer = setTimeout(run, 2200);
+        else {
+          playing = false;
+          document.getElementById("playBtn").textContent = "Replay";
+        }
+      };
+      run();
+    }
+
+    document.getElementById("playBtn").addEventListener("click", play);
+    document.getElementById("stepBtn").addEventListener("click", () => {
+      playing = false;
+      document.getElementById("playBtn").textContent = stepIndex >= steps.length - 1 ? "Replay" : "Play traversal";
+      if (stepIndex >= steps.length - 1) reset();
+      nextStep();
+    });
+    document.getElementById("resetBtn").addEventListener("click", reset);
+
+    // Auto-start a gentle first frame after load
+    setTimeout(() => applyStep(0), 400);
+  </script>
+</body>
+</html>
