@@ -50,3 +50,22 @@ OR2H1, OR51B4, OR2C3 as candidates — OR51B4 has a starting point below):
 `Literature Review.docx`'s other ~44 entries are a general olfactory-receptor-in-cancer review,
 not OR51E2-specific. Two worth a pointer for later: an OR2H1 CAR-T paper and an OR2C3 melanoma
 paper (relevant if OR2H1 or OR2C3 becomes receptor #2/#3).
+
+## Update: receptors #2 and #3 built (OR2H1, OR51B4)
+
+Per CLAUDE.md Section 7's priority order, OR2H1 and OR51B4 were picked as receptors #2/#3 once
+OR51E2 was verified and its checkpoint cleared. Both have their own evidence files:
+`data/receptors/or2h1.json` and `data/receptors/or51b4.json`, built with the same
+literature/TCGA/PDB/ChEMBL/patent pipeline as OR51E2.
+
+- **OR2H1**: the friend's `Literature Review.docx` already contained a detailed methodology
+  summary of the primary paper (Martin et al. 2022, Mol Cancer Ther, CAR-T targeting) --
+  pulled and verified full text confirms the exact expression percentages (13% lung, 20%
+  ovarian, 59% cholangiocarcinoma). No PDB structure or ChEMBL target exists for OR2H1 (real
+  negative results, confirmed via live API queries). This is a clean-consensus case (no
+  contradiction), a useful contrast to OR51E2's contested case.
+- **OR51B4**: Troenan (the ligand from the six-receptor table above) is confirmed as the real
+  reference ligand from Weber et al. 2017 (PLoS ONE) -- the friend's "NOT FOUND" residue note
+  is independently confirmed correct (no PDB structure, no ChEMBL target exist for OR51B4
+  either). This is currently a single-source/unreplicated case -- a third distinct evidence
+  pattern alongside OR51E2 (contested) and OR2H1 (consensus).
