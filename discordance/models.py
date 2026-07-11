@@ -22,6 +22,16 @@ class EvidenceRecord:
     model_system: str
     mechanism: str = "not specified"
     direction_context: DirectionContext = "activation_effect"
+    # What biological outcome was actually measured (e.g. "proliferation",
+    # "invasiveness", "apoptosis", "migration"). Distinct from direction_context,
+    # which separates activation-effect claims from expression/genetic-alteration
+    # claims -- endpoint distinguishes *within* activation_effect records whether
+    # two studies measured the same thing. Two records can share direction_context
+    # (both are functional activation-effect claims) and still not be a true
+    # same-endpoint contradiction if one measures proliferation and the other
+    # measures invasiveness -- see the Neuhaus/Sanz OR51E2 case, which is exactly
+    # this pattern (confirmed by Person A's full-text verification).
+    endpoint: str = "not specified"
     sample_size: Optional[int] = None
     independent_replications: Optional[int] = None
     confidence_note: str = ""
@@ -33,6 +43,7 @@ class ContradictionPair:
     suppressive_records: list[EvidenceRecord]
     promoting_records: list[EvidenceRecord]
     same_model_system: bool
+    same_endpoint: bool  # False when endpoint is known and differs -- softens "contradiction" framing
     divergence_hypothesis: str
     deadlock: bool  # True when scores are balanced (0.4–0.6 ratio)
 
