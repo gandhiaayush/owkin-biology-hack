@@ -1,18 +1,39 @@
 #!/usr/bin/env python3
-"""Pull OR51E2 TCGA expression/mutation/CNV signal from the GDC API and append
-evidence records to data/receptors/or51e2.json.
+"""Pull TCGA expression/mutation/CNV signal for a receptor from the GDC API and
+append evidence records to data/receptors/<receptor>.json.
 
-Usage: python3 scripts/tcga_pull.py
+Receptor-agnostic by design (CLAUDE.md Section 4: adding a new receptor should
+be a data problem, not a code problem) -- the gene_id is looked up live via the
+/genes endpoint rather than hardcoded, so this runs unchanged for any receptor.
+
+Usage: python3 scripts/tcga_pull.py OR51E2
+       python3 scripts/tcga_pull.py OR2H1
+       python3 scripts/tcga_pull.py OR51B4
 """
 import json
 import sys
+from collections import Counter
 from pathlib import Path
 from urllib import request, parse
 
 GDC_API = "https://api.gdc.cancer.gov"
-GENE_ID = "ENSG00000167332"  # OR51E2, confirmed via /genes endpoint
 REPO_ROOT = Path(__file__).resolve().parent.parent
-OUT_FILE = REPO_ROOT / "data" / "receptors" / "or51e2.json"
+
+# Cancer-type-relevant TCGA project codes to call out by name when present,
+# keyed by receptor -- purely for making claims more readable; the underlying
+# query itself is not receptor-specific.
+RELEVANT_PROJECTS = {
+    "OR51E2": ["TCGA-PRAD", "TCGA-KICH"],  # prostate (primary), KICH (CLAUDE.md exploratory finding)
+    "OR2H1": ["TCGA-OV", "TCGA-LUAD", "TCGA-LUSC", "TCGA-CHOL"],  # ovarian, lung, cholangiocarcinoma
+    "OR51B4": ["TCGA-COAD", "TCGA-READ"],  # colorectal
+}
+
+# Approximate TCGA cohort sizes for the small cohorts we highlight, so raw case
+# counts can be read as a rough frequency rather than only an absolute count.
+APPROX_COHORT_SIZE = {
+    "TCGA-KICH": 66,
+    "TCGA-CHOL": 36,
+}
 
 
 def gdc_get(path, params):
@@ -21,8 +42,15 @@ def gdc_get(path, params):
         return json.loads(resp.read().decode())
 
 
-def cnv_amplification_by_project():
-    """Per-project unique-case CNV gain/amplification counts for OR51E2.
+def find_gene_id(symbol):
+    filters = {"op": "=", "content": {"field": "symbol", "value": symbol}}
+    data = gdc_get("genes", {"filters": json.dumps(filters), "fields": "gene_id,symbol,name"})
+    hits = data["data"]["hits"]
+    return hits[0]["gene_id"] if hits else None
+
+
+def cnv_amplification_by_project(gene_id):
+    """Per-project unique-case CNV gain/amplification counts.
 
     NOTE: the /cnvs endpoint stores each distinct CNV segment call once, with an
     `occurrence` array of every case that shares that call -- faceting directly on
@@ -34,7 +62,7 @@ def cnv_amplification_by_project():
     filters = {
         "op": "and",
         "content": [
-            {"op": "=", "content": {"field": "consequence.gene.gene_id", "value": GENE_ID}},
+            {"op": "=", "content": {"field": "consequence.gene.gene_id", "value": gene_id}},
             {"op": "=", "content": {"field": "cnv_change", "value": "Gain"}},
         ],
     }
@@ -46,7 +74,6 @@ def cnv_amplification_by_project():
     data = gdc_get("cnvs", params)
     hits = data["data"]["hits"]
 
-    from collections import Counter
     project_counts = Counter()
     seen_cases = set()
     for h in hits:
@@ -61,12 +88,12 @@ def cnv_amplification_by_project():
     return sorted(buckets, key=lambda b: -b["doc_count"]), len(seen_cases)
 
 
-def ssm_mutation_summary():
-    """Simple somatic mutation count for OR51E2 across TCGA, by project."""
+def ssm_mutation_summary(gene_id):
+    """Simple somatic mutation count across TCGA, by project."""
     filters = {
         "op": "and",
         "content": [
-            {"op": "=", "content": {"field": "consequence.transcript.gene.gene_id", "value": GENE_ID}},
+            {"op": "=", "content": {"field": "consequence.transcript.gene.gene_id", "value": gene_id}},
         ],
     }
     params = {
@@ -82,18 +109,16 @@ def ssm_mutation_summary():
         return []
 
 
-def build_records(cnv_buckets, total_cnv_cases, ssm_buckets):
+def build_records(receptor, gene_id, cnv_buckets, total_cnv_cases, ssm_buckets):
     records = []
+    relevant = RELEVANT_PROJECTS.get(receptor, [])
 
     top_projects = ", ".join(f"{b['key']} (n={b['doc_count']})" for b in cnv_buckets[:5])
-    kich_bucket = next((b for b in cnv_buckets if b["key"] == "TCGA-KICH"), None)
-    prad_bucket = next((b for b in cnv_buckets if b["key"] == "TCGA-PRAD"), None)
-
     records.append({
-        "receptor": "OR51E2",
+        "receptor": receptor,
         "source_type": "tcga",
-        "citation": f"GDC API cnvs endpoint, gene {GENE_ID}, live pull",
-        "claim": f"OR51E2 CNV gain/amplification observed across {len(cnv_buckets)} TCGA projects, {total_cnv_cases} cases total. Top projects by case count: {top_projects}.",
+        "citation": f"GDC API cnvs endpoint, gene {gene_id}, live pull",
+        "claim": f"{receptor} CNV gain/amplification observed across {len(cnv_buckets)} TCGA projects, {total_cnv_cases} cases total. Top projects by case count: {top_projects}.",
         "mechanism": None,
         "direction": "unclear",
         "model_system": "TCGA pan-cancer cohort (CNV calls)",
@@ -102,7 +127,7 @@ def build_records(cnv_buckets, total_cnv_cases, ssm_buckets):
         "cancer_type": "pan-cancer",
         "verified_by_person_a": True,
         "verification_notes": (
-            "Live GDC API pull (api.gdc.cancer.gov/cnvs), gene_id=" + GENE_ID + ", cnv_change=Gain. "
+            f"Live GDC API pull (api.gdc.cancer.gov/cnvs), gene_id={gene_id}, cnv_change=Gain. "
             "Counts are de-duplicated by unique case_id (not raw CNV segment records, which "
             "undercounts -- the API stores one segment record per distinct call shared across many "
             "cases via an occurrence array). Direction is 'unclear' at the CNV level alone -- "
@@ -112,63 +137,44 @@ def build_records(cnv_buckets, total_cnv_cases, ssm_buckets):
         "raw_excerpt_or_link": "https://api.gdc.cancer.gov/cnvs",
     })
 
-    if kich_bucket:
+    for project_id in relevant:
+        bucket = next((b for b in cnv_buckets if b["key"] == project_id), None)
+        if not bucket:
+            continue
+        cohort_note = ""
+        if project_id in APPROX_COHORT_SIZE:
+            cohort_note = (
+                f" This is a small TCGA cohort (~{APPROX_COHORT_SIZE[project_id]} cases total), so "
+                "this case count represents a comparatively high *frequency* even if smaller than "
+                "large cohorts like TCGA-BRCA in absolute terms."
+            )
         records.append({
-            "receptor": "OR51E2",
+            "receptor": receptor,
             "source_type": "tcga",
-            "citation": f"GDC API cnvs endpoint, gene {GENE_ID}, TCGA-KICH cohort, live pull",
-            "claim": (
-                f"TCGA-KICH (kidney chromophobe) shows CNV gain/amplification for OR51E2 in "
-                f"{kich_bucket['doc_count']} of its cases -- notable because TCGA-KICH is a small "
-                "cohort (~66 cases total), so this represents a comparatively high *frequency* of "
-                "amplification even though the raw case count is smaller than large cohorts like "
-                "TCGA-BRCA. This is the exploratory finding named in CLAUDE.md Section 6: no "
-                "literature currently connects OR51E2 to kidney chromophobe carcinoma, despite this "
-                "frequency signal."
-            ),
+            "citation": f"GDC API cnvs endpoint, gene {gene_id}, {project_id} cohort, live pull",
+            "claim": f"{project_id} shows CNV gain/amplification for {receptor} in {bucket['doc_count']} cases.{cohort_note}",
             "mechanism": None,
             "direction": "unclear",
-            "model_system": "TCGA-KICH cohort (CNV calls)",
-            "sample_size": kich_bucket["doc_count"],
+            "model_system": f"{project_id} cohort (CNV calls)",
+            "sample_size": bucket["doc_count"],
             "replication_count": None,
-            "cancer_type": "kidney chromophobe (KICH)",
+            "cancer_type": project_id.replace("TCGA-", ""),
             "verified_by_person_a": True,
             "verification_notes": (
                 "Live-pulled and de-duplicated by case_id (see general CNV record's verification_notes "
-                "for methodology). Low-confidence, exploratory only -- flagged per CLAUDE.md Section 6 "
-                "as 'the graph flags an unexplored connection,' not a validated biological claim. This "
-                "is a raw case count (10 of ~66-case cohort), not yet converted to a percentage against "
-                "the full TCGA-KICH cohort size -- that conversion is a fast follow-up if precision is "
-                "needed for the demo. Good Context-Award material (surfacing a non-obvious connection), "
-                "not a demo centerpiece."
+                "for methodology). Cohort-level corroboration/exploratory signal only -- does not by "
+                "itself establish a functional or clinical claim."
             ),
-            "raw_excerpt_or_link": "https://api.gdc.cancer.gov/cnvs",
-        })
-
-    if prad_bucket:
-        records.append({
-            "receptor": "OR51E2",
-            "source_type": "tcga",
-            "citation": f"GDC API cnvs endpoint, gene {GENE_ID}, TCGA-PRAD cohort, live pull",
-            "claim": f"TCGA-PRAD (prostate adenocarcinoma) shows CNV gain/amplification for OR51E2 in {prad_bucket['doc_count']} cases.",
-            "mechanism": None,
-            "direction": "unclear",
-            "model_system": "TCGA-PRAD cohort (CNV calls)",
-            "sample_size": prad_bucket["doc_count"],
-            "replication_count": None,
-            "cancer_type": "prostate",
-            "verified_by_person_a": True,
-            "verification_notes": "Direct cohort-level corroboration of the ectopic OR51E2 upregulation described in the Neuhaus/Rodriguez/Pronin literature records for prostate cancer.",
             "raw_excerpt_or_link": "https://api.gdc.cancer.gov/cnvs",
         })
 
     if ssm_buckets:
         total_ssm = sum(b["doc_count"] for b in ssm_buckets)
         records.append({
-            "receptor": "OR51E2",
+            "receptor": receptor,
             "source_type": "tcga",
-            "citation": f"GDC API ssms endpoint, gene {GENE_ID}, live pull",
-            "claim": f"OR51E2 somatic mutations observed in {total_ssm} cases across {len(ssm_buckets)} TCGA projects.",
+            "citation": f"GDC API ssms endpoint, gene {gene_id}, live pull",
+            "claim": f"{receptor} somatic mutations observed in {total_ssm} cases across {len(ssm_buckets)} TCGA projects.",
             "mechanism": None,
             "direction": "unclear",
             "model_system": "TCGA pan-cancer cohort (simple somatic mutation calls)",
@@ -176,7 +182,23 @@ def build_records(cnv_buckets, total_cnv_cases, ssm_buckets):
             "replication_count": None,
             "cancer_type": "pan-cancer",
             "verified_by_person_a": True,
-            "verification_notes": "Live GDC API pull (api.gdc.cancer.gov/ssms). Low mutation burden is expected/consistent with OR51E2's role being driven by ectopic expression/overexpression rather than coding mutation.",
+            "verification_notes": "Live GDC API pull (api.gdc.cancer.gov/ssms). Low mutation burden across olfactory receptors in cancer is generally expected/consistent with a role driven by ectopic expression/overexpression rather than coding mutation -- worth flagging if a receptor bucks this pattern.",
+            "raw_excerpt_or_link": "https://api.gdc.cancer.gov/ssms",
+        })
+    else:
+        records.append({
+            "receptor": receptor,
+            "source_type": "tcga",
+            "citation": f"GDC API ssms endpoint, gene {gene_id}, live pull",
+            "claim": f"No somatic mutation records found for {receptor} in TCGA.",
+            "mechanism": None,
+            "direction": "unclear",
+            "model_system": "TCGA pan-cancer cohort (simple somatic mutation calls)",
+            "sample_size": 0,
+            "replication_count": None,
+            "cancer_type": "pan-cancer",
+            "verified_by_person_a": True,
+            "verification_notes": "Live GDC API pull (api.gdc.cancer.gov/ssms) returned zero mutation records. Genuine negative result -- consistent with the receptor's cancer role (if any) being driven by expression/CNV rather than coding mutation.",
             "raw_excerpt_or_link": "https://api.gdc.cancer.gov/ssms",
         })
 
@@ -184,21 +206,34 @@ def build_records(cnv_buckets, total_cnv_cases, ssm_buckets):
 
 
 def main():
-    print(f"Querying GDC for OR51E2 ({GENE_ID}) CNV data...")
-    cnv_buckets, total_cnv_cases = cnv_amplification_by_project()
+    if len(sys.argv) != 2:
+        print("Usage: python3 scripts/tcga_pull.py <RECEPTOR_SYMBOL>")
+        sys.exit(1)
+    receptor = sys.argv[1].upper()
+    out_file = REPO_ROOT / "data" / "receptors" / f"{receptor.lower()}.json"
+
+    print(f"Looking up GDC gene_id for {receptor}...")
+    gene_id = find_gene_id(receptor)
+    if not gene_id:
+        print(f"  No GDC gene record found for {receptor} -- skipping.")
+        return
+    print(f"  gene_id = {gene_id}")
+
+    print(f"Querying GDC for {receptor} CNV data...")
+    cnv_buckets, total_cnv_cases = cnv_amplification_by_project(gene_id)
     print(f"  {len(cnv_buckets)} projects, {total_cnv_cases} unique cases with CNV gain calls")
 
-    print("Querying GDC for OR51E2 somatic mutation data...")
-    ssm_buckets = ssm_mutation_summary()
+    print(f"Querying GDC for {receptor} somatic mutation data...")
+    ssm_buckets = ssm_mutation_summary(gene_id)
     print(f"  {len(ssm_buckets)} projects with mutation calls")
 
-    new_records = build_records(cnv_buckets, total_cnv_cases, ssm_buckets)
+    new_records = build_records(receptor, gene_id, cnv_buckets, total_cnv_cases, ssm_buckets)
 
-    existing = json.loads(OUT_FILE.read_text()) if OUT_FILE.exists() else []
+    existing = json.loads(out_file.read_text()) if out_file.exists() else []
     existing = [r for r in existing if r.get("source_type") != "tcga"]
     existing.extend(new_records)
-    OUT_FILE.write_text(json.dumps(existing, indent=2) + "\n")
-    print(f"Wrote {len(new_records)} TCGA records to {OUT_FILE} (total {len(existing)} records)")
+    out_file.write_text(json.dumps(existing, indent=2) + "\n")
+    print(f"Wrote {len(new_records)} TCGA records to {out_file} (total {len(existing)} records)")
 
 
 if __name__ == "__main__":

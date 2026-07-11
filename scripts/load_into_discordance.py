@@ -72,7 +72,7 @@ def convert(record: dict) -> EvidenceRecord:
         direction=DIRECTION_MAP[record["direction"]],
         direction_context=direction_context,
         cancer_type=CANCER_TYPE_MAP.get(record["cancer_type"], record["cancer_type"]),
-        model_system=record["model_system"],
+        model_system=record["model_system"] or "not specified",
         mechanism=record["mechanism"] or "not specified",
         sample_size=record["sample_size"],
         independent_replications=record["replication_count"],
