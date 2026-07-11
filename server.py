@@ -17,6 +17,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 from mcp.server.fastmcp import FastMCP, Context
 from mcp.server.elicitation import AcceptedElicitation
+from mcp.shared.exceptions import McpError
 
 from discordance import (
     init_db, insert_record, get_records,
@@ -57,8 +58,21 @@ class EvidenceInput(BaseModel):
 
 
 class ResearcherChoice(BaseModel):
-    choice: Literal["A", "B", "C", "D"] = Field(
-        description="A=weight suppressive, B=weight promoting, C=report both, D=request MOSAIC"
+    # NOTE: must be `str`, not `Literal["A","B","C","D"]`. This installed MCP SDK
+    # version's elicitation schema validator (mcp/server/elicitation.py,
+    # _is_primitive_field) has no allow-path for Literal -- only plain str/int/
+    # float/bool, sequences of strings, or Optional of those. Using Literal here
+    # made every query_or_graph/query_graph call on deadlocked evidence throw
+    # "Elicitation schema field 'choice' must be a primitive type..." instead of
+    # returning results. Caught by testing through a real MCP client (Inspector
+    # CLI), not by the isolated hello-world elicitation unit tests, which mock
+    # the context and never exercise this validator. Valid values (A/B/C/D) are
+    # now enforced at the point of use instead of at the type level.
+    choice: str = Field(
+        description=(
+            "One of: A=weight suppressive, B=weight promoting, "
+            "C=report both, D=request MOSAIC. Must be exactly one of these letters."
+        )
     )
 
 
@@ -158,9 +172,23 @@ async def query_graph(
     if should_trigger_elicitation(scores) and contradictions:
         elicitation_triggered = True
         question = build_elicitation_question(gene, cancer_type, contradictions[0], scores)
-        result = await ctx.elicit(message=question, schema=ResearcherChoice)
+        try:
+            result = await ctx.elicit(message=question, schema=ResearcherChoice)
+        except McpError as e:
+            # The connected client (K Pro, Inspector, whichever) doesn't support
+            # elicitation/create -- confirmed via real MCP Inspector testing, not
+            # a hypothetical. Degrade gracefully: the researcher still gets the
+            # full contested evidence and can decide themselves, rather than the
+            # entire tool call erroring out with nothing returned. This is the
+            # "Ship both" fallback KPRO_MCP_HOOKUP.md calls for.
+            elicitation_triggered = False
+            elicitation_response = (
+                f"Elicitation not supported by connected client ({e}); "
+                "returning contested evidence unresolved for researcher review."
+            )
+            result = None
 
-        if isinstance(result, AcceptedElicitation) and result.data:
+        if result is not None and isinstance(result, AcceptedElicitation) and result.data:
             choice = result.data.choice
             elicitation_response = (
                 f"Researcher chose option {choice}: "
@@ -171,7 +199,7 @@ async def query_graph(
                     "D": "request additional MOSAIC context before deciding",
                 }.get(choice, "unknown")
             )
-        else:
+        elif result is not None:
             elicitation_response = f"Researcher declined or cancelled ({result.action})"
 
     # Serialize rules and contradictions
@@ -267,7 +295,23 @@ async def query_or_graph(
 
     if should_trigger_elicitation(scores) and contradictions:
         question = build_elicitation_question(gene, cancer_type, contradictions[0], scores)
-        result = await ctx.elicit(message=question, schema=ResearcherChoice)
+        try:
+            result = await ctx.elicit(message=question, schema=ResearcherChoice)
+        except McpError as e:
+            # Confirmed via real MCP Inspector testing: a client without
+            # elicitation/create support raises here rather than returning a
+            # DeclinedElicitation. Without this catch, the entire tool call would
+            # error out and Person C's demo page would get nothing back --
+            # exactly the failure mode KPRO_MCP_HOOKUP.md's "Ship both" section
+            # warns about. The `adjudication.needs_judgment` fallback already
+            # built into `contract` is untouched and still returned below.
+            contract["adjudication"]["live_elicitation_response"] = {
+                "choice": None,
+                "resolved_via": "elicitation_unsupported_by_client",
+                "detail": str(e),
+            }
+            return contract
+
         if isinstance(result, AcceptedElicitation) and result.data:
             contract["adjudication"]["live_elicitation_response"] = {
                 "choice": result.data.choice,
