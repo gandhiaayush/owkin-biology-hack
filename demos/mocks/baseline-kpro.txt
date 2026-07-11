@@ -1,0 +1,6 @@
+Replace this file with the real plain-K-Pro answer to the frozen OR51E2 question.
+
+Frozen question:
+Does activating OR51E2 / PSGR suppress or promote prostate cancer phenotypes? Summarize the evidence for LNCaP / prostate models, including β-ionone studies.
+
+Until replaced, baseline-vs-augmented.html shows the expected failure mode from mocks/or51e2-query.json → baseline_contrast.plain_k_pro_expected.

@@ -18,12 +18,15 @@ If that loop works with **one receptor**, we win the demo even if receptors #2/#
 
 | Item | Status |
 |---|---|
-| OR51E2 tension map (`demos/or51e2-tension-map.html`) | Done (mocked data) |
-| 5-min runbook + award lines (`demos/PERSON_C_RUNBOOK.md`) | Done |
+| OR51E2 tension map (`demos/or51e2-tension-map.html`) | Done — loads Query mock |
+| Query mock contract (`demos/mocks/or51e2-query.json`) | Done — hand to Person B |
+| Baseline vs augmented page | Done (synthetic baseline until live capture) |
+| Pitch board (`demos/pitch-board.html`) | Done |
+| 5-min runbook + award lines | Done |
+| Demo index (`demos/index.html`) | Done |
 | Live K Pro + MCP wiring | Not started (needs tools from B) |
-| Baseline vs augmented live capture | Not started |
-| Pitch slides / 1-pager | Not started |
-| Timed rehearsal (×2) | Not started |
+| Real baseline K Pro screenshot/text | Placeholder (`mocks/baseline-kpro.txt`) |
+| Timed rehearsal (×2) | Not started — human |
 | Backup path verified with Person A | Blocked on Sanz full-text call |
 
 ---

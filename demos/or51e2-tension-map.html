@@ -7,379 +7,77 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="./mocks/or51e2-query.embed.js"></script>
   <style>
     :root {
-      --ink: #0b1218;
-      --panel: #121c24;
-      --panel-2: #18242f;
-      --line: #2a3b48;
-      --muted: #8aa0b2;
-      --text: #e7eef5;
-      --consensus: #4caf8f;
-      --contested: #d2665a;
-      --explore: #e8a05c;
-      --struct: #3d7ea6;
-      --receptor: #9fc5e0;
-      --ligand: #f0c987;
-      --outcome-sup: #7dcea0;
-      --outcome-pro: #e6a09a;
+      --ink:#0b1218; --panel:#121c24; --panel-2:#18242f; --line:#2a3b48; --muted:#8aa0b2; --text:#e7eef5;
+      --consensus:#4caf8f; --contested:#d2665a; --explore:#e8a05c; --struct:#3d7ea6; --receptor:#9fc5e0;
     }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      min-height: 100vh;
-      font-family: "Sora", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(1100px 680px at 8% -8%, #163246 0%, transparent 55%),
-        radial-gradient(900px 560px at 100% 10%, #2a2218 0%, transparent 48%),
-        linear-gradient(180deg, #0a1016 0%, #0e1620 50%, #0b1218 100%);
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(138, 160, 178, 0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(138, 160, 178, 0.045) 1px, transparent 1px);
-      background-size: 44px 44px;
-      mask-image: radial-gradient(circle at 45% 35%, black 15%, transparent 72%);
-    }
-
-    .shell {
-      position: relative;
-      max-width: 1240px;
-      margin: 0 auto;
-      padding: 26px 18px 40px;
-    }
-
-    header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 14px;
-      align-items: end;
-      margin-bottom: 18px;
-    }
-
-    .brand h1 {
-      font-size: clamp(1.55rem, 3vw, 2.1rem);
-      letter-spacing: -0.03em;
-      font-weight: 700;
-    }
-
-    .brand p {
-      color: var(--muted);
-      max-width: 58ch;
-      line-height: 1.45;
-      font-size: 0.92rem;
-      margin-top: 6px;
-    }
-
-    .mono { font-family: "IBM Plex Mono", monospace; }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    button {
-      font-family: inherit;
-      font-weight: 600;
-      font-size: 0.85rem;
-      border: 1px solid var(--line);
-      background: var(--panel);
-      color: var(--text);
-      padding: 9px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    button:hover { background: var(--panel-2); }
-    button.active {
-      border-color: #4d6a7c;
-      background: #1d3342;
-    }
-    button.primary {
-      background: linear-gradient(180deg, #245868, #1a3f4c);
-      border-color: #3d7a8c;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1.45fr 0.9fr;
-      gap: 14px;
-    }
-
-    @media (max-width: 960px) {
-      .layout { grid-template-columns: 1fr; }
-    }
-
-    .stage, .side {
-      background: linear-gradient(180deg, rgba(24, 36, 47, 0.94), rgba(18, 28, 36, 0.97));
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      overflow: hidden;
-    }
-
-    .stage { position: relative; min-height: 580px; }
-
-    svg {
-      width: 100%;
-      height: 580px;
-      display: block;
-    }
-
-    .banner {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      right: 12px;
-      z-index: 2;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(11, 18, 24, 0.8);
-      border: 1px solid var(--line);
-      backdrop-filter: blur(8px);
-      font-size: 0.82rem;
-      line-height: 1.4;
-    }
-
-    .banner strong { color: #9fd0c4; }
-
-    .legend {
-      position: absolute;
-      left: 12px;
-      bottom: 12px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      max-width: calc(100% - 24px);
-      z-index: 2;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 6px 9px;
-      border-radius: 999px;
-      background: rgba(11, 18, 24, 0.75);
-      border: 1px solid var(--line);
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
-    .side { display: flex; flex-direction: column; }
-
-    .side-header {
-      padding: 14px 16px 10px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .side-header h2 {
-      font-size: 0.95rem;
-      margin-bottom: 4px;
-    }
-
-    .side-header p {
-      color: var(--muted);
-      font-size: 0.78rem;
-      line-height: 1.4;
-    }
-
-    .detail {
-      padding: 14px 16px;
-      flex: 1;
-    }
-
-    .detail .empty {
-      color: var(--muted);
-      font-size: 0.85rem;
-      line-height: 1.5;
-    }
-
-    .claim-card {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px;
-      background: rgba(11, 18, 24, 0.45);
-      animation: fadeIn 0.25s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: none; }
-    }
-
-    .tag {
-      display: inline-block;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.68rem;
-      padding: 3px 7px;
-      border-radius: 999px;
-      margin-bottom: 8px;
-      border: 1px solid var(--line);
-    }
-
-    .tag.sup { color: var(--consensus); border-color: #3d6d5c; }
-    .tag.pro { color: var(--contested); border-color: #7a4540; }
-    .tag.con { color: #9fd0c4; border-color: #3d5a6e; }
-    .tag.exp { color: var(--explore); border-color: #6b5130; }
-
-    .claim-card h3 {
-      font-size: 0.95rem;
-      margin-bottom: 6px;
-      line-height: 1.3;
-    }
-
-    .claim-card p {
-      font-size: 0.8rem;
-      color: #b9c8d6;
-      line-height: 1.45;
-      margin-bottom: 8px;
-    }
-
-    .meta {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .meta div {
-      background: rgba(11, 18, 24, 0.55);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 8px;
-    }
-
-    .meta .k {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.65rem;
-      color: var(--muted);
-      margin-bottom: 3px;
-    }
-
-    .meta .v { font-size: 0.82rem; font-weight: 600; }
-
-    .scores {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      padding: 0 16px 14px;
-    }
-
-    .score {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px;
-      background: rgba(11, 18, 24, 0.4);
-    }
-
-    .score .k {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.65rem;
-      color: var(--muted);
-    }
-
-    .score .v {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-top: 2px;
-    }
-
-    .result {
-      margin: 0 16px 16px;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px dashed #6b5130;
-      background: linear-gradient(180deg, rgba(232, 160, 92, 0.12), rgba(18, 28, 36, 0.35));
-    }
-
-    .result h3 {
-      color: var(--explore);
-      font-size: 0.9rem;
-      margin-bottom: 5px;
-    }
-
-    .result p {
-      font-size: 0.78rem;
-      color: #d5c3a8;
-      line-height: 1.45;
-    }
-
-    .edge {
-      fill: none;
-      stroke-linecap: round;
-      opacity: 0.35;
-      cursor: pointer;
-      transition: opacity 0.2s ease, stroke-width 0.2s ease;
-    }
-
-    .edge.consensus { stroke: var(--consensus); }
-    .edge.contested-sup { stroke: var(--consensus); }
-    .edge.contested-pro { stroke: var(--contested); }
-    .edge.explore { stroke: var(--explore); stroke-dasharray: 5 5; }
-    .edge.struct { stroke: var(--struct); }
-
-    .edge.active, .edge:hover {
-      opacity: 1;
-      filter: drop-shadow(0 0 4px rgba(255,255,255,0.12));
-    }
-
-    .edge.dim { opacity: 0.1; }
-
-    .node { cursor: pointer; }
-    .node circle.core {
-      fill: #15202a;
-      stroke-width: 2.5;
-      transition: transform 0.2s ease;
-      transform-box: fill-box;
-      transform-origin: center;
-    }
-    .node.active circle.core { transform: scale(1.08); }
-    .node.dim { opacity: 0.28; }
-
-    .label-text {
-      font-family: "Sora", sans-serif;
-      font-size: 12px;
-      fill: var(--text);
-      font-weight: 600;
-      pointer-events: none;
-    }
-
-    .sublabel {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 9px;
-      fill: var(--muted);
-      pointer-events: none;
-    }
-
-    .weight-badge {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 10px;
-      fill: #dce7f0;
-      opacity: 0.85;
-      pointer-events: none;
-    }
-
-    .footer-note {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 0.76rem;
-      line-height: 1.45;
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100vh;font-family:Sora,sans-serif;color:var(--text);background:radial-gradient(1100px 680px at 8% -8%,#163246 0%,transparent 55%),radial-gradient(900px 560px at 100% 10%,#2a2218 0%,transparent 48%),linear-gradient(180deg,#0a1016,#0e1620 50%,#0b1218)}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(138,160,178,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(138,160,178,.045) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(circle at 45% 35%,black 15%,transparent 72%)}
+    .shell{position:relative;max-width:1240px;margin:0 auto;padding:26px 18px 40px}
+    header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;align-items:end;margin-bottom:18px}
+    .brand h1{font-size:clamp(1.55rem,3vw,2.1rem);letter-spacing:-.03em;font-weight:700}
+    .brand p{color:var(--muted);max-width:58ch;line-height:1.45;font-size:.92rem;margin-top:6px}
+    .mono{font-family:"IBM Plex Mono",monospace}
+    .controls{display:flex;flex-wrap:wrap;gap:8px}
+    button{font-family:inherit;font-weight:600;font-size:.85rem;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:9px 12px;border-radius:10px;cursor:pointer}
+    button:hover{background:var(--panel-2)}
+    button.active{border-color:#4d6a7c;background:#1d3342}
+    button.primary{background:linear-gradient(180deg,#245868,#1a3f4c);border-color:#3d7a8c}
+    .layout{display:grid;grid-template-columns:1.45fr .9fr;gap:14px}
+    @media(max-width:960px){.layout{grid-template-columns:1fr}}
+    .stage,.side{background:linear-gradient(180deg,rgba(24,36,47,.94),rgba(18,28,36,.97));border:1px solid var(--line);border-radius:18px;overflow:hidden}
+    .stage{position:relative;min-height:580px}
+    svg{width:100%;height:580px;display:block}
+    .banner{position:absolute;top:12px;left:12px;right:12px;z-index:2;padding:10px 12px;border-radius:12px;background:rgba(11,18,24,.8);border:1px solid var(--line);backdrop-filter:blur(8px);font-size:.82rem;line-height:1.4}
+    .banner strong{color:#9fd0c4}
+    .legend{position:absolute;left:12px;bottom:12px;display:flex;flex-wrap:wrap;gap:7px;max-width:calc(100% - 24px);z-index:2}
+    .chip{display:inline-flex;align-items:center;gap:7px;padding:6px 9px;border-radius:999px;background:rgba(11,18,24,.75);border:1px solid var(--line);font-size:.72rem;color:var(--muted)}
+    .dot{width:8px;height:8px;border-radius:50%}
+    .side{display:flex;flex-direction:column}
+    .side-header{padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+    .side-header h2{font-size:.95rem;margin-bottom:4px}
+    .side-header p{color:var(--muted);font-size:.78rem;line-height:1.4}
+    .detail{padding:14px 16px;flex:1}
+    .empty{color:var(--muted);font-size:.85rem;line-height:1.5}
+    .claim-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:rgba(11,18,24,.45)}
+    .tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.68rem;padding:3px 7px;border-radius:999px;margin-bottom:8px;border:1px solid var(--line)}
+    .tag.sup{color:var(--consensus);border-color:#3d6d5c}
+    .tag.pro{color:var(--contested);border-color:#7a4540}
+    .tag.con{color:#9fd0c4;border-color:#3d5a6e}
+    .tag.exp{color:var(--explore);border-color:#6b5130}
+    .claim-card h3{font-size:.95rem;margin-bottom:6px;line-height:1.3}
+    .claim-card p{font-size:.8rem;color:#b9c8d6;line-height:1.45;margin-bottom:8px}
+    .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+    .meta div{background:rgba(11,18,24,.55);border:1px solid var(--line);border-radius:10px;padding:8px}
+    .meta .k{font-family:"IBM Plex Mono",monospace;font-size:.65rem;color:var(--muted);margin-bottom:3px}
+    .meta .v{font-size:.82rem;font-weight:600}
+    .scores{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 14px}
+    .score{border:1px solid var(--line);border-radius:12px;padding:10px;background:rgba(11,18,24,.4)}
+    .score .k{font-family:"IBM Plex Mono",monospace;font-size:.65rem;color:var(--muted)}
+    .score .v{font-size:1.2rem;font-weight:700;margin-top:2px}
+    .result{margin:0 16px 16px;padding:12px;border-radius:12px;border:1px dashed #6b5130;background:linear-gradient(180deg,rgba(232,160,92,.12),rgba(18,28,36,.35))}
+    .result h3{color:var(--explore);font-size:.9rem;margin-bottom:5px}
+    .result p{font-size:.78rem;color:#d5c3a8;line-height:1.45}
+    .opts{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+    .opt{font-size:.75rem;padding:8px 10px;border-radius:10px;border:1px solid #6b5130;background:rgba(11,18,24,.45);color:#f0ddc0;cursor:default}
+    .edge{fill:none;stroke-linecap:round;opacity:.35;cursor:pointer;transition:opacity .2s ease}
+    .edge.consensus,.edge.contested-sup{stroke:var(--consensus)}
+    .edge.contested-pro{stroke:var(--contested)}
+    .edge.explore{stroke:var(--explore);stroke-dasharray:5 5}
+    .edge.struct{stroke:var(--struct)}
+    .edge.active,.edge:hover{opacity:1}
+    .edge.dim{opacity:.1}
+    .node{cursor:pointer}
+    .node circle.core{fill:#15202a;stroke-width:2.5;transform-box:fill-box;transform-origin:center;transition:transform .2s ease}
+    .node.active circle.core{transform:scale(1.08)}
+    .node.dim{opacity:.28}
+    .label-text{font-family:Sora,sans-serif;font-size:12px;fill:var(--text);font-weight:600;pointer-events:none}
+    .sublabel{font-family:"IBM Plex Mono",monospace;font-size:9px;fill:var(--muted);pointer-events:none}
+    .weight-badge{font-family:"IBM Plex Mono",monospace;font-size:10px;fill:#dce7f0;opacity:.85;pointer-events:none}
+    .footer-note{margin-top:12px;color:var(--muted);font-size:.76rem;line-height:1.45}
   </style>
 </head>
 <body>
@@ -387,10 +85,7 @@
     <header>
       <div class="brand">
         <h1>Discordance · Tension Map</h1>
-        <p>
-          OR51E2 / PSGR in prostate cancer — consensus facts stay calm;
-          the activation→outcome split is painted as contested, not merged.
-        </p>
+        <p>Driven by <span class="mono">mocks/or51e2-query.json</span> — swap live MCP output into the same shape without rewriting the UI.</p>
       </div>
       <div class="controls">
         <button class="primary active" data-filter="all">All evidence</button>
@@ -399,343 +94,205 @@
         <button data-filter="explore">Exploratory</button>
       </div>
     </header>
-
     <div class="layout">
       <section class="stage">
-        <div class="banner">
-          <span class="mono" style="color: var(--muted); font-size: 0.7rem;">DEMO QUESTION</span><br />
-          Does <strong>activating OR51E2</strong> suppress or promote prostate cancer —
-          and should an AI scientist average that into one answer?
-        </div>
+        <div class="banner" id="banner"></div>
         <svg id="graph" viewBox="0 0 780 580" role="img" aria-label="OR51E2 tension map"></svg>
         <div class="legend">
-          <div class="chip"><span class="dot" style="background: var(--consensus)"></span>Consensus / tumor-suppressive claim</div>
-          <div class="chip"><span class="dot" style="background: var(--contested)"></span>Tumor-promoting / contested</div>
-          <div class="chip"><span class="dot" style="background: var(--explore)"></span>Exploratory (low confidence)</div>
-          <div class="chip"><span class="dot" style="background: var(--struct)"></span>Structural fact</div>
+          <div class="chip"><span class="dot" style="background:var(--consensus)"></span>Consensus / tumor-suppressive</div>
+          <div class="chip"><span class="dot" style="background:var(--contested)"></span>Tumor-promoting / contested</div>
+          <div class="chip"><span class="dot" style="background:var(--explore)"></span>Exploratory</div>
+          <div class="chip"><span class="dot" style="background:var(--struct)"></span>Structural</div>
         </div>
       </section>
-
       <aside class="side">
         <div class="side-header">
           <h2>Evidence inspector</h2>
-          <p>Click any edge or paper node. This is the hero shot for the Context Award.</p>
+          <p>Click an edge. Deadlock → elicitation options from the mock contract.</p>
         </div>
-        <div class="detail" id="detail">
-          <p class="empty">Select an edge to see claim, source, weight, and why it sits in consensus vs contested.</p>
-        </div>
+        <div class="detail" id="detail"><p class="empty">Select an edge.</p></div>
         <div class="scores">
-          <div class="score">
-            <div class="k">Tumor-suppressive mass</div>
-            <div class="v" style="color: var(--consensus)" id="supMass">0.00</div>
-          </div>
-          <div class="score">
-            <div class="k">Tumor-promoting mass</div>
-            <div class="v" style="color: var(--contested)" id="proMass">0.00</div>
-          </div>
+          <div class="score"><div class="k">Tumor-suppressive mass</div><div class="v" style="color:var(--consensus)" id="supMass">0.00</div></div>
+          <div class="score"><div class="k">Tumor-promoting mass</div><div class="v" style="color:var(--contested)" id="proMass">0.00</div></div>
         </div>
-        <div class="result">
-          <h3>Adjudication · deadlock</h3>
-          <p>
-            Masses are close on the same receptor, same cell line (LNCaP), overlapping ligand (β-ionone).
-            Discordance stops and elicits: prioritize proliferation endpoint, invasiveness endpoint, or hold as contested?
-          </p>
-        </div>
+        <div class="result" id="result"></div>
       </aside>
     </div>
-
-    <p class="footer-note">
-      Person C demo surface for CLAUDE.md §6 / §10. Weights are illustrative evidence-class scores for pitch rehearsal.
-      Open item: Sanz full-text may reframe this as endpoint nuance (proliferation vs invasiveness) rather than pure contradiction — map still works either way.
-    </p>
+    <p class="footer-note">Person C demo surface. Data from Query mock contract for Person B. Open via <span class="mono">python3 -m http.server</span> from <span class="mono">demos/</span> if scripts are blocked under file://.</p>
   </div>
-
   <script>
+    const Q = window.DISCORDANCE_QUERY;
+    if (!Q) {
+      document.body.innerHTML = '<p style="padding:2rem;font-family:sans-serif">Missing mocks/or51e2-query.embed.js — open from demos/ folder.</p>';
+      throw new Error('no query mock');
+    }
+
+    document.getElementById('banner').innerHTML =
+      `<span class="mono" style="color:var(--muted);font-size:.7rem">DEMO QUESTION</span><br/>${Q.query.text}`;
+
+    // Layout positions for a dense single-receptor map
     const nodes = [
-      { id: "or51e2", label: "OR51E2", sub: "PSGR · receptor", x: 390, y: 270, color: "var(--receptor)", r: 34 },
-      { id: "beta", label: "β-ionone", sub: "ligand", x: 200, y: 160, color: "var(--ligand)", r: 24 },
-      { id: "lncap", label: "LNCaP", sub: "same cell line", x: 200, y: 380, color: "#b7c6d4", r: 22 },
-      { id: "pdb", label: "PDB 8F76", sub: "structure", x: 390, y: 100, color: "var(--struct)", r: 22 },
-      { id: "neuhaus", label: "Neuhaus 2009", sub: "J Biol Chem", x: 580, y: 140, color: "var(--outcome-sup)", r: 24 },
-      { id: "pronin", label: "Pronin 2021", sub: "flags controversy", x: 680, y: 230, color: "var(--outcome-sup)", r: 22 },
-      { id: "sanz", label: "Sanz 2014", sub: "PLoS ONE", x: 580, y: 400, color: "var(--outcome-pro)", r: 24 },
-      { id: "rodriguez", label: "Rodriguez 2014", sub: "Oncogenesis", x: 680, y: 340, color: "var(--outcome-pro)", r: 22 },
-      { id: "suppress", label: "↓ proliferation", sub: "tumor-suppressive", x: 520, y: 250, color: "var(--consensus)", r: 20 },
-      { id: "promote", label: "↑ invasion/growth", sub: "tumor-promoting", x: 520, y: 330, color: "var(--contested)", r: 20 },
-      { id: "kich", label: "TCGA-KICH", sub: "CNV amp · unexplored", x: 120, y: 270, color: "var(--explore)", r: 22 },
+      { id: 'or51e2', label: 'OR51E2', sub: 'PSGR · receptor', x: 390, y: 270, color: 'var(--receptor)', r: 34 },
+      { id: 'beta', label: 'β-ionone', sub: 'ligand', x: 210, y: 150, color: '#f0c987', r: 22 },
+      { id: 'lncap', label: 'LNCaP', sub: 'cell line', x: 210, y: 390, color: '#b7c6d4', r: 22 },
+      { id: 'pdb', label: 'PDB 8F76', sub: 'structure', x: 390, y: 95, color: 'var(--struct)', r: 22 },
+      { id: 'neuhaus', label: 'Neuhaus 2009', sub: '↓ proliferation', x: 600, y: 130, color: '#7dcea0', r: 24 },
+      { id: 'pronin', label: 'Pronin 2021', sub: 'flags controversy', x: 700, y: 220, color: '#7dcea0', r: 22 },
+      { id: 'sanz', label: 'Sanz 2014', sub: '↑ invasiveness', x: 600, y: 410, color: '#e6a09a', r: 24 },
+      { id: 'rodriguez', label: 'Rodriguez 2014', sub: '↑ xenograft growth', x: 700, y: 330, color: '#e6a09a', r: 22 },
+      { id: 'kich', label: 'TCGA-KICH', sub: 'CNV exploratory', x: 110, y: 270, color: 'var(--explore)', r: 22 },
     ];
+
+    const byId = Object.fromEntries([
+      ...Q.consensus,
+      ...Q.tumor_suppressive,
+      ...Q.tumor_promoting,
+      ...Q.exploratory,
+    ].map((e) => [e.id, e]));
 
     const edges = [
-      {
-        id: "e_pdb",
-        from: "or51e2", to: "pdb",
-        kind: "struct", weight: 1.0,
-        d: "M 390 236 C 390 180, 390 140, 390 122",
-        title: "Solved structure exists",
-        body: "OR51E2 has a confirmed PDB entry (8F76). This is a consensus structural fact — not contested.",
-        source: "PDB",
-        direction: "Structural fact",
-        model: "Cryo/crystal structure",
-      },
-      {
-        id: "e_expr",
-        from: "or51e2", to: "lncap",
-        kind: "consensus", weight: 0.9,
-        d: "M 360 290 C 300 330, 250 360, 222 375",
-        title: "Expressed in prostate / LNCaP",
-        body: "Field agrees OR51E2 (PSGR) is ectopically expressed in prostate tissue and present in LNCaP. Consensus edge.",
-        source: "Multiple papers + TCGA prostate",
-        direction: "Consensus context",
-        model: "Prostate / LNCaP",
-      },
-      {
-        id: "e_ligand",
-        from: "beta", to: "or51e2",
-        kind: "contested", weight: 0.55,
-        d: "M 222 170 C 280 190, 330 230, 362 255",
-        title: "β-ionone as OR51E2 agonist",
-        body: "Used as the activating ligand in key papers — but Pronin 2021 notes the field cannot always replicate β-ionone as a true OR51E2 ligand. Contested premise.",
-        source: "Neuhaus; contested by later work",
-        direction: "Ligand identity contested",
-        model: "LNCaP / overexpression systems",
-      },
-      {
-        id: "e_neu",
-        from: "or51e2", to: "neuhaus",
-        kind: "contested-sup", weight: 0.72,
-        d: "M 418 245 C 480 190, 530 155, 556 145",
-        title: "Activation inhibits proliferation",
-        body: "Neuhaus et al. 2009: β-ionone activation of OR51E2 inhibits LNCaP proliferation via MAPK / Ca²⁺. Tumor-suppressive claim.",
-        source: "Neuhaus et al. 2009, J Biol Chem",
-        direction: "Tumor-suppressive",
-        model: "LNCaP (endogenous receptor)",
-      },
-      {
-        id: "e_sup",
-        from: "neuhaus", to: "suppress",
-        kind: "contested-sup", weight: 0.72,
-        d: "M 560 160 C 545 190, 535 220, 528 232",
-        title: "Maps to ↓ proliferation",
-        body: "Endpoint measured: proliferation down. Strong single-study claim; unreplicated as a universal rule.",
-        source: "Neuhaus 2009",
-        direction: "Tumor-suppressive",
-        model: "LNCaP",
-      },
-      {
-        id: "e_pro_n",
-        from: "or51e2", to: "pronin",
-        kind: "contested-sup", weight: 0.68,
-        d: "M 420 255 C 520 230, 600 230, 658 232",
-        title: "Suppresses proliferation / promotes death",
-        body: "Pronin & Slepak 2021 support a tumor-suppressive reading and explicitly call out field-wide controversy on β-ionone agonism.",
-        source: "Pronin & Slepak 2021, J Biol Chem",
-        direction: "Tumor-suppressive + meta-controversy",
-        model: "Prostate cancer cell line",
-      },
-      {
-        id: "e_sanz",
-        from: "or51e2", to: "sanz",
-        kind: "contested-pro", weight: 0.70,
-        d: "M 415 295 C 480 350, 530 385, 556 395",
-        title: "β-ionone promotes invasiveness",
-        body: "Sanz et al. 2014: β-ionone promotes invasiveness; α-ionone sustains LNCaP growth. Same cell line family as Neuhaus — opposing direction on cancer behavior.",
-        source: "Sanz et al. 2014, PLoS ONE",
-        direction: "Tumor-promoting",
-        model: "LNCaP",
-      },
-      {
-        id: "e_pro",
-        from: "sanz", to: "promote",
-        kind: "contested-pro", weight: 0.70,
-        d: "M 560 385 C 545 360, 535 345, 530 340",
-        title: "Maps to ↑ invasion/growth",
-        body: "Open verification: may be endpoint nuance (invasion vs proliferation) rather than pure logical contradiction. Either way, not safe to merge into one rule.",
-        source: "Sanz 2014",
-        direction: "Tumor-promoting",
-        model: "LNCaP",
-      },
-      {
-        id: "e_rod",
-        from: "or51e2", to: "rodriguez",
-        kind: "contested-pro", weight: 0.74,
-        d: "M 420 290 C 530 310, 610 330, 658 338",
-        title: "PSGR promotes PIN / xenograft growth",
-        body: "Rodriguez et al. 2014: PSGR promotes prostatic intraepithelial neoplasia and xenograft tumor growth via NF-κB. Independent tumor-promoting evidence.",
-        source: "Rodriguez et al. 2014, Oncogenesis",
-        direction: "Tumor-promoting",
-        model: "Xenograft",
-      },
-      {
-        id: "e_kich",
-        from: "kich", to: "or51e2",
-        kind: "explore", weight: 0.25,
-        d: "M 142 270 C 220 270, 300 270, 356 270",
-        title: "Unexplored CNV signal in KICH",
-        body: "TCGA-KICH shows the highest OR51E2 CNV amplification across checked projects, but literature does not connect OR51E2 to kidney chromophobe carcinoma. Surfaced as low-confidence exploratory — not a claim.",
-        source: "TCGA CNV scan",
-        direction: "Exploratory / low confidence",
-        model: "TCGA-KICH",
-      },
-    ];
+      { id: 'c_pdb', from: 'or51e2', to: 'pdb', kind: 'struct', d: 'M 390 236 C 390 180, 390 140, 390 117', evidenceId: 'c_pdb' },
+      { id: 'c_expr', from: 'or51e2', to: 'lncap', kind: 'consensus', d: 'M 360 290 C 300 330, 250 365, 230 380', evidenceId: 'c_expr' },
+      { id: 's_neuhaus', from: 'or51e2', to: 'neuhaus', kind: 'contested-sup', d: 'M 418 245 C 500 180, 550 145, 576 138', evidenceId: 's_neuhaus' },
+      { id: 's_pronin', from: 'or51e2', to: 'pronin', kind: 'contested-sup', d: 'M 420 255 C 540 230, 620 225, 678 222', evidenceId: 's_pronin' },
+      { id: 'p_sanz', from: 'or51e2', to: 'sanz', kind: 'contested-pro', d: 'M 415 295 C 500 360, 550 395, 576 402', evidenceId: 'p_sanz' },
+      { id: 'p_rodriguez', from: 'or51e2', to: 'rodriguez', kind: 'contested-pro', d: 'M 420 290 C 540 310, 620 325, 678 330', evidenceId: 'p_rodriguez' },
+      { id: 'e_kich', from: 'kich', to: 'or51e2', kind: 'explore', d: 'M 132 270 C 220 270, 300 270, 356 270', evidenceId: 'e_kich' },
+      { id: 'lig', from: 'beta', to: 'or51e2', kind: 'contested-sup', d: 'M 230 165 C 290 190, 335 230, 362 252', evidenceId: 's_neuhaus', titleOverride: 'β-ionone used as activating ligand', bodyOverride: 'Shared ligand across contested papers; Pronin 2021 notes replication controversy on whether β-ionone is a true OR51E2 agonist.' },
+    ].map((e) => {
+      const ev = byId[e.evidenceId];
+      return {
+        ...e,
+        weight: ev.weight,
+        title: e.titleOverride || ev.claim,
+        body: e.bodyOverride || ev.claim + (ev.verification_note ? ' Note: ' + ev.verification_note : ''),
+        source: ev.source.label,
+        direction: ev.direction,
+        model: ev.model,
+        endpoint: ev.endpoint,
+      };
+    });
 
-    const svg = document.getElementById("graph");
-    const ns = "http://www.w3.org/2000/svg";
-    const edgesG = document.createElementNS(ns, "g");
-    const nodesG = document.createElementNS(ns, "g");
-    const badgesG = document.createElementNS(ns, "g");
-    svg.appendChild(edgesG);
-    svg.appendChild(badgesG);
-    svg.appendChild(nodesG);
+    const svg = document.getElementById('graph');
+    const ns = 'http://www.w3.org/2000/svg';
+    const edgesG = document.createElementNS(ns, 'g');
+    const nodesG = document.createElementNS(ns, 'g');
+    const badgesG = document.createElementNS(ns, 'g');
+    svg.append(edgesG, badgesG, nodesG);
 
     function mid(d) {
       const n = d.match(/-?\d+(\.\d+)?/g).map(Number);
       return { x: (n[0] + n[n.length - 2]) / 2, y: (n[1] + n[n.length - 1]) / 2 };
     }
 
-    function kindClass(kind) {
-      if (kind === "contested-sup" || kind === "contested-pro") return kind;
-      return kind;
-    }
-
     edges.forEach((e) => {
-      const p = document.createElementNS(ns, "path");
-      p.setAttribute("id", e.id);
-      p.setAttribute("class", `edge ${kindClass(e.kind)}`);
-      p.setAttribute("d", e.d);
-      p.setAttribute("stroke-width", 2 + e.weight * 3.5);
-      p.addEventListener("click", () => selectEdge(e.id));
+      const p = document.createElementNS(ns, 'path');
+      p.id = e.id;
+      p.setAttribute('class', `edge ${e.kind}`);
+      p.setAttribute('d', e.d);
+      p.setAttribute('stroke-width', 2 + e.weight * 3.5);
+      p.addEventListener('click', () => selectEdge(e.id));
       edgesG.appendChild(p);
-
       const m = mid(e.d);
-      const t = document.createElementNS(ns, "text");
-      t.setAttribute("class", "weight-badge");
-      t.setAttribute("id", `badge-${e.id}`);
-      t.setAttribute("x", m.x);
-      t.setAttribute("y", m.y - 4);
-      t.setAttribute("text-anchor", "middle");
+      const t = document.createElementNS(ns, 'text');
+      t.id = `badge-${e.id}`;
+      t.setAttribute('class', 'weight-badge');
+      t.setAttribute('x', m.x);
+      t.setAttribute('y', m.y - 4);
+      t.setAttribute('text-anchor', 'middle');
       t.textContent = `w=${e.weight.toFixed(2)}`;
       badgesG.appendChild(t);
     });
 
     nodes.forEach((n) => {
-      const g = document.createElementNS(ns, "g");
-      g.setAttribute("id", `node-${n.id}`);
-      g.setAttribute("class", "node");
-      g.addEventListener("click", () => {
-        const related = edges.find((e) => e.from === n.id || e.to === n.id);
-        if (related) selectEdge(related.id);
+      const g = document.createElementNS(ns, 'g');
+      g.id = `node-${n.id}`;
+      g.setAttribute('class', 'node');
+      g.addEventListener('click', () => {
+        const rel = edges.find((e) => e.from === n.id || e.to === n.id);
+        if (rel) selectEdge(rel.id);
       });
-
-      const core = document.createElementNS(ns, "circle");
-      core.setAttribute("class", "core");
-      core.setAttribute("cx", n.x);
-      core.setAttribute("cy", n.y);
-      core.setAttribute("r", n.r);
-      core.setAttribute("stroke", n.color);
+      const core = document.createElementNS(ns, 'circle');
+      core.setAttribute('class', 'core');
+      core.setAttribute('cx', n.x); core.setAttribute('cy', n.y); core.setAttribute('r', n.r);
+      core.setAttribute('stroke', n.color);
       g.appendChild(core);
-
-      const label = document.createElementNS(ns, "text");
-      label.setAttribute("class", "label-text");
-      label.setAttribute("x", n.x);
-      label.setAttribute("y", n.y + n.r + 16);
-      label.setAttribute("text-anchor", "middle");
-      label.textContent = n.label;
+      const label = document.createElementNS(ns, 'text');
+      label.setAttribute('class', 'label-text');
+      label.setAttribute('x', n.x); label.setAttribute('y', n.y + n.r + 16);
+      label.setAttribute('text-anchor', 'middle'); label.textContent = n.label;
       g.appendChild(label);
-
-      const sub = document.createElementNS(ns, "text");
-      sub.setAttribute("class", "sublabel");
-      sub.setAttribute("x", n.x);
-      sub.setAttribute("y", n.y + n.r + 28);
-      sub.setAttribute("text-anchor", "middle");
-      sub.textContent = n.sub;
+      const sub = document.createElementNS(ns, 'text');
+      sub.setAttribute('class', 'sublabel');
+      sub.setAttribute('x', n.x); sub.setAttribute('y', n.y + n.r + 28);
+      sub.setAttribute('text-anchor', 'middle'); sub.textContent = n.sub;
       g.appendChild(sub);
-
       nodesG.appendChild(g);
     });
 
     function tagFor(edge) {
-      if (edge.kind === "consensus" || edge.kind === "struct") return ['con', 'Consensus'];
-      if (edge.kind === "explore") return ['exp', 'Exploratory'];
-      if (edge.kind === "contested-sup") return ['sup', 'Contested · tumor-suppressive'];
+      if (edge.kind === 'consensus' || edge.kind === 'struct') return ['con', 'Consensus'];
+      if (edge.kind === 'explore') return ['exp', 'Exploratory'];
+      if (edge.kind === 'contested-sup') return ['sup', 'Contested · tumor-suppressive'];
       return ['pro', 'Contested · tumor-promoting'];
     }
 
     function selectEdge(id) {
       const edge = edges.find((e) => e.id === id);
-      if (!edge) return;
-
       edges.forEach((e) => {
         const el = document.getElementById(e.id);
-        el.classList.toggle("active", e.id === id);
-        el.classList.toggle("dim", e.id !== id);
+        el.classList.toggle('active', e.id === id);
+        el.classList.toggle('dim', e.id !== id);
       });
-
       const keep = new Set([edge.from, edge.to]);
       nodes.forEach((n) => {
         const el = document.getElementById(`node-${n.id}`);
-        el.classList.toggle("active", keep.has(n.id));
-        el.classList.toggle("dim", !keep.has(n.id));
+        el.classList.toggle('active', keep.has(n.id));
+        el.classList.toggle('dim', !keep.has(n.id));
       });
-
-      const [tagClass, tagText] = tagFor(edge);
-      document.getElementById("detail").innerHTML = `
+      const [tc, tt] = tagFor(edge);
+      document.getElementById('detail').innerHTML = `
         <div class="claim-card">
-          <span class="tag ${tagClass}">${tagText}</span>
+          <span class="tag ${tc}">${tt}</span>
           <h3>${edge.title}</h3>
           <p>${edge.body}</p>
           <div class="meta">
             <div><div class="k">Source</div><div class="v">${edge.source}</div></div>
             <div><div class="k">Weight</div><div class="v">${edge.weight.toFixed(2)}</div></div>
-            <div><div class="k">Direction</div><div class="v">${edge.direction}</div></div>
+            <div><div class="k">Endpoint</div><div class="v">${edge.endpoint || '—'}</div></div>
             <div><div class="k">Model</div><div class="v">${edge.model}</div></div>
           </div>
         </div>`;
     }
 
     function applyFilter(filter) {
-      document.querySelectorAll(".controls button").forEach((b) => {
-        b.classList.toggle("active", b.dataset.filter === filter);
-      });
-
+      document.querySelectorAll('.controls button').forEach((b) => b.classList.toggle('active', b.dataset.filter === filter));
       edges.forEach((e) => {
         const el = document.getElementById(e.id);
         const badge = document.getElementById(`badge-${e.id}`);
         let show = true;
-        if (filter === "consensus") show = e.kind === "consensus" || e.kind === "struct";
-        if (filter === "contested") show = e.kind.startsWith("contested");
-        if (filter === "explore") show = e.kind === "explore";
-        el.style.display = show ? "block" : "none";
-        badge.style.display = show ? "block" : "none";
-        el.classList.remove("dim", "active");
+        if (filter === 'consensus') show = e.kind === 'consensus' || e.kind === 'struct';
+        if (filter === 'contested') show = e.kind.startsWith('contested');
+        if (filter === 'explore') show = e.kind === 'explore';
+        el.style.display = show ? 'block' : 'none';
+        badge.style.display = show ? 'block' : 'none';
+        el.classList.remove('dim', 'active');
       });
-
-      nodes.forEach((n) => {
-        document.getElementById(`node-${n.id}`).classList.remove("dim", "active");
-      });
-
-      if (filter === "all") {
-        document.getElementById("detail").innerHTML =
-          `<p class="empty">Select an edge to see claim, source, weight, and why it sits in consensus vs contested.</p>`;
-      }
+      nodes.forEach((n) => document.getElementById(`node-${n.id}`).classList.remove('dim', 'active'));
     }
 
-    document.querySelectorAll(".controls button").forEach((b) => {
-      b.addEventListener("click", () => applyFilter(b.dataset.filter));
-    });
+    document.querySelectorAll('.controls button').forEach((b) => b.addEventListener('click', () => applyFilter(b.dataset.filter)));
 
-    // Masses: sum weights on each contested side
-    const sup = edges
-      .filter((e) => e.kind === "contested-sup")
-      .reduce((a, e) => a + e.weight, 0);
-    const pro = edges
-      .filter((e) => e.kind === "contested-pro")
-      .reduce((a, e) => a + e.weight, 0);
-    // Normalize a bit for display readability
-    document.getElementById("supMass").textContent = (sup / 2).toFixed(2);
-    document.getElementById("proMass").textContent = (pro / 2).toFixed(2);
+    document.getElementById('supMass').textContent = Q.scores.tumor_suppressive_mass.toFixed(2);
+    document.getElementById('proMass').textContent = Q.scores.tumor_promoting_mass.toFixed(2);
 
-    // Auto-highlight the primary contradiction edge on load
-    setTimeout(() => selectEdge("e_sanz"), 350);
+    const adj = Q.adjudication;
+    document.getElementById('result').innerHTML = `
+      <h3>Adjudication · ${adj.status}</h3>
+      <p>${adj.reason}</p>
+      <div class="opts">${adj.elicitation.options.map((o) => `<div class="opt"><span class="mono">${o.id}</span> — ${o.label}</div>`).join('')}</div>`;
+
+    setTimeout(() => selectEdge('p_sanz'), 300);
   </script>
 </body>
 </html>
