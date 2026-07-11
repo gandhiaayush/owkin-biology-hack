@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Discordance — Pitch Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --text:#e7eef5; --muted:#8aa0b2; --line:#2a3b48; --panel:#121c24;
+      --accent:#2f9e8b; --warn:#e8a05c; --bad:#d2665a;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:Sora,sans-serif;color:var(--text);
+      background:
+        radial-gradient(900px 500px at 0% 0%, #163246 0%, transparent 50%),
+        radial-gradient(800px 500px at 100% 0%, #2a2218 0%, transparent 45%),
+        #0b1218;
+    }
+    .shell{max-width:1100px;margin:0 auto;padding:28px 18px 48px}
+    h1{font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.03em;margin-bottom:8px}
+    .sub{color:var(--muted);max-width:60ch;line-height:1.5;margin-bottom:22px}
+    .mono{font-family:"IBM Plex Mono",monospace}
+    .grid{display:grid;gap:12px}
+    .slides{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    @media(max-width:800px){.slides{grid-template-columns:1fr}}
+    .card{
+      background:linear-gradient(180deg,rgba(24,36,47,.95),rgba(18,28,36,.98));
+      border:1px solid var(--line);border-radius:16px;padding:16px 16px 18px;
+      min-height:180px;
+    }
+    .kicker{font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
+    .card h2{font-size:1.05rem;margin-bottom:8px;line-height:1.3}
+    .card p,.card li{color:#b9c8d6;font-size:.86rem;line-height:1.45}
+    .card ul{padding-left:1.1rem}
+    .card li{margin:4px 0}
+    .full{grid-column:1/-1}
+    .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    a.btn{
+      display:inline-block;text-decoration:none;color:var(--text);font-weight:600;font-size:.82rem;
+      border:1px solid var(--line);background:#18242f;padding:8px 12px;border-radius:10px;
+    }
+    a.btn:hover{border-color:#4d6a7c}
+    .award{border-left:3px solid var(--accent);padding-left:10px;margin:8px 0}
+    .award.frontier{border-left-color:var(--warn)}
+    .award.context{border-left-color:#3d7ea6}
+    .timing{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+    @media(max-width:800px){.timing{grid-template-columns:1fr 1fr}}
+    .t{background:rgba(11,18,24,.55);border:1px solid var(--line);border-radius:10px;padding:8px}
+    .t .m{font-family:"IBM Plex Mono",monospace;font-size:.65rem;color:var(--muted)}
+    .t .v{font-size:.8rem;margin-top:3px}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <h1>Discordance</h1>
+    <p class="sub">Opinionated, contradiction-aware knowledge graph for olfactory receptors in cancer — Person C pitch board (5 minutes).</p>
+
+    <div class="slides">
+      <section class="card">
+        <div class="kicker">01 · Problem</div>
+        <h2>AI scientists merge. Biologists need disagreement.</h2>
+        <p>K Pro aggregates evidence well. It is not built to notice when primary literature disagrees — especially in niches Owkin has no infrastructure for, like olfactory receptors in cancer.</p>
+      </section>
+
+      <section class="card">
+        <div class="kicker">02 · What we built</div>
+        <h2>MCP tools over a deep, verified OR graph</h2>
+        <ul>
+          <li>Contradiction detection (don’t silent-merge)</li>
+          <li>Evidence weighting by source strength</li>
+          <li>Confidence-qualified rules</li>
+          <li>Elicitation when masses deadlock</li>
+        </ul>
+        <p style="margin-top:8px">Scope: <strong>OR51E2 first</strong>, fully verified — not the whole OR family.</p>
+      </section>
+
+      <section class="card full">
+        <div class="kicker">03 · Demo centerpiece</div>
+        <h2>Same question → plain K Pro vs K Pro + Discordance</h2>
+        <p class="mono" style="color:#9fd0c4;margin:8px 0 10px;font-size:.8rem">Does activating OR51E2 / PSGR suppress or promote prostate cancer phenotypes in LNCaP / prostate models?</p>
+        <ul>
+          <li><strong>Baseline:</strong> smoothed / hedged single narrative</li>
+          <li><strong>Augmented:</strong> Neuhaus/Pronin (↓ proliferation) vs Sanz/Rodriguez (↑ invasion/growth), weighted, contested</li>
+          <li><strong>Visual:</strong> tension map — consensus stays calm, activation outcome lights red</li>
+          <li><strong>MCP moment:</strong> masses balanced → ask researcher, don’t guess</li>
+        </ul>
+        <div class="links">
+          <a class="btn" href="./or51e2-tension-map.html">Open tension map</a>
+          <a class="btn" href="./baseline-vs-augmented.html">Open baseline vs augmented</a>
+          <a class="btn" href="./PERSON_C_RUNBOOK.md">Runbook</a>
+        </div>
+        <div class="timing">
+          <div class="t"><div class="m">0:00</div><div class="v">Problem</div></div>
+          <div class="t"><div class="m">0:40</div><div class="v">One-liner</div></div>
+          <div class="t"><div class="m">1:30</div><div class="v">Live compare</div></div>
+          <div class="t"><div class="m">3:00</div><div class="v">Elicitation</div></div>
+          <div class="t"><div class="m">4:20</div><div class="v">Awards + ask</div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="kicker">04 · Why MCP</div>
+        <h2>Only a live tool can stop mid-reasoning</h2>
+        <p>A static report always invents a conclusion. Discordance pauses on deadlock and elicits:</p>
+        <ul>
+          <li>Prioritize proliferation endpoint?</li>
+          <li>Prioritize invasiveness/growth?</li>
+          <li>Keep contested?</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="kicker">05 · Judging fit</div>
+        <h2>Say these lines</h2>
+        <div class="award"><strong>Best AI Scientist MCP</strong><br/><span style="color:#b9c8d6;font-size:.84rem">Integrable, reusable contradiction pattern, depth via weighting — not a bigger database.</span></div>
+        <div class="award context"><strong>Context Award</strong><br/><span style="color:#b9c8d6;font-size:.84rem">Tension map = right evidence at the right moment; KICH CNV = non-obvious connection.</span></div>
+        <div class="award frontier"><strong>Frontier Award</strong><br/><span style="color:#b9c8d6;font-size:.84rem">Elicitation: the tool knows when not to know.</span></div>
+      </section>
+
+      <section class="card full">
+        <div class="kicker">06 · Backup if challenged</div>
+        <h2>Don’t freeze — reframe</h2>
+        <ul>
+          <li><strong>Endpoint nuance:</strong> proliferation ↓ and invasiveness ↑ can both be true; silent merge still wrong</li>
+          <li><strong>KICH exploratory:</strong> high OR51E2 CNV amp, no lit link — low confidence, Context Award beat</li>
+          <li><strong>Never claim</strong> full OR-family coverage</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

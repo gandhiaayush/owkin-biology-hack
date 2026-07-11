@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Discordance — Baseline vs Augmented</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="./mocks/or51e2-query.embed.js"></script>
+  <style>
+    :root{--text:#e7eef5;--muted:#8aa0b2;--line:#2a3b48;--ok:#4caf8f;--bad:#d2665a;--warn:#e8a05c}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Sora,sans-serif;color:var(--text);background:radial-gradient(900px 500px at 10% 0%,#163246 0%,transparent 50%),#0b1218;min-height:100vh}
+    .shell{max-width:1200px;margin:0 auto;padding:24px 16px 40px}
+    h1{font-size:clamp(1.5rem,3vw,2rem);letter-spacing:-.03em}
+    .sub{color:var(--muted);margin:8px 0 18px;max-width:70ch;line-height:1.45;font-size:.92rem}
+    .mono{font-family:"IBM Plex Mono",monospace}
+    .q{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:rgba(18,28,36,.9);margin-bottom:14px;font-size:.88rem;line-height:1.45}
+    .q strong{color:#9fd0c4}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:900px){.cols{grid-template-columns:1fr}}
+    .col{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(24,36,47,.95),rgba(18,28,36,.98));overflow:hidden;display:flex;flex-direction:column}
+    .hd{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;align-items:center}
+    .hd h2{font-size:.95rem}
+    .pill{font-family:"IBM Plex Mono",monospace;font-size:.68rem;padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+    .pill.miss{color:#e6a09a;border-color:#7a4540}
+    .pill.hit{color:#7dcea0;border-color:#3d6d5c}
+    .body{padding:14px;flex:1}
+    .body p{font-size:.84rem;line-height:1.5;color:#c2d0dc}
+    .claim{border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px;background:rgba(11,18,24,.4)}
+    .claim .t{font-size:.72rem;font-family:"IBM Plex Mono",monospace;margin-bottom:4px}
+    .claim .t.sup{color:var(--ok)}
+    .claim .t.pro{color:var(--bad)}
+    .claim .c{font-size:.8rem;line-height:1.4}
+    .claim .s{font-size:.72rem;color:var(--muted);margin-top:4px}
+    .foot{padding:12px 14px;border-top:1px solid var(--line);font-size:.78rem;color:#d5c3a8;background:rgba(232,160,92,.08)}
+    .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    a.btn,button.btn{font:inherit;font-weight:600;font-size:.82rem;color:var(--text);text-decoration:none;border:1px solid var(--line);background:#18242f;padding:8px 12px;border-radius:10px;cursor:pointer}
+    .note{margin-top:12px;font-size:.75rem;color:var(--muted);line-height:1.45}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <h1>Baseline vs Augmented</h1>
+    <p class="sub">Side-by-side for the live demo. Left = what plain aggregation tends to do. Right = Discordance Query mock (same shape Person B should return).</p>
+    <div class="q" id="q"></div>
+    <div class="cols">
+      <section class="col">
+        <div class="hd">
+          <h2>Plain K Pro (baseline)</h2>
+          <span class="pill miss">silent merge risk</span>
+        </div>
+        <div class="body">
+          <p id="baseline"></p>
+          <div class="claim">
+            <div class="t">Typical failure mode</div>
+            <div class="c">Opposing primary papers get flattened into “context-dependent effects,” so the researcher never sees the LNCaP / β-ionone split as actionable disagreement.</div>
+          </div>
+        </div>
+        <div class="foot">Replace this panel with a real K Pro screenshot once captured.</div>
+      </section>
+      <section class="col">
+        <div class="hd">
+          <h2>K Pro + Discordance</h2>
+          <span class="pill hit">tensions first-class</span>
+        </div>
+        <div class="body" id="aug"></div>
+        <div class="foot" id="adj"></div>
+      </section>
+    </div>
+    <div class="actions">
+      <a class="btn" href="./or51e2-tension-map.html">Tension map</a>
+      <a class="btn" href="./pitch-board.html">Pitch board</a>
+      <button class="btn" id="copyQ">Copy frozen question</button>
+    </div>
+    <p class="note">Person C: after you capture a real baseline answer from K Pro, paste it into <span class="mono">demos/mocks/baseline-kpro.txt</span> and refresh (optional). Until then this page uses the expected baseline contrast from the mock contract.</p>
+  </div>
+  <script>
+    const Q = window.DISCORDANCE_QUERY;
+    document.getElementById('q').innerHTML = `<span class="mono" style="color:var(--muted);font-size:.7rem">FROZEN QUESTION</span><br/><strong>${Q.query.text}</strong>`;
+    document.getElementById('baseline').textContent = Q.baseline_contrast.plain_k_pro_expected;
+
+    const aug = document.getElementById('aug');
+    const blocks = [
+      ['sup', 'Tumor-suppressive', Q.tumor_suppressive],
+      ['pro', 'Tumor-promoting', Q.tumor_promoting],
+    ];
+    aug.innerHTML = blocks.map(([cls, title, arr]) => `
+      <div style="margin-bottom:10px">
+        <div class="mono" style="font-size:.7rem;color:var(--muted);margin-bottom:4px">${title} · mass ${cls==='sup'?Q.scores.tumor_suppressive_mass:Q.scores.tumor_promoting_mass}</div>
+        ${arr.map((e) => `
+          <div class="claim">
+            <div class="t ${cls}">w=${e.weight.toFixed(2)} · ${e.endpoint}</div>
+            <div class="c">${e.claim}</div>
+            <div class="s">${e.source.label} · ${e.model}</div>
+          </div>`).join('')}
+      </div>`).join('') + `
+      <div class="claim">
+        <div class="t" style="color:var(--warn)">Tension</div>
+        <div class="c">${Q.tensions[0].summary}</div>
+      </div>`;
+
+    document.getElementById('adj').innerHTML =
+      `<strong>needs_judgment: true</strong> — ${Q.adjudication.elicitation.message}`;
+
+    document.getElementById('copyQ').onclick = async () => {
+      await navigator.clipboard.writeText(Q.query.text);
+      document.getElementById('copyQ').textContent = 'Copied';
+      setTimeout(() => document.getElementById('copyQ').textContent = 'Copy frozen question', 1200);
+    };
+  </script>
+</body>
+</html>
