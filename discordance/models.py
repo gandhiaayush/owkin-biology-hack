@@ -22,6 +22,10 @@ class EvidenceRecord:
     model_system: str
     mechanism: str = "not specified"
     direction_context: DirectionContext = "activation_effect"
+    # Biological outcome measured (proliferation, invasiveness, …). Distinct from
+    # direction_context. Used to soften contradiction framing when endpoints differ
+    # (Neuhaus proliferation vs Sanz invasiveness).
+    endpoint: str = "not specified"
     sample_size: Optional[int] = None
     independent_replications: Optional[int] = None
     confidence_note: str = ""
@@ -33,6 +37,7 @@ class ContradictionPair:
     suppressive_records: list[EvidenceRecord]
     promoting_records: list[EvidenceRecord]
     same_model_system: bool
+    same_endpoint: bool  # False when endpoints are confirmed different
     divergence_hypothesis: str
     deadlock: bool  # True when scores are balanced (0.4–0.6 ratio)
 

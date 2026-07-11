@@ -49,8 +49,38 @@ CANCER_TYPE_MAP = {
     "melanoma": "melanoma",
     "pan-cancer": "pan_cancer",
     "kidney chromophobe (KICH)": "kidney_chromophobe",
+    "colorectal": "colorectal_cancer",
     None: "unknown",
 }
+
+# When Person A's JSON omits endpoint, infer from known demo papers / claim text.
+_CITATION_ENDPOINT_HINTS = (
+    ("neuhaus", "proliferation"),
+    ("sanz", "invasiveness"),
+    ("rodriguez", "tumor_growth"),
+    ("pronin", "proliferation"),
+    ("gelis", "proliferation"),
+    ("jovancevic", "proliferation"),
+    ("weber", "proliferation"),
+    ("martin", "car_t_cytotoxicity"),
+)
+
+
+def _infer_endpoint(record: dict) -> str:
+    explicit = record.get("endpoint")
+    if explicit and explicit not in ("", "not specified", None):
+        return explicit
+    cite = (record.get("citation") or "").lower()
+    for needle, endpoint in _CITATION_ENDPOINT_HINTS:
+        if needle in cite:
+            return endpoint
+    claim = (record.get("claim") or "").lower()
+    for word in ("invasiveness", "invasion", "proliferation", "apoptosis", "migration", "growth"):
+        if word in claim:
+            return "invasiveness" if word.startswith("invas") else (
+                "tumor_growth" if word == "growth" else word
+            )
+    return "not specified"
 
 
 def convert(record: dict) -> EvidenceRecord:
@@ -64,6 +94,13 @@ def convert(record: dict) -> EvidenceRecord:
     if not record["verified_by_person_a"]:
         confidence_note = "UNVERIFIED. " + confidence_note
 
+    cancer_raw = record["cancer_type"]
+    # Person A sometimes packs multi-cancer strings for OR2H1
+    if isinstance(cancer_raw, str) and "," in cancer_raw and cancer_raw not in CANCER_TYPE_MAP:
+        cancer_type = onto_slug_cancer(cancer_raw)
+    else:
+        cancer_type = CANCER_TYPE_MAP.get(cancer_raw, cancer_raw or "unknown")
+
     return EvidenceRecord(
         source=record["citation"],
         source_type=SOURCE_TYPE_MAP[record["source_type"]],
@@ -71,13 +108,18 @@ def convert(record: dict) -> EvidenceRecord:
         gene=record["receptor"],
         direction=DIRECTION_MAP[record["direction"]],
         direction_context=direction_context,
-        cancer_type=CANCER_TYPE_MAP.get(record["cancer_type"], record["cancer_type"]),
+        endpoint=_infer_endpoint(record),
+        cancer_type=cancer_type,
         model_system=record["model_system"] or "not specified",
         mechanism=record["mechanism"] or "not specified",
         sample_size=record["sample_size"],
         independent_replications=record["replication_count"],
         confidence_note=confidence_note,
     )
+
+
+def onto_slug_cancer(raw: str) -> str:
+    return raw.lower().replace(" ", "_").replace(",", "")[:64]
 
 
 def main():

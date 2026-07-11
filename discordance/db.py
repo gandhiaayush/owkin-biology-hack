@@ -63,14 +63,14 @@ def insert_record(r: EvidenceRecord) -> Optional[int]:
             """
             INSERT OR IGNORE INTO evidence (
                 source_hash, source, source_type, claim, mechanism,
-                direction, direction_context, cancer_type,
+                direction, direction_context, endpoint, cancer_type,
                 model_system_raw, model_system_normalized,
                 sample_size, independent_replications, gene, confidence_note
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """,
             (
                 h, r.source, r.source_type, r.claim, r.mechanism,
-                r.direction, r.direction_context, r.cancer_type,
+                r.direction, r.direction_context, r.endpoint, r.cancer_type,
                 r.model_system, normalized,
                 r.sample_size, r.independent_replications,
                 r.gene, r.confidence_note,
@@ -103,6 +103,7 @@ def get_all_records() -> list[EvidenceRecord]:
 
 
 def _row_to_record(row: sqlite3.Row) -> EvidenceRecord:
+    keys = row.keys()
     return EvidenceRecord(
         id=row["id"],
         source=row["source"],
@@ -111,6 +112,7 @@ def _row_to_record(row: sqlite3.Row) -> EvidenceRecord:
         mechanism=row["mechanism"],
         direction=row["direction"],
         direction_context=row["direction_context"],
+        endpoint=row["endpoint"] if "endpoint" in keys else "not specified",
         cancer_type=row["cancer_type"],
         model_system=row["model_system_normalized"],
         sample_size=row["sample_size"],

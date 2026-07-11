@@ -20,6 +20,18 @@ _DIVERGENCE_PATTERNS = {
 }
 
 
+def _endpoint_key(suppressive: list[EvidenceRecord], promoting: list[EvidenceRecord]) -> bool:
+    """
+    True when we cannot confirm endpoints differ (treat as same-endpoint contradiction).
+    False when known endpoints on both sides differ — soften framing.
+    """
+    all_records = suppressive + promoting
+    known_endpoints = {r.endpoint for r in all_records if r.endpoint != "not specified"}
+    if len(known_endpoints) >= 2:
+        return False
+    return True
+
+
 def _model_system_key(suppressive: list[EvidenceRecord], promoting: list[EvidenceRecord]) -> str:
     s_models = {r.model_system for r in suppressive}
     p_models = {r.model_system for r in promoting}
@@ -37,13 +49,31 @@ def generate_divergence_hypothesis(
     promoting: list[EvidenceRecord],
 ) -> str:
     model_key = _model_system_key(suppressive, promoting)
-    base = _DIVERGENCE_PATTERNS.get(
-        (model_key, "different_direction"),
-        "Opposing directional claims detected. Review model systems, endpoints, and ligand specificity.",
-    )
+    same_endpoint = _endpoint_key(suppressive, promoting)
+
+    if not same_endpoint:
+        s_endpoints = sorted({r.endpoint for r in suppressive if r.endpoint != "not specified"})
+        p_endpoints = sorted({r.endpoint for r in promoting if r.endpoint != "not specified"})
+        base = (
+            f"CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures "
+            f"{', '.join(s_endpoints) or 'an unspecified endpoint'}; promoting evidence measures "
+            f"{', '.join(p_endpoints) or 'an unspecified endpoint'}. This is contested on overall "
+            "clinical/therapeutic implication, but not a strict same-endpoint contradiction — both "
+            "effects could be simultaneously true (e.g. reduced proliferation alongside increased "
+            "invasiveness is a recognized cancer biology pattern). Do not present as a flat two-sided "
+            "contradiction; present as divergent evidence on distinct outcomes."
+        )
+    else:
+        base = _DIVERGENCE_PATTERNS.get(
+            (model_key, "different_direction"),
+            "Opposing directional claims detected. Review model systems, endpoints, and ligand specificity.",
+        )
+
     notes = []
     for r in suppressive + promoting:
-        if r.confidence_note and ("controversy" in r.confidence_note.lower() or "ligand" in r.confidence_note.lower()):
+        if r.confidence_note and (
+            "controversy" in r.confidence_note.lower() or "ligand" in r.confidence_note.lower()
+        ):
             notes.append(f"Note from {r.source.split(',')[0]}: {r.confidence_note[:120]}")
     if notes:
         base += " Additionally: " + " | ".join(notes)
@@ -55,11 +85,8 @@ def detect_contradictions(
     direction_context_filter: str = "activation_effect",
 ) -> list[ContradictionPair]:
     """
-    Given a list of evidence records (already filtered to one gene+cancer_type),
-    return ContradictionPair objects for each direction conflict found.
-
-    Only compares records with the same direction_context to avoid false positives
-    (e.g. a TCGA expression record vs. a functional activation record).
+    Given evidence for one gene (+ optional cancer filter upstream), return
+    ContradictionPair objects for opposing directions under the same direction_context.
     """
     filtered = [r for r in records if r.direction_context == direction_context_filter]
 
@@ -71,7 +98,6 @@ def detect_contradictions(
 
     hypothesis = generate_divergence_hypothesis(suppressive, promoting)
 
-    # Deadlock: neither side has more than 60% of record count (simple heuristic pre-scoring)
     total = len(suppressive) + len(promoting)
     ratio = len(suppressive) / total
     deadlock = 0.4 <= ratio <= 0.6
@@ -81,6 +107,7 @@ def detect_contradictions(
             suppressive_records=suppressive,
             promoting_records=promoting,
             same_model_system=_model_system_key(suppressive, promoting) == "same_model",
+            same_endpoint=_endpoint_key(suppressive, promoting),
             divergence_hypothesis=hypothesis,
             deadlock=deadlock,
         )
