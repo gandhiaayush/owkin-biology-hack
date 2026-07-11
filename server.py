@@ -24,6 +24,7 @@ from discordance import (
     EvidenceRecord, query_subgraph, tension_map_from_records,
 )
 from discordance.elicitation import should_trigger_elicitation, build_elicitation_question
+from discordance.demo_contract import to_demo_contract
 
 DB_PATH = Path("evidence.db")
 init_db(DB_PATH)
@@ -233,6 +234,53 @@ def get_tension_map(gene: str, cancer_type: str = "prostate_cancer") -> dict:
     payload["gene"] = gene
     payload["cancer_type"] = cancer_type
     return payload
+
+
+@mcp.tool()
+async def query_or_graph(
+    gene: str,
+    cancer_type: str,
+    ctx: Context,
+    query: str = "",
+) -> dict:
+    """
+    Same underlying query as query_graph, reshaped into the frozen demo contract
+    (demos/mocks/or51e2-query.json) that the Person C tension-map and
+    baseline-vs-augmented pages were built and tested against. Named to match
+    demos/KPRO_MCP_HOOKUP.md's documented tool name for the live K Pro / Claude
+    connector path -- call THIS tool at demo time, not query_graph, so the shape
+    Person C's frontend expects is what actually comes back.
+
+    Runs live MCP elicitation on deadlock exactly like query_graph; the returned
+    `adjudication` block also always includes a `needs_judgment` + `elicitation`
+    fallback shape so the demo still works if the connected client (e.g. K Pro)
+    doesn't support elicitation yet -- see "Elicitation note" in KPRO_MCP_HOOKUP.md.
+    """
+    records = get_records(gene, cancer_type)
+    contract = to_demo_contract(records, gene=gene, cancer_type=cancer_type, query_text=query)
+
+    if not records:
+        return contract
+
+    scores = compute_direction_scores(records)
+    contradictions = detect_contradictions(records)
+
+    if should_trigger_elicitation(scores) and contradictions:
+        question = build_elicitation_question(gene, cancer_type, contradictions[0], scores)
+        result = await ctx.elicit(message=question, schema=ResearcherChoice)
+        if isinstance(result, AcceptedElicitation) and result.data:
+            contract["adjudication"]["live_elicitation_response"] = {
+                "choice": result.data.choice,
+                "resolved_via": "mcp_elicitation",
+            }
+        else:
+            contract["adjudication"]["live_elicitation_response"] = {
+                "choice": None,
+                "resolved_via": "declined_or_unsupported",
+                "action": getattr(result, "action", "unknown"),
+            }
+
+    return contract
 
 
 if __name__ == "__main__":
