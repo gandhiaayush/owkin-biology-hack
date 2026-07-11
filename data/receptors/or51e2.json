@@ -72,7 +72,7 @@
     "cancer_type": "melanoma",
     "verified_by_person_a": true,
     "verification_notes": "Sourced from the friend's (Bansal/Gudisay) Literature_Review.docx summary, cross-checked against the title/journal (Exp Dermatol 26:569-576) to confirm this is Gelis et al. 2017, NOT Sanz et al. 2014 -- the two have superficially similar-sounding titles ('functional expression...melanoma' vs. 'promotion of cancer cell invasiveness...') but are distinct studies with distinct findings; do not conflate. Direction (tumor-suppressive) is consistent with Neuhaus 2009 and Pronin & Slepak 2021, adding a second cancer-type data point in the same direction.",
-    "raw_excerpt_or_link": "doi:10.1111/exd.13245; summarized in data/intake/or51e2/Literature Review.docx"
+    "raw_excerpt_or_link": "doi:10.1111/exd.13316; summarized in data/intake/or51e2/Literature Review.docx"
   },
   {
     "receptor": "OR51E2",
