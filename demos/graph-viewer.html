@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Discordance — Evidence Graph Viewer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script src="./graph-data/or51e2-prostate.embed.js"></script>
+  <script src="./graph-data/or51e2-all.embed.js"></script>
+  <style>
+    :root {
+      --bg: #0b1218;
+      --panel: #121c24;
+      --line: #2a3b48;
+      --muted: #8aa0b2;
+      --text: #e7eef5;
+      --sup: #4caf8f;
+      --pro: #d2665a;
+      --amber: #e8a05c;
+      --blue: #3d7ea6;
+      --receptor: #9fc5e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Sora, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1000px 600px at 0% 0%, #163246 0%, transparent 55%),
+        radial-gradient(800px 500px at 100% 0%, #2a1f18 0%, transparent 45%),
+        var(--bg);
+      min-height: 100vh;
+    }
+    .shell { max-width: 1400px; margin: 0 auto; padding: 20px 16px 36px; }
+    header { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: end; margin-bottom: 14px; }
+    h1 { font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: -0.03em; }
+    .sub { color: var(--muted); font-size: 0.9rem; max-width: 62ch; line-height: 1.45; margin-top: 6px; }
+    .mono { font-family: "IBM Plex Mono", monospace; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; }
+    button, select {
+      font: inherit; font-weight: 600; font-size: 0.82rem;
+      border: 1px solid var(--line); background: var(--panel); color: var(--text);
+      padding: 8px 12px; border-radius: 10px; cursor: pointer;
+    }
+    button.active, button:hover { border-color: #4d6a7c; background: #1a2833; }
+    button.primary { background: linear-gradient(180deg, #245868, #1a3f4c); border-color: #3d7a8c; }
+    .layout { display: grid; grid-template-columns: 1.7fr 0.85fr; gap: 12px; }
+    @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+    .stage, .side {
+      background: linear-gradient(180deg, rgba(24,36,47,.95), rgba(18,28,36,.98));
+      border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+    }
+    .stage { position: relative; min-height: 640px; }
+    svg { width: 100%; height: 640px; display: block; touch-action: none; }
+    .hud {
+      position: absolute; top: 12px; left: 12px; right: 12px;
+      display: flex; flex-wrap: wrap; gap: 8px; pointer-events: none;
+    }
+    .chip {
+      pointer-events: none;
+      background: rgba(11,18,24,.78); border: 1px solid var(--line);
+      border-radius: 999px; padding: 5px 10px; font-size: 0.72rem; color: var(--muted);
+    }
+    .chip b { color: var(--text); font-weight: 600; }
+    .legend {
+      position: absolute; left: 12px; bottom: 12px;
+      display: flex; flex-wrap: wrap; gap: 6px; max-width: 70%;
+    }
+    .legend span {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(11,18,24,.75); border: 1px solid var(--line);
+      border-radius: 999px; padding: 4px 8px; font-size: 0.68rem; color: var(--muted);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .side { display: flex; flex-direction: column; max-height: 640px; }
+    .side-h { padding: 14px 14px 10px; border-bottom: 1px solid var(--line); }
+    .side-h h2 { font-size: 0.95rem; margin-bottom: 4px; }
+    .side-h p { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+    .scores { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 14px; }
+    .score { border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: rgba(11,18,24,.4); }
+    .score .k { font-family: "IBM Plex Mono", monospace; font-size: 0.65rem; color: var(--muted); }
+    .score .v { font-size: 1.15rem; font-weight: 700; margin-top: 2px; }
+    .detail { padding: 0 14px 14px; overflow: auto; flex: 1; }
+    .card {
+      border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+      background: rgba(11,18,24,.45); font-size: 0.82rem; line-height: 1.45;
+    }
+    .card h3 { font-size: 0.92rem; margin-bottom: 6px; }
+    .tag {
+      display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: 0.65rem;
+      border: 1px solid var(--line); border-radius: 999px; padding: 2px 7px; margin-bottom: 8px; color: var(--muted);
+    }
+    .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+    .meta div { background: rgba(11,18,24,.5); border: 1px solid var(--line); border-radius: 8px; padding: 7px; }
+    .meta .k { font-family: "IBM Plex Mono", monospace; font-size: 0.62rem; color: var(--muted); }
+    .tensions { padding: 0 14px 14px; }
+    .tension {
+      border: 1px dashed #6b5130; border-radius: 12px; padding: 10px;
+      background: rgba(232,160,92,.08); font-size: 0.75rem; color: #d5c3a8; line-height: 1.4;
+    }
+    .link { stroke-opacity: 0.45; }
+    .link.contested { stroke: var(--pro); stroke-dasharray: 4 3; stroke-opacity: 0.85; }
+    .link.tension_with { stroke: var(--amber); stroke-opacity: 0.95; }
+    .node circle { stroke: #0b1218; stroke-width: 1.5px; cursor: pointer; }
+    .node text {
+      font-size: 10px; fill: #dce7f0; pointer-events: none;
+      font-family: Sora, sans-serif; paint-order: stroke; stroke: rgba(11,18,24,.85); stroke-width: 3px;
+    }
+    .node.dim { opacity: 0.15; }
+    .link.dim { opacity: 0.08; }
+    .footer { margin-top: 12px; font-size: 0.75rem; color: var(--muted); line-height: 1.45; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <h1>Discordance · Evidence Graph</h1>
+        <p class="sub">Live export from <span class="mono">evidence.db</span> — all weighted claims, not a merged answer. Drag nodes, click to inspect, filter tensions.</p>
+      </div>
+      <div class="controls">
+        <select id="dataset">
+          <option value="or51e2-prostate">OR51E2 · prostate</option>
+          <option value="or51e2-all">OR51E2 · all contexts</option>
+        </select>
+        <button class="primary active" data-filter="all">All</button>
+        <button data-filter="claims">Claims only</button>
+        <button data-filter="contested">Contested</button>
+        <button data-filter="tensions">Tensions</button>
+        <button id="reheat">Re-layout</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="stage">
+        <div class="hud">
+          <div class="chip">nodes <b id="nNodes">0</b></div>
+          <div class="chip">edges <b id="nEdges">0</b></div>
+          <div class="chip">claims <b id="nClaims">0</b></div>
+          <div class="chip">status <b id="nStatus">—</b></div>
+        </div>
+        <svg id="viz" viewBox="0 0 980 640"></svg>
+        <div class="legend">
+          <span><i class="dot" style="background:var(--receptor)"></i>Receptor</span>
+          <span><i class="dot" style="background:var(--sup)"></i>Tumor-suppressive</span>
+          <span><i class="dot" style="background:var(--pro)"></i>Tumor-promoting / contested</span>
+          <span><i class="dot" style="background:var(--amber)"></i>Tension / exploratory</span>
+          <span><i class="dot" style="background:var(--blue)"></i>Paper / structure</span>
+        </div>
+      </section>
+
+      <aside class="side">
+        <div class="side-h">
+          <h2>Inspector</h2>
+          <p>Click a node or tension edge. Masses come from evidence weights.</p>
+        </div>
+        <div class="scores">
+          <div class="score"><div class="k">Suppressive mass</div><div class="v" style="color:var(--sup)" id="supMass">0</div></div>
+          <div class="score"><div class="k">Promoting mass</div><div class="v" style="color:var(--pro)" id="proMass">0</div></div>
+        </div>
+        <div class="detail" id="detail">
+          <div class="card"><p style="color:var(--muted)">Select a node to see claim, source, weight, and endpoint.</p></div>
+        </div>
+        <div class="tensions" id="tensions"></div>
+      </aside>
+    </div>
+
+    <p class="footer">
+      Refresh data after reloading the DB:
+      <span class="mono">python3 scripts/load_into_discordance.py && python3 scripts/export_graph_view.py</span>
+      then reopen this page (serve with <span class="mono">python3 -m http.server 8765</span> from <span class="mono">demos/</span>).
+    </p>
+  </div>
+
+  <script>
+    const TYPE_COLOR = {
+      Receptor: "#9fc5e0",
+      Claim: "#b7c6d4",
+      Paper: "#3d7ea6",
+      ModelSystem: "#8aa0b2",
+      CancerType: "#7f93a4",
+      Endpoint: "#f0c987",
+      Direction: "#c9b6e4",
+      Ligand: "#e8a05c",
+      Mechanism: "#6d8f7a",
+    };
+
+    function claimColor(d) {
+      if (d.status === "contested" || d.direction === "tumor_promoting") return "#d2665a";
+      if (d.direction === "tumor_suppressive") return "#4caf8f";
+      if (d.status === "exploratory") return "#e8a05c";
+      return TYPE_COLOR.Claim;
+    }
+
+    function nodeRadius(d) {
+      if (d.type === "Receptor") return 22;
+      if (d.type === "Claim") return 10 + Math.min(8, (d.weight || 0.5) * 6);
+      if (d.type === "Direction") return 14;
+      if (d.type === "Paper") return 9;
+      return 8;
+    }
+
+    function nodeLabel(d) {
+      if (d.type === "Claim") return (d.label || "").slice(0, 28);
+      if (d.type === "Paper") return (d.label || "").split(",")[0].slice(0, 22);
+      return d.label;
+    }
+
+    let state = { key: "or51e2-prostate", filter: "all", sim: null };
+
+    function currentData() {
+      const raw = (window.GRAPH_DATA || {})[state.key];
+      if (!raw) throw new Error("Missing graph embed for " + state.key);
+      return raw;
+    }
+
+    function visibleElements(data) {
+      let nodes = data.tension_map_data.nodes.map((n) => ({ ...n }));
+      let links = data.tension_map_data.edges.map((e) => ({
+        ...e,
+        source: e.from,
+        target: e.to,
+      }));
+
+      if (state.filter === "claims") {
+        const keep = new Set(nodes.filter((n) => ["Receptor", "Claim", "Direction", "Endpoint"].includes(n.type)).map((n) => n.id));
+        nodes = nodes.filter((n) => keep.has(n.id));
+        links = links.filter((l) => keep.has(l.from) && keep.has(l.to));
+      } else if (state.filter === "contested") {
+        const claimIds = new Set(nodes.filter((n) => n.type === "Claim" && (n.status === "contested" || n.direction === "tumor_suppressive" || n.direction === "tumor_promoting")).map((n) => n.id));
+        const keep = new Set(["receptor:or51e2", ...claimIds]);
+        nodes.forEach((n) => {
+          if (n.type === "Receptor" || n.type === "Direction" || n.type === "Endpoint") keep.add(n.id);
+        });
+        // include neighbors of contested claims
+        links.forEach((l) => {
+          if (claimIds.has(l.from) || claimIds.has(l.to)) {
+            keep.add(l.from); keep.add(l.to);
+          }
+        });
+        nodes = nodes.filter((n) => keep.has(n.id));
+        links = links.filter((l) => keep.has(l.from) && keep.has(l.to) && (l.contested || l.type === "tension_with" || l.type === "asserts_direction" || l.type === "measures_endpoint" || l.type === "about_receptor"));
+      } else if (state.filter === "tensions") {
+        const tensionLinks = links.filter((l) => l.type === "tension_with");
+        const keep = new Set();
+        tensionLinks.forEach((l) => { keep.add(l.from); keep.add(l.to); });
+        nodes.forEach((n) => { if (n.type === "Receptor" || n.type === "Endpoint" || n.type === "Direction") keep.add(n.id); });
+        // attach endpoint/direction edges for kept claims
+        links.forEach((l) => {
+          if (keep.has(l.from) || keep.has(l.to)) {
+            if (["measures_endpoint", "asserts_direction", "about_receptor", "tension_with"].includes(l.type)) {
+              keep.add(l.from); keep.add(l.to);
+            }
+          }
+        });
+        nodes = nodes.filter((n) => keep.has(n.id));
+        links = links.filter((l) => keep.has(l.from) && keep.has(l.to) && ["tension_with", "measures_endpoint", "asserts_direction", "about_receptor"].includes(l.type));
+      }
+      return { nodes, links, meta: data };
+    }
+
+    function render() {
+      const data = currentData();
+      const { nodes, links, meta } = visibleElements(data);
+
+      document.getElementById("nNodes").textContent = nodes.length;
+      document.getElementById("nEdges").textContent = links.length;
+      document.getElementById("nClaims").textContent = meta.counts.claims;
+      document.getElementById("nStatus").textContent = meta.scores.consensus_status;
+      document.getElementById("supMass").textContent = meta.scores.tumor_suppressive_mass.toFixed(2);
+      document.getElementById("proMass").textContent = meta.scores.tumor_promoting_mass.toFixed(2);
+
+      const tensionsEl = document.getElementById("tensions");
+      if (meta.tensions && meta.tensions.length) {
+        const t = meta.tensions[0];
+        tensionsEl.innerHTML = `<div class="tension"><strong>Tension</strong> · same_endpoint=${t.same_endpoint} · same_model=${t.same_model_system}<br/>${t.divergence_hypothesis.slice(0, 280)}${t.divergence_hypothesis.length > 280 ? "…" : ""}</div>`;
+      } else {
+        tensionsEl.innerHTML = "";
+      }
+
+      const svg = d3.select("#viz");
+      svg.selectAll("*").remove();
+      const width = 980, height = 640;
+      const gRoot = svg.append("g");
+
+      const zoom = d3.zoom().scaleExtent([0.35, 3]).on("zoom", (event) => {
+        gRoot.attr("transform", event.transform);
+      });
+      svg.call(zoom);
+
+      const idToNode = Object.fromEntries(nodes.map((n) => [n.id, n]));
+      const simLinks = links
+        .filter((l) => idToNode[l.from] && idToNode[l.to])
+        .map((l) => ({ ...l, source: l.from, target: l.to }));
+
+      if (state.sim) state.sim.stop();
+      state.sim = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(simLinks).id((d) => d.id).distance((d) => d.type === "tension_with" ? 140 : 70).strength(0.4))
+        .force("charge", d3.forceManyBody().strength(-220))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collide", d3.forceCollide().radius((d) => nodeRadius(d) + 6));
+
+      const link = gRoot.append("g")
+        .selectAll("line")
+        .data(simLinks)
+        .join("line")
+        .attr("class", (d) => `link ${d.type} ${d.contested ? "contested" : ""}`)
+        .attr("stroke", (d) => d.type === "tension_with" ? "#e8a05c" : (d.contested ? "#d2665a" : "#4a6274"))
+        .attr("stroke-width", (d) => Math.max(1, (d.weight || 0.4) * 2.2));
+
+      const node = gRoot.append("g")
+        .selectAll("g")
+        .data(nodes)
+        .join("g")
+        .attr("class", "node")
+        .call(d3.drag()
+          .on("start", (event, d) => {
+            if (!event.active) state.sim.alphaTarget(0.3).restart();
+            d.fx = d.x; d.fy = d.y;
+          })
+          .on("drag", (event, d) => { d.fx = event.x; d.fy = event.y; })
+          .on("end", (event, d) => {
+            if (!event.active) state.sim.alphaTarget(0);
+            d.fx = null; d.fy = null;
+          }));
+
+      node.append("circle")
+        .attr("r", (d) => nodeRadius(d))
+        .attr("fill", (d) => d.type === "Claim" ? claimColor(d) : (TYPE_COLOR[d.type] || "#8aa0b2"));
+
+      node.append("text")
+        .attr("dy", (d) => nodeRadius(d) + 12)
+        .attr("text-anchor", "middle")
+        .text((d) => nodeLabel(d));
+
+      node.on("click", (event, d) => {
+        event.stopPropagation();
+        highlight(d.id, simLinks);
+        showDetail(d);
+      });
+
+      link.on("click", (event, d) => {
+        event.stopPropagation();
+        highlight(null, simLinks, d);
+        showEdge(d);
+      });
+
+      svg.on("click", () => {
+        node.classed("dim", false);
+        link.classed("dim", false);
+      });
+
+      state.sim.on("tick", () => {
+        link
+          .attr("x1", (d) => d.source.x)
+          .attr("y1", (d) => d.source.y)
+          .attr("x2", (d) => d.target.x)
+          .attr("y2", (d) => d.target.y);
+        node.attr("transform", (d) => `translate(${d.x},${d.y})`);
+      });
+
+      function highlight(nodeId, allLinks, edge) {
+        if (edge) {
+          const keep = new Set([edge.source.id || edge.source, edge.target.id || edge.target]);
+          node.classed("dim", (d) => !keep.has(d.id));
+          link.classed("dim", (l) => l !== edge);
+          return;
+        }
+        const keep = new Set([nodeId]);
+        allLinks.forEach((l) => {
+          const s = l.source.id || l.source;
+          const t = l.target.id || l.target;
+          if (s === nodeId || t === nodeId) { keep.add(s); keep.add(t); }
+        });
+        node.classed("dim", (d) => !keep.has(d.id));
+        link.classed("dim", (l) => {
+          const s = l.source.id || l.source;
+          const t = l.target.id || l.target;
+          return !(keep.has(s) && keep.has(t) && (s === nodeId || t === nodeId));
+        });
+      }
+    }
+
+    function showDetail(d) {
+      const el = document.getElementById("detail");
+      el.innerHTML = `
+        <div class="card">
+          <span class="tag">${d.type}${d.status ? " · " + d.status : ""}</span>
+          <h3>${d.label || d.id}</h3>
+          <p>${d.full_claim || d.label || ""}</p>
+          <div class="meta">
+            <div><div class="k">id</div><div>${d.id}</div></div>
+            <div><div class="k">weight</div><div>${d.weight ?? "—"}</div></div>
+            <div><div class="k">direction</div><div>${d.direction || "—"}</div></div>
+            <div><div class="k">source</div><div>${(d.source || "—").toString().slice(0, 48)}</div></div>
+          </div>
+        </div>`;
+    }
+
+    function showEdge(d) {
+      const el = document.getElementById("detail");
+      el.innerHTML = `
+        <div class="card">
+          <span class="tag">${d.type}${d.contested ? " · contested" : ""}</span>
+          <h3>${d.from} → ${d.to}</h3>
+          <p>${d.hypothesis || "Evidence edge"}</p>
+          <div class="meta">
+            <div><div class="k">weight</div><div>${d.weight}</div></div>
+            <div><div class="k">same_endpoint</div><div>${d.same_endpoint ?? "—"}</div></div>
+          </div>
+        </div>`;
+    }
+
+    document.getElementById("dataset").addEventListener("change", (e) => {
+      state.key = e.target.value;
+      render();
+    });
+    document.querySelectorAll("[data-filter]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-filter]").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.filter = btn.dataset.filter;
+        render();
+      });
+    });
+    document.getElementById("reheat").addEventListener("click", () => render());
+
+    render();
+  </script>
+</body>
+</html>

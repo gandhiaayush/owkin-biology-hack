@@ -1,0 +1,3577 @@
+{
+  "gene": "OR51E2",
+  "cancer_type": null,
+  "max_hops": 2,
+  "open_world_note": "Absence of a claim is not evidence against it; only asserted edges are returned.",
+  "counts": {
+    "nodes": 120,
+    "edges": 238,
+    "claims": 40,
+    "tumor_suppressive": 3,
+    "tumor_promoting": 5,
+    "neutral": 32
+  },
+  "scores": {
+    "tumor_suppressive_mass": 3.6,
+    "tumor_promoting_mass": 3.6,
+    "consensus_status": "contested",
+    "elicitation_needed": true,
+    "overall_confidence_label": "CONTESTED \u2014 suppressive score 3.60 vs. promoting score 3.60; see contradiction report"
+  },
+  "claims": {
+    "tumor_suppressive": [
+      {
+        "id": "claim:OR51E2:1",
+        "type": "Claim",
+        "label": "Activation of OR51E2 (PSGR) by androstenone derivatives or beta-ionone inhibits \u2026",
+        "full_claim": "Activation of OR51E2 (PSGR) by androstenone derivatives or beta-ionone inhibits proliferation of prostate cancer cells.",
+        "direction": "tumor_suppressive",
+        "direction_context": "activation_effect",
+        "weight": 1.2,
+        "source": "Neuhaus EM, Zhang W, Gelis L, Deng Y, Noldus J, Hatt H (2009). \"Activation of an olfactory receptor inhibits proliferation of prostate cancer cells.\" J Biol Chem 284(24):16218-16225.",
+        "status": "contested",
+        "color_hint": "red",
+        "record_id": 1
+      },
+      {
+        "id": "claim:OR51E2:4",
+        "type": "Claim",
+        "label": "Inducible OR51E1/OR51E2 expression in LNCaP cells suppresses proliferation and p\u2026",
+        "full_claim": "Inducible OR51E1/OR51E2 expression in LNCaP cells suppresses proliferation and promotes cell death; the paper explicitly flags field-wide controversy over whether beta-ionone is a genuine OR51E2 agonist.",
+        "direction": "tumor_suppressive",
+        "direction_context": "activation_effect",
+        "weight": 1.2,
+        "source": "Pronin A, Slepak V (2021). \"Ectopically expressed olfactory receptors OR51E1 and OR51E2 suppress proliferation and promote cell death in a prostate cancer cell line.\" J Biol Chem 296:100475.",
+        "status": "contested",
+        "color_hint": "red",
+        "record_id": 4
+      },
+      {
+        "id": "claim:OR51E2:5",
+        "type": "Claim",
+        "label": "OR51E2 is upregulated in melanoma tissue and metastasis vs. normal melanocytes; \u2026",
+        "full_claim": "OR51E2 is upregulated in melanoma tissue and metastasis vs. normal melanocytes; activation by beta-ionone inhibits proliferation of vertical-growth-phase (VGP) melanoma cells via apoptosis and reduces cell motility.",
+        "direction": "tumor_suppressive",
+        "direction_context": "activation_effect",
+        "weight": 1.2,
+        "source": "Gelis L, Jovancevic N, Veitinger S, Mandal B, Arndt HD, Neuhaus EM, Hatt H (2017). \"Functional expression of olfactory receptors in human primary melanoma and melanoma metastasis.\" Exp Dermatol 26(7):569-576.",
+        "status": "contested",
+        "color_hint": "red",
+        "record_id": 5
+      }
+    ],
+    "tumor_promoting": [
+      {
+        "id": "claim:OR51E2:2",
+        "type": "Claim",
+        "label": "Beta-ionone stimulation of PSGR/OR51E2 promotes LNCaP cell invasiveness; co-admi\u2026",
+        "full_claim": "Beta-ionone stimulation of PSGR/OR51E2 promotes LNCaP cell invasiveness; co-administration of alpha-ionone (a PSGR antagonist) abrogates this effect.",
+        "direction": "tumor_promoting",
+        "direction_context": "activation_effect",
+        "weight": 1.2,
+        "source": "Sanz G, Leray I, Dewaele A, Sobilo J, Lerondel S, Bouet S, Grebert D, Monnerie R, Pajot-Augy E, Mir LM (2014). \"Promotion of cancer cell invasiveness and metastasis emergence caused by olfactory receptor stimulation.\" PLoS ONE 9(1):e85110.",
+        "status": "contested",
+        "color_hint": "red",
+        "record_id": 2
+      },
+      {
+        "id": "claim:OR51E2:3",
+        "type": "Claim",
+        "label": "PSGR (OR51E2) overexpression drives premalignant prostate lesions and larger xen\u2026",
+        "full_claim": "PSGR (OR51E2) overexpression drives premalignant prostate lesions and larger xenograft tumors.",
+        "direction": "tumor_promoting",
+        "direction_context": "activation_effect",
+        "weight": 1.2,
+        "source": "Rodriguez M, Luo W, Weng J, Zeng L, Yi Z, Siwko S, Liu M (2014). \"PSGR promotes prostatic intraepithelial neoplasia and prostate cancer xenograft growth through NF-kappaB.\" Oncogenesis 3(8):e114.",
+        "status": "contested",
+        "color_hint": "red",
+        "record_id": 3
+      },
+      {
+        "id": "claim:OR51E2:6",
+        "type": "Claim",
+        "label": "OR51E2 is expressed in human retinal pigment epithelial (RPE) and choroid cells;\u2026",
+        "full_claim": "OR51E2 is expressed in human retinal pigment epithelial (RPE) and choroid cells; beta-ionone activation INCREASES RPE cell proliferation and migration (opposite direction from the cancer-tissue findings above).",
+        "direction": "tumor_promoting",
+        "direction_context": "activation_effect",
+        "weight": 1.2,
+        "source": "Jovancevic N, Dendorfer A, Matzkies M, et al. (2017). \"Medium-chain fatty acid derived receptor OR51E2 agonist beta-ionone regulates RPE cell migration and proliferation.\" Frontiers in Physiology.",
+        "status": "contested",
+        "color_hint": "red",
+        "record_id": 6
+      },
+      {
+        "id": "claim:OR51E2:8",
+        "type": "Claim",
+        "label": "Discloses 24 novel OR51E2 agonists (e.g. 19-OH AD, AFMK, glycyl-glycine, kojibio\u2026",
+        "full_claim": "Discloses 24 novel OR51E2 agonists (e.g. 19-OH AD, AFMK, glycyl-glycine, kojibiose, estriol, pelargonidin, palmitic acid) and 1 antagonist (13-cis retinoic acid/isotretinoin), claiming methods to treat/prevent castrate-resistant prostate cancer (CRPC) and diagnose prostate cancer via metabolite biomarkers, based on the premise that chronic agonist-driven OR51E2 activation drives neuroendocrine trans-differentiation.",
+        "direction": "tumor_promoting",
+        "direction_context": "activation_effect",
+        "weight": 0.1,
+        "source": "US10588884B2, \"Modulators of prostate-specific G-protein receptor (PSGR/OR51E2) and methods of using same\" -- Duke University (Abaffy T, Matsunami H). Filed 2017-11-01, granted 2020-03-17.",
+        "status": "exploratory",
+        "color_hint": "amber",
+        "record_id": 8
+      },
+      {
+        "id": "claim:OR51E2:9",
+        "type": "Claim",
+        "label": "Divisional continuation of US10588884B2 covering the same 24 agonists/1 antagoni\u2026",
+        "full_claim": "Divisional continuation of US10588884B2 covering the same 24 agonists/1 antagonist, expanding claims to metabolomic-profiling diagnostic methods and describing a proposed link between Propionibacterium acnes infection and prostate cancer progression via OR51E2 activation.",
+        "direction": "tumor_promoting",
+        "direction_context": "activation_effect",
+        "weight": 0.1,
+        "source": "US12186294B2, \"Modulators of prostate-specific g-protein receptor (PSGR/OR51E2) and methods of using same\" -- Duke University (Abaffy T, Matsunami H). Divisional of US10588884B2 (Ser. No. 15/801,258, priority to provisional 62/415,591 filed 2016-11-01). Filed 2020-02-03, granted 2025-01-07, expires 2038-10-27.",
+        "status": "exploratory",
+        "color_hint": "amber",
+        "record_id": 9
+      }
+    ],
+    "neutral_or_context": [
+      {
+        "id": "claim:OR51E2:7",
+        "type": "Claim",
+        "label": "Screened four candidate ligands (methylmalonic acid, 2,2-difluorocyclopropane-1-\u2026",
+        "full_claim": "Screened four candidate ligands (methylmalonic acid, 2,2-difluorocyclopropane-1-carboxylate, 3,3-difluoropropanoic acid, 4,4-difluoropentanoic acid) against a propionic acid positive control for OR51E2 activation, using a CREB-driven firefly luciferase / constitutive NanoLuc dual-reporter assay in transiently transfected HEK293 cells (pCI-OR51E2 + pGL4.53[luc2/PGK] + pCRE-Luc), at 0.5M and 1M ligand concentrations.",
+        "direction": "neutral",
+        "direction_context": "activation_effect",
+        "weight": 0.48,
+        "source": "Bansal S, Gudisay S (2025). Dual-luciferase reporter assay data, unpublished (ISEF 2025 CBIO034T / ACSEF HS-BCOM-296-T2 / IFoRE 2025 project: \"Allosteric Regulation of Ectopically Expressed Olfactory Receptors in Tumor Cells\").",
+        "status": "neutral",
+        "color_hint": "gray",
+        "record_id": 7
+      },
+      {
+        "id": "claim:OR51E2:10",
+        "type": "Claim",
+        "label": "OR51E2 CNV gain/amplification observed across 45 TCGA projects, 1092 cases total\u2026",
+        "full_claim": "OR51E2 CNV gain/amplification observed across 45 TCGA projects, 1092 cases total. Top projects by case count: TCGA-BRCA (n=124), TCGA-LUAD (n=80), CPTAC-3 (n=70), TCGA-OV (n=65), TCGA-STAD (n=59).",
+        "direction": "neutral",
+        "direction_context": "genetic_alteration",
+        "weight": 0.66,
+        "source": "GDC API cnvs endpoint, gene ENSG00000167332, live pull",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 10
+      },
+      {
+        "id": "claim:OR51E2:11",
+        "type": "Claim",
+        "label": "TCGA-PRAD shows CNV gain/amplification for OR51E2 in 17 cases.",
+        "full_claim": "TCGA-PRAD shows CNV gain/amplification for OR51E2 in 17 cases.",
+        "direction": "neutral",
+        "direction_context": "genetic_alteration",
+        "weight": 0.601,
+        "source": "GDC API cnvs endpoint, gene ENSG00000167332, TCGA-PRAD cohort, live pull",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 11
+      },
+      {
+        "id": "claim:OR51E2:12",
+        "type": "Claim",
+        "label": "TCGA-KICH shows CNV gain/amplification for OR51E2 in 10 cases. This is a small T\u2026",
+        "full_claim": "TCGA-KICH shows CNV gain/amplification for OR51E2 in 10 cases. This is a small TCGA cohort (~66 cases total), so this case count represents a comparatively high *frequency* even if smaller than large cohorts like TCGA-BRCA in absolute terms.",
+        "direction": "neutral",
+        "direction_context": "genetic_alteration",
+        "weight": 0.601,
+        "source": "GDC API cnvs endpoint, gene ENSG00000167332, TCGA-KICH cohort, live pull",
+        "status": "exploratory",
+        "color_hint": "amber",
+        "record_id": 12
+      },
+      {
+        "id": "claim:OR51E2:13",
+        "type": "Claim",
+        "label": "OR51E2 somatic mutations observed in 217 cases across 31 TCGA projects.",
+        "full_claim": "OR51E2 somatic mutations observed in 217 cases across 31 TCGA projects.",
+        "direction": "neutral",
+        "direction_context": "genetic_alteration",
+        "weight": 0.613,
+        "source": "GDC API ssms endpoint, gene ENSG00000167332, live pull",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 13
+      },
+      {
+        "id": "claim:OR51E2:14",
+        "type": "Claim",
+        "label": "Solved structure of Human olfactory receptor OR51E2 bound to propionate in compl\u2026",
+        "full_claim": "Solved structure of Human olfactory receptor OR51E2 bound to propionate in complex with miniGs399, method=ELECTRON MICROSCOPY, resolution=3.1 A, released 2023-03-22. This is a structural cross-check only -- it does not itself make a claim about tumor direction/mechanism.",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.72,
+        "source": "PDB 8F76 -- Billesbolle, C.B. et al. (2023). \"Structural basis of odorant recognition by a human odorant receptor.\" Nature 615:742-749.",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 14
+      },
+      {
+        "id": "claim:OR51E2:15",
+        "type": "Claim",
+        "label": "144 bioactivity records in ChEMBL for OR51E2 (Olfactory receptor 51E2), spanning\u2026",
+        "full_claim": "144 bioactivity records in ChEMBL for OR51E2 (Olfactory receptor 51E2), spanning 26 unique molecules and 25 EC50/IC50 potency measurements. Top assay types: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with (n=24); Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with (n=24); Agonist activity at PSGR/OR51E2 in human LNCaP cells assessed as induction of change in extracellula (n=1).",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.609,
+        "source": "ChEMBL target CHEMBL4523454 (Olfactory receptor 51E2), live API pull",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 15
+      },
+      {
+        "id": "claim:OR51E2:16",
+        "type": "Claim",
+        "label": "ISOTRETINOIN (CHEMBL547) shows IC50 = 160.0 nM at OR51E2 in assay: Antagonist ac\u2026",
+        "full_claim": "ISOTRETINOIN (CHEMBL547) shows IC50 = 160.0 nM at OR51E2 in assay: Antagonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491341 (CHEMBL547 in assay CHEMBL4482523, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 16
+      },
+      {
+        "id": "claim:OR51E2:17",
+        "type": "Claim",
+        "label": "GLYCINE (CHEMBL773) shows EC50 = 58.0 nM at OR51E2 in assay: Agonist activity at\u2026",
+        "full_claim": "GLYCINE (CHEMBL773) shows EC50 = 58.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491366 (CHEMBL773 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 17
+      },
+      {
+        "id": "claim:OR51E2:18",
+        "type": "Claim",
+        "label": "CHEMBL4556656 (CHEMBL4556656) shows EC50 = 1.9 nM at OR51E2 in assay: Agonist ac\u2026",
+        "full_claim": "CHEMBL4556656 (CHEMBL4556656) shows EC50 = 1.9 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491367 (CHEMBL4556656 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 18
+      },
+      {
+        "id": "claim:OR51E2:19",
+        "type": "Claim",
+        "label": "ALPHA-KETOGLUTARIC ACID (CHEMBL1686) shows EC50 = 5.5 nM at OR51E2 in assay: Ago\u2026",
+        "full_claim": "ALPHA-KETOGLUTARIC ACID (CHEMBL1686) shows EC50 = 5.5 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491368 (CHEMBL1686 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 19
+      },
+      {
+        "id": "claim:OR51E2:20",
+        "type": "Claim",
+        "label": "2-PYRROLIDONE (CHEMBL276849) shows EC50 = 1.9 nM at OR51E2 in assay: Agonist act\u2026",
+        "full_claim": "2-PYRROLIDONE (CHEMBL276849) shows EC50 = 1.9 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491369 (CHEMBL276849 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 20
+      },
+      {
+        "id": "claim:OR51E2:21",
+        "type": "Claim",
+        "label": "IMIDAZOLINONE (CHEMBL2447922) shows EC50 = 0.0076 nM at OR51E2 in assay: Agonist\u2026",
+        "full_claim": "IMIDAZOLINONE (CHEMBL2447922) shows EC50 = 0.0076 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491370 (CHEMBL2447922 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 21
+      },
+      {
+        "id": "claim:OR51E2:22",
+        "type": "Claim",
+        "label": "CHEMBL1328799 (CHEMBL1328799) shows EC50 = 0.00044 nM at OR51E2 in assay: Agonis\u2026",
+        "full_claim": "CHEMBL1328799 (CHEMBL1328799) shows EC50 = 0.00044 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491371 (CHEMBL1328799 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 22
+      },
+      {
+        "id": "claim:OR51E2:23",
+        "type": "Claim",
+        "label": "BRADYKININ (CHEMBL406291) shows EC50 = 1.3 nM at OR51E2 in assay: Agonist activi\u2026",
+        "full_claim": "BRADYKININ (CHEMBL406291) shows EC50 = 1.3 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491372 (CHEMBL406291 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 23
+      },
+      {
+        "id": "claim:OR51E2:24",
+        "type": "Claim",
+        "label": "HISTIDINOL (CHEMBL278081) shows EC50 = 0.035 nM at OR51E2 in assay: Agonist acti\u2026",
+        "full_claim": "HISTIDINOL (CHEMBL278081) shows EC50 = 0.035 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491373 (CHEMBL278081 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 24
+      },
+      {
+        "id": "claim:OR51E2:25",
+        "type": "Claim",
+        "label": "ACETYLGLUTAMIC ACID (CHEMBL1234751) shows EC50 = 0.23 nM at OR51E2 in assay: Ago\u2026",
+        "full_claim": "ACETYLGLUTAMIC ACID (CHEMBL1234751) shows EC50 = 0.23 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491374 (CHEMBL1234751 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 25
+      },
+      {
+        "id": "claim:OR51E2:26",
+        "type": "Claim",
+        "label": "TETRAHYDROCURCUMIN (CHEMBL318743) shows EC50 = 570.0 nM at OR51E2 in assay: Agon\u2026",
+        "full_claim": "TETRAHYDROCURCUMIN (CHEMBL318743) shows EC50 = 570.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491375 (CHEMBL318743 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 26
+      },
+      {
+        "id": "claim:OR51E2:27",
+        "type": "Claim",
+        "label": "CHEMBL4566376 (CHEMBL4566376) shows EC50 = 6.4 nM at OR51E2 in assay: Agonist ac\u2026",
+        "full_claim": "CHEMBL4566376 (CHEMBL4566376) shows EC50 = 6.4 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491376 (CHEMBL4566376 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 27
+      },
+      {
+        "id": "claim:OR51E2:28",
+        "type": "Claim",
+        "label": "CHEMBL4574750 (CHEMBL4574750) shows EC50 = 26.0 nM at OR51E2 in assay: Agonist a\u2026",
+        "full_claim": "CHEMBL4574750 (CHEMBL4574750) shows EC50 = 26.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491377 (CHEMBL4574750 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 28
+      },
+      {
+        "id": "claim:OR51E2:29",
+        "type": "Claim",
+        "label": "CHEMBL1230192 (CHEMBL1230192) shows EC50 = 420.0 nM at OR51E2 in assay: Agonist \u2026",
+        "full_claim": "CHEMBL1230192 (CHEMBL1230192) shows EC50 = 420.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491378 (CHEMBL1230192 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 29
+      },
+      {
+        "id": "claim:OR51E2:30",
+        "type": "Claim",
+        "label": "PELARGONIDIN CHLORIDE (CHEMBL591036) shows EC50 = 0.42 nM at OR51E2 in assay: Ag\u2026",
+        "full_claim": "PELARGONIDIN CHLORIDE (CHEMBL591036) shows EC50 = 0.42 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491379 (CHEMBL591036 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 30
+      },
+      {
+        "id": "claim:OR51E2:31",
+        "type": "Claim",
+        "label": "CHEMBL1882218 (CHEMBL1882218) shows EC50 = 12000.0 nM at OR51E2 in assay: Agonis\u2026",
+        "full_claim": "CHEMBL1882218 (CHEMBL1882218) shows EC50 = 12000.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491380 (CHEMBL1882218 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 31
+      },
+      {
+        "id": "claim:OR51E2:32",
+        "type": "Claim",
+        "label": "UREA (CHEMBL985) shows EC50 = 23.0 nM at OR51E2 in assay: Agonist activity at PS\u2026",
+        "full_claim": "UREA (CHEMBL985) shows EC50 = 23.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491381 (CHEMBL985 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 32
+      },
+      {
+        "id": "claim:OR51E2:33",
+        "type": "Claim",
+        "label": "CHEMBL4590792 (CHEMBL4590792) shows EC50 = 1000.0 nM at OR51E2 in assay: Agonist\u2026",
+        "full_claim": "CHEMBL4590792 (CHEMBL4590792) shows EC50 = 1000.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491382 (CHEMBL4590792 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 33
+      },
+      {
+        "id": "claim:OR51E2:34",
+        "type": "Claim",
+        "label": "CHEMBL292467 (CHEMBL292467) shows EC50 = 11000.0 nM at OR51E2 in assay: Agonist \u2026",
+        "full_claim": "CHEMBL292467 (CHEMBL292467) shows EC50 = 11000.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491383 (CHEMBL292467 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 34
+      },
+      {
+        "id": "claim:OR51E2:35",
+        "type": "Claim",
+        "label": "CHEMBL299420 (CHEMBL299420) shows EC50 = 14000.0 nM at OR51E2 in assay: Agonist \u2026",
+        "full_claim": "CHEMBL299420 (CHEMBL299420) shows EC50 = 14000.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491384 (CHEMBL299420 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 35
+      },
+      {
+        "id": "claim:OR51E2:36",
+        "type": "Claim",
+        "label": "CHEMBL1230438 (CHEMBL1230438) shows EC50 = 0.79 nM at OR51E2 in assay: Agonist a\u2026",
+        "full_claim": "CHEMBL1230438 (CHEMBL1230438) shows EC50 = 0.79 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491385 (CHEMBL1230438 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 36
+      },
+      {
+        "id": "claim:OR51E2:37",
+        "type": "Claim",
+        "label": "PALMITIC ACID (CHEMBL82293) shows EC50 = 9.8 nM at OR51E2 in assay: Agonist acti\u2026",
+        "full_claim": "PALMITIC ACID (CHEMBL82293) shows EC50 = 9.8 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491386 (CHEMBL82293 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 37
+      },
+      {
+        "id": "claim:OR51E2:38",
+        "type": "Claim",
+        "label": "CHEMBL4517318 (CHEMBL4517318) shows EC50 = 0.15 nM at OR51E2 in assay: Agonist a\u2026",
+        "full_claim": "CHEMBL4517318 (CHEMBL4517318) shows EC50 = 0.15 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491387 (CHEMBL4517318 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 38
+      },
+      {
+        "id": "claim:OR51E2:39",
+        "type": "Claim",
+        "label": "EPITESTOSTERONE (CHEMBL196228) shows EC50 = 0.69 nM at OR51E2 in assay: Agonist \u2026",
+        "full_claim": "EPITESTOSTERONE (CHEMBL196228) shows EC50 = 0.69 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491388 (CHEMBL196228 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 39
+      },
+      {
+        "id": "claim:OR51E2:40",
+        "type": "Claim",
+        "label": "ESTRIOL (CHEMBL193482) shows EC50 = 53000.0 nM at OR51E2 in assay: Agonist activ\u2026",
+        "full_claim": "ESTRIOL (CHEMBL193482) shows EC50 = 53000.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491389 (CHEMBL193482 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 40
+      }
+    ]
+  },
+  "tensions": [
+    {
+      "same_model_system": false,
+      "same_endpoint": false,
+      "deadlock": false,
+      "divergence_hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint contradiction \u2014 both effects could be simultaneously true (e.g. reduced proliferation alongside increased invasiveness is a recognized cancer biology pattern). Do not present as a flat two-sided contradiction; present as divergent evidence on distinct outcomes. Additionally: Note from Neuhaus EM: Cross-checked against CLAUDE.md Section 6 table and the friend's (Bansal/Gudisay) Literature_Review.docx summary, which  | Note from Pronin A: Confirmed via PubMed/PMC (PMC8024707) and J Biol Chem fulltext -- ligand-specificity finding and explicit controversy st | Note from Jovancevic N: Sourced from the friend's Literature_Review.docx summary. Non-cancer tissue context, included because it is directly rel",
+      "suppressive_sources": [
+        "Neuhaus EM, Zhang W, Gelis L, Deng Y, Noldus J, Hatt H (2009). \"Activation of an olfactory receptor inhibits proliferation of prostate cancer cells.\" J Biol Chem 284(24):16218-16225.",
+        "Pronin A, Slepak V (2021). \"Ectopically expressed olfactory receptors OR51E1 and OR51E2 suppress proliferation and promote cell death in a prostate cancer cell line.\" J Biol Chem 296:100475.",
+        "Gelis L, Jovancevic N, Veitinger S, Mandal B, Arndt HD, Neuhaus EM, Hatt H (2017). \"Functional expression of olfactory receptors in human primary melanoma and melanoma metastasis.\" Exp Dermatol 26(7):569-576."
+      ],
+      "promoting_sources": [
+        "Sanz G, Leray I, Dewaele A, Sobilo J, Lerondel S, Bouet S, Grebert D, Monnerie R, Pajot-Augy E, Mir LM (2014). \"Promotion of cancer cell invasiveness and metastasis emergence caused by olfactory receptor stimulation.\" PLoS ONE 9(1):e85110.",
+        "Rodriguez M, Luo W, Weng J, Zeng L, Yi Z, Siwko S, Liu M (2014). \"PSGR promotes prostatic intraepithelial neoplasia and prostate cancer xenograft growth through NF-kappaB.\" Oncogenesis 3(8):e114.",
+        "Jovancevic N, Dendorfer A, Matzkies M, et al. (2017). \"Medium-chain fatty acid derived receptor OR51E2 agonist beta-ionone regulates RPE cell migration and proliferation.\" Frontiers in Physiology.",
+        "US10588884B2, \"Modulators of prostate-specific G-protein receptor (PSGR/OR51E2) and methods of using same\" -- Duke University (Abaffy T, Matsunami H). Filed 2017-11-01, granted 2020-03-17.",
+        "US12186294B2, \"Modulators of prostate-specific g-protein receptor (PSGR/OR51E2) and methods of using same\" -- Duke University (Abaffy T, Matsunami H). Divisional of US10588884B2 (Ser. No. 15/801,258, priority to provisional 62/415,591 filed 2016-11-01). Filed 2020-02-03, granted 2025-01-07, expires 2038-10-27."
+      ]
+    }
+  ],
+  "tension_map_data": {
+    "nodes": [
+      {
+        "id": "receptor:or51e2",
+        "type": "Receptor",
+        "label": "OR51E2",
+        "color_hint": "green",
+        "consensus_status": "contested",
+        "suppressive_mass": 3.6,
+        "promoting_mass": 3.6,
+        "elicitation_needed": true
+      },
+      {
+        "id": "cancer:prostate_cancer",
+        "type": "CancerType",
+        "label": "prostate cancer",
+        "color_hint": "gray"
+      },
+      {
+        "id": "model:lncap_cells_endogenous_receptor_also_hek293_and_pc_3_cells_and_primary_prostate_epithelial_cells",
+        "type": "ModelSystem",
+        "label": "LNCaP cells (endogenous receptor); also HEK293 and PC-3 cells, and primary prostate epithelial cells"
+      },
+      {
+        "id": "paper:neuhaus_em_zhang_w_gelis_l_deng_y_noldus_j_hatt_",
+        "type": "Paper",
+        "label": "Neuhaus EM, Zhang W, Gelis L, Deng Y, Noldus J, Hatt H (2009). \"Activation of an olfactory receptor inhibits proliferation of prostate cancer cells.\" J Biol Chem 284(24):16218-16225.",
+        "source_type": "primary_study"
+      },
+      {
+        "id": "direction:tumor_suppressive",
+        "type": "Direction",
+        "label": "tumor suppressive",
+        "color_hint": "green"
+      },
+      {
+        "id": "claim:OR51E2:1",
+        "type": "Claim",
+        "label": "Activation of OR51E2 (PSGR) by androstenone derivatives or beta-ionone inhibits \u2026",
+        "full_claim": "Activation of OR51E2 (PSGR) by androstenone derivatives or beta-ionone inhibits proliferation of prostate cancer cells.",
+        "direction": "tumor_suppressive",
+        "direction_context": "activation_effect",
+        "weight": 1.2,
+        "source": "Neuhaus EM, Zhang W, Gelis L, Deng Y, Noldus J, Hatt H (2009). \"Activation of an olfactory receptor inhibits proliferation of prostate cancer cells.\" J Biol Chem 284(24):16218-16225.",
+        "status": "contested",
+        "color_hint": "red",
+        "record_id": 1
+      },
+      {
+        "id": "endpoint:proliferation",
+        "type": "Endpoint",
+        "label": "proliferation"
+      },
+      {
+        "id": "mechanism:beta_ionone_binding_triggers_an_intracel",
+        "type": "Mechanism",
+        "label": "Beta-ionone binding triggers an intracellular Ca2+ increase "
+      },
+      {
+        "id": "ligand:\u03b2_ionone",
+        "type": "Ligand",
+        "label": "\u03b2-ionone"
+      },
+      {
+        "id": "ligand:androstenone",
+        "type": "Ligand",
+        "label": "androstenone"
+      },
+      {
+        "id": "model:lncap",
+        "type": "ModelSystem",
+        "label": "LNCaP"
+      },
+      {
+        "id": "paper:sanz_g_leray_i_dewaele_a_sobilo_j_lerondel_s_bou",
+        "type": "Paper",
+        "label": "Sanz G, Leray I, Dewaele A, Sobilo J, Lerondel S, Bouet S, Grebert D, Monnerie R, Pajot-Augy E, Mir LM (2014). \"Promotion of cancer cell invasiveness and metastasis emergence caused by olfactory receptor stimulation.\" PLoS ONE 9(1):e85110.",
+        "source_type": "primary_study"
+      },
+      {
+        "id": "direction:tumor_promoting",
+        "type": "Direction",
+        "label": "tumor promoting",
+        "color_hint": "red"
+      },
+      {
+        "id": "claim:OR51E2:2",
+        "type": "Claim",
+        "label": "Beta-ionone stimulation of PSGR/OR51E2 promotes LNCaP cell invasiveness; co-admi\u2026",
+        "full_claim": "Beta-ionone stimulation of PSGR/OR51E2 promotes LNCaP cell invasiveness; co-administration of alpha-ionone (a PSGR antagonist) abrogates this effect.",
+        "direction": "tumor_promoting",
+        "direction_context": "activation_effect",
+        "weight": 1.2,
+        "source": "Sanz G, Leray I, Dewaele A, Sobilo J, Lerondel S, Bouet S, Grebert D, Monnerie R, Pajot-Augy E, Mir LM (2014). \"Promotion of cancer cell invasiveness and metastasis emergence caused by olfactory receptor stimulation.\" PLoS ONE 9(1):e85110.",
+        "status": "contested",
+        "color_hint": "red",
+        "record_id": 2
+      },
+      {
+        "id": "endpoint:invasiveness",
+        "type": "Endpoint",
+        "label": "invasiveness"
+      },
+      {
+        "id": "mechanism:beta_ionone_100_um_increased_lncap_invas",
+        "type": "Mechanism",
+        "label": "Beta-ionone (100 uM) increased LNCaP invasion index (collage"
+      },
+      {
+        "id": "ligand:\u03b1_ionone",
+        "type": "Ligand",
+        "label": "\u03b1-ionone"
+      },
+      {
+        "id": "model:psgr_transgenic_mouse_model_probasin_promoter_lncap_xenograft_mouse",
+        "type": "ModelSystem",
+        "label": "PSGR-transgenic mouse model (probasin promoter); LNCaP xenograft (mouse)"
+      },
+      {
+        "id": "paper:rodriguez_m_luo_w_weng_j_zeng_l_yi_z_siwko_s_liu",
+        "type": "Paper",
+        "label": "Rodriguez M, Luo W, Weng J, Zeng L, Yi Z, Siwko S, Liu M (2014). \"PSGR promotes prostatic intraepithelial neoplasia and prostate cancer xenograft growth through NF-kappaB.\" Oncogenesis 3(8):e114.",
+        "source_type": "primary_study"
+      },
+      {
+        "id": "claim:OR51E2:3",
+        "type": "Claim",
+        "label": "PSGR (OR51E2) overexpression drives premalignant prostate lesions and larger xen\u2026",
+        "full_claim": "PSGR (OR51E2) overexpression drives premalignant prostate lesions and larger xenograft tumors.",
+        "direction": "tumor_promoting",
+        "direction_context": "activation_effect",
+        "weight": 1.2,
+        "source": "Rodriguez M, Luo W, Weng J, Zeng L, Yi Z, Siwko S, Liu M (2014). \"PSGR promotes prostatic intraepithelial neoplasia and prostate cancer xenograft growth through NF-kappaB.\" Oncogenesis 3(8):e114.",
+        "status": "contested",
+        "color_hint": "red",
+        "record_id": 3
+      },
+      {
+        "id": "endpoint:tumor_growth",
+        "type": "Endpoint",
+        "label": "tumor_growth"
+      },
+      {
+        "id": "mechanism:probasin_promoter_driven_psgr_transgenic",
+        "type": "Mechanism",
+        "label": "Probasin-promoter-driven PSGR-transgenic mice developed chro"
+      },
+      {
+        "id": "model:lncap_cells_inducible_expression_system",
+        "type": "ModelSystem",
+        "label": "LNCaP cells (inducible expression system)"
+      },
+      {
+        "id": "paper:pronin_a_slepak_v_2021_ectopically_expressed_olf",
+        "type": "Paper",
+        "label": "Pronin A, Slepak V (2021). \"Ectopically expressed olfactory receptors OR51E1 and OR51E2 suppress proliferation and promote cell death in a prostate cancer cell line.\" J Biol Chem 296:100475.",
+        "source_type": "primary_study"
+      },
+      {
+        "id": "claim:OR51E2:4",
+        "type": "Claim",
+        "label": "Inducible OR51E1/OR51E2 expression in LNCaP cells suppresses proliferation and p\u2026",
+        "full_claim": "Inducible OR51E1/OR51E2 expression in LNCaP cells suppresses proliferation and promotes cell death; the paper explicitly flags field-wide controversy over whether beta-ionone is a genuine OR51E2 agonist.",
+        "direction": "tumor_suppressive",
+        "direction_context": "activation_effect",
+        "weight": 1.2,
+        "source": "Pronin A, Slepak V (2021). \"Ectopically expressed olfactory receptors OR51E1 and OR51E2 suppress proliferation and promote cell death in a prostate cancer cell line.\" J Biol Chem 296:100475.",
+        "status": "contested",
+        "color_hint": "red",
+        "record_id": 4
+      },
+      {
+        "id": "mechanism:inducible_expression_system_in_lncap_cel",
+        "type": "Mechanism",
+        "label": "Inducible expression system in LNCaP cells; OR51E1 responds "
+      },
+      {
+        "id": "cancer:melanoma",
+        "type": "CancerType",
+        "label": "melanoma",
+        "color_hint": "gray"
+      },
+      {
+        "id": "model:human_primary_melanoma_tissue_and_melanoma_metastasis_samples_cultured_vgp_melanoma_cells",
+        "type": "ModelSystem",
+        "label": "Human primary melanoma tissue and melanoma metastasis samples; cultured VGP melanoma cells"
+      },
+      {
+        "id": "paper:gelis_l_jovancevic_n_veitinger_s_mandal_b_arndt_",
+        "type": "Paper",
+        "label": "Gelis L, Jovancevic N, Veitinger S, Mandal B, Arndt HD, Neuhaus EM, Hatt H (2017). \"Functional expression of olfactory receptors in human primary melanoma and melanoma metastasis.\" Exp Dermatol 26(7):569-576.",
+        "source_type": "primary_study"
+      },
+      {
+        "id": "claim:OR51E2:5",
+        "type": "Claim",
+        "label": "OR51E2 is upregulated in melanoma tissue and metastasis vs. normal melanocytes; \u2026",
+        "full_claim": "OR51E2 is upregulated in melanoma tissue and metastasis vs. normal melanocytes; activation by beta-ionone inhibits proliferation of vertical-growth-phase (VGP) melanoma cells via apoptosis and reduces cell motility.",
+        "direction": "tumor_suppressive",
+        "direction_context": "activation_effect",
+        "weight": 1.2,
+        "source": "Gelis L, Jovancevic N, Veitinger S, Mandal B, Arndt HD, Neuhaus EM, Hatt H (2017). \"Functional expression of olfactory receptors in human primary melanoma and melanoma metastasis.\" Exp Dermatol 26(7):569-576.",
+        "status": "contested",
+        "color_hint": "red",
+        "record_id": 5
+      },
+      {
+        "id": "mechanism:beta_ionone_activation_of_endogenous_or5",
+        "type": "Mechanism",
+        "label": "Beta-ionone activation of endogenous OR51E2 in cultured mela"
+      },
+      {
+        "id": "cancer:unknown",
+        "type": "CancerType",
+        "label": "unknown",
+        "color_hint": "gray"
+      },
+      {
+        "id": "model:rpe_cells_non_cancer",
+        "type": "ModelSystem",
+        "label": "RPE cells (non-cancer)"
+      },
+      {
+        "id": "paper:jovancevic_n_dendorfer_a_matzkies_m_et_al_2017_m",
+        "type": "Paper",
+        "label": "Jovancevic N, Dendorfer A, Matzkies M, et al. (2017). \"Medium-chain fatty acid derived receptor OR51E2 agonist beta-ionone regulates RPE cell migration and proliferation.\" Frontiers in Physiology.",
+        "source_type": "primary_study"
+      },
+      {
+        "id": "claim:OR51E2:6",
+        "type": "Claim",
+        "label": "OR51E2 is expressed in human retinal pigment epithelial (RPE) and choroid cells;\u2026",
+        "full_claim": "OR51E2 is expressed in human retinal pigment epithelial (RPE) and choroid cells; beta-ionone activation INCREASES RPE cell proliferation and migration (opposite direction from the cancer-tissue findings above).",
+        "direction": "tumor_promoting",
+        "direction_context": "activation_effect",
+        "weight": 1.2,
+        "source": "Jovancevic N, Dendorfer A, Matzkies M, et al. (2017). \"Medium-chain fatty acid derived receptor OR51E2 agonist beta-ionone regulates RPE cell migration and proliferation.\" Frontiers in Physiology.",
+        "status": "contested",
+        "color_hint": "red",
+        "record_id": 6
+      },
+      {
+        "id": "mechanism:beta_ionone_triggers_ca2_influx_primaril",
+        "type": "Mechanism",
+        "label": "Beta-ionone triggers Ca2+ influx (primarily extracellular, s"
+      },
+      {
+        "id": "model:hek293_cells_transient_transfection_heterologous_or51e2_expression",
+        "type": "ModelSystem",
+        "label": "HEK293 cells, transient transfection (heterologous OR51E2 expression)"
+      },
+      {
+        "id": "paper:bansal_s_gudisay_s_2025_dual_luciferase_reporter",
+        "type": "Paper",
+        "label": "Bansal S, Gudisay S (2025). Dual-luciferase reporter assay data, unpublished (ISEF 2025 CBIO034T / ACSEF HS-BCOM-296-T2 / IFoRE 2025 project: \"Allosteric Regulation of Ectopically Expressed Olfactory Receptors in Tumor Cells\").",
+        "source_type": "preliminary"
+      },
+      {
+        "id": "direction:neutral",
+        "type": "Direction",
+        "label": "neutral",
+        "color_hint": "gray"
+      },
+      {
+        "id": "claim:OR51E2:7",
+        "type": "Claim",
+        "label": "Screened four candidate ligands (methylmalonic acid, 2,2-difluorocyclopropane-1-\u2026",
+        "full_claim": "Screened four candidate ligands (methylmalonic acid, 2,2-difluorocyclopropane-1-carboxylate, 3,3-difluoropropanoic acid, 4,4-difluoropentanoic acid) against a propionic acid positive control for OR51E2 activation, using a CREB-driven firefly luciferase / constitutive NanoLuc dual-reporter assay in transiently transfected HEK293 cells (pCI-OR51E2 + pGL4.53[luc2/PGK] + pCRE-Luc), at 0.5M and 1M ligand concentrations.",
+        "direction": "neutral",
+        "direction_context": "activation_effect",
+        "weight": 0.48,
+        "source": "Bansal S, Gudisay S (2025). Dual-luciferase reporter assay data, unpublished (ISEF 2025 CBIO034T / ACSEF HS-BCOM-296-T2 / IFoRE 2025 project: \"Allosteric Regulation of Ectopically Expressed Olfactory Receptors in Tumor Cells\").",
+        "status": "neutral",
+        "color_hint": "gray",
+        "record_id": 7
+      },
+      {
+        "id": "mechanism:creb_driven_firefly_luciferase_reports_d",
+        "type": "Mechanism",
+        "label": "CREB-driven firefly luciferase reports downstream GPCR/CREB "
+      },
+      {
+        "id": "model:patent_disclosure_in_vitro_in_vivo_data_referenced_in_specification_not_independently_verified_here",
+        "type": "ModelSystem",
+        "label": "Patent disclosure (in vitro/in vivo data referenced in specification, not independently verified here)"
+      },
+      {
+        "id": "paper:us10588884b2_modulators_of_prostate_specific_g_p",
+        "type": "Paper",
+        "label": "US10588884B2, \"Modulators of prostate-specific G-protein receptor (PSGR/OR51E2) and methods of using same\" -- Duke University (Abaffy T, Matsunami H). Filed 2017-11-01, granted 2020-03-17.",
+        "source_type": "patent"
+      },
+      {
+        "id": "claim:OR51E2:8",
+        "type": "Claim",
+        "label": "Discloses 24 novel OR51E2 agonists (e.g. 19-OH AD, AFMK, glycyl-glycine, kojibio\u2026",
+        "full_claim": "Discloses 24 novel OR51E2 agonists (e.g. 19-OH AD, AFMK, glycyl-glycine, kojibiose, estriol, pelargonidin, palmitic acid) and 1 antagonist (13-cis retinoic acid/isotretinoin), claiming methods to treat/prevent castrate-resistant prostate cancer (CRPC) and diagnose prostate cancer via metabolite biomarkers, based on the premise that chronic agonist-driven OR51E2 activation drives neuroendocrine trans-differentiation.",
+        "direction": "tumor_promoting",
+        "direction_context": "activation_effect",
+        "weight": 0.1,
+        "source": "US10588884B2, \"Modulators of prostate-specific G-protein receptor (PSGR/OR51E2) and methods of using same\" -- Duke University (Abaffy T, Matsunami H). Filed 2017-11-01, granted 2020-03-17.",
+        "status": "exploratory",
+        "color_hint": "amber",
+        "record_id": 8
+      },
+      {
+        "id": "mechanism:chronic_agonist_mediated_or51e2_activati",
+        "type": "Mechanism",
+        "label": "Chronic agonist-mediated OR51E2 activation facilitates cellu"
+      },
+      {
+        "id": "paper:us12186294b2_modulators_of_prostate_specific_g_p",
+        "type": "Paper",
+        "label": "US12186294B2, \"Modulators of prostate-specific g-protein receptor (PSGR/OR51E2) and methods of using same\" -- Duke University (Abaffy T, Matsunami H). Divisional of US10588884B2 (Ser. No. 15/801,258, priority to provisional 62/415,591 filed 2016-11-01). Filed 2020-02-03, granted 2025-01-07, expires 2038-10-27.",
+        "source_type": "patent"
+      },
+      {
+        "id": "claim:OR51E2:9",
+        "type": "Claim",
+        "label": "Divisional continuation of US10588884B2 covering the same 24 agonists/1 antagoni\u2026",
+        "full_claim": "Divisional continuation of US10588884B2 covering the same 24 agonists/1 antagonist, expanding claims to metabolomic-profiling diagnostic methods and describing a proposed link between Propionibacterium acnes infection and prostate cancer progression via OR51E2 activation.",
+        "direction": "tumor_promoting",
+        "direction_context": "activation_effect",
+        "weight": 0.1,
+        "source": "US12186294B2, \"Modulators of prostate-specific g-protein receptor (PSGR/OR51E2) and methods of using same\" -- Duke University (Abaffy T, Matsunami H). Divisional of US10588884B2 (Ser. No. 15/801,258, priority to provisional 62/415,591 filed 2016-11-01). Filed 2020-02-03, granted 2025-01-07, expires 2038-10-27.",
+        "status": "exploratory",
+        "color_hint": "amber",
+        "record_id": 9
+      },
+      {
+        "id": "mechanism:same_as_us10588884b2_plus_a_proposed_inf",
+        "type": "Mechanism",
+        "label": "Same as US10588884B2, plus a proposed infection-driven activ"
+      },
+      {
+        "id": "cancer:pan_cancer",
+        "type": "CancerType",
+        "label": "pan cancer",
+        "color_hint": "gray"
+      },
+      {
+        "id": "model:tcga_pan_cancer_cohort_cnv_calls",
+        "type": "ModelSystem",
+        "label": "TCGA pan-cancer cohort (CNV calls)"
+      },
+      {
+        "id": "paper:gdc_api_cnvs_endpoint_gene_ensg00000167332_live_",
+        "type": "Paper",
+        "label": "GDC API cnvs endpoint, gene ENSG00000167332, live pull",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:10",
+        "type": "Claim",
+        "label": "OR51E2 CNV gain/amplification observed across 45 TCGA projects, 1092 cases total\u2026",
+        "full_claim": "OR51E2 CNV gain/amplification observed across 45 TCGA projects, 1092 cases total. Top projects by case count: TCGA-BRCA (n=124), TCGA-LUAD (n=80), CPTAC-3 (n=70), TCGA-OV (n=65), TCGA-STAD (n=59).",
+        "direction": "neutral",
+        "direction_context": "genetic_alteration",
+        "weight": 0.66,
+        "source": "GDC API cnvs endpoint, gene ENSG00000167332, live pull",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 10
+      },
+      {
+        "id": "cancer:prad",
+        "type": "CancerType",
+        "label": "PRAD",
+        "color_hint": "gray"
+      },
+      {
+        "id": "model:tcga_prad_cohort_cnv_calls",
+        "type": "ModelSystem",
+        "label": "TCGA-PRAD cohort (CNV calls)"
+      },
+      {
+        "id": "paper:gdc_api_cnvs_endpoint_gene_ensg00000167332_tcga_",
+        "type": "Paper",
+        "label": "GDC API cnvs endpoint, gene ENSG00000167332, TCGA-PRAD cohort, live pull",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:11",
+        "type": "Claim",
+        "label": "TCGA-PRAD shows CNV gain/amplification for OR51E2 in 17 cases.",
+        "full_claim": "TCGA-PRAD shows CNV gain/amplification for OR51E2 in 17 cases.",
+        "direction": "neutral",
+        "direction_context": "genetic_alteration",
+        "weight": 0.601,
+        "source": "GDC API cnvs endpoint, gene ENSG00000167332, TCGA-PRAD cohort, live pull",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 11
+      },
+      {
+        "id": "cancer:kich",
+        "type": "CancerType",
+        "label": "KICH",
+        "color_hint": "gray"
+      },
+      {
+        "id": "model:tcga_kich_cohort_cnv_calls",
+        "type": "ModelSystem",
+        "label": "TCGA-KICH cohort (CNV calls)"
+      },
+      {
+        "id": "claim:OR51E2:12",
+        "type": "Claim",
+        "label": "TCGA-KICH shows CNV gain/amplification for OR51E2 in 10 cases. This is a small T\u2026",
+        "full_claim": "TCGA-KICH shows CNV gain/amplification for OR51E2 in 10 cases. This is a small TCGA cohort (~66 cases total), so this case count represents a comparatively high *frequency* even if smaller than large cohorts like TCGA-BRCA in absolute terms.",
+        "direction": "neutral",
+        "direction_context": "genetic_alteration",
+        "weight": 0.601,
+        "source": "GDC API cnvs endpoint, gene ENSG00000167332, TCGA-KICH cohort, live pull",
+        "status": "exploratory",
+        "color_hint": "amber",
+        "record_id": 12
+      },
+      {
+        "id": "model:tcga_pan_cancer_cohort_simple_somatic_mutation_calls",
+        "type": "ModelSystem",
+        "label": "TCGA pan-cancer cohort (simple somatic mutation calls)"
+      },
+      {
+        "id": "paper:gdc_api_ssms_endpoint_gene_ensg00000167332_live_",
+        "type": "Paper",
+        "label": "GDC API ssms endpoint, gene ENSG00000167332, live pull",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:13",
+        "type": "Claim",
+        "label": "OR51E2 somatic mutations observed in 217 cases across 31 TCGA projects.",
+        "full_claim": "OR51E2 somatic mutations observed in 217 cases across 31 TCGA projects.",
+        "direction": "neutral",
+        "direction_context": "genetic_alteration",
+        "weight": 0.613,
+        "source": "GDC API ssms endpoint, gene ENSG00000167332, live pull",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 13
+      },
+      {
+        "id": "model:electron_microscopy_structure_human_olfactory_receptor_or51e2_bound_to_propionate_in_complex_with_minigs399",
+        "type": "ModelSystem",
+        "label": "ELECTRON MICROSCOPY structure (Human olfactory receptor OR51E2 bound to propionate in complex with miniGs399)"
+      },
+      {
+        "id": "paper:pdb_8f76_billesbolle_c_b_et_al_2023_structural_b",
+        "type": "Paper",
+        "label": "PDB 8F76 -- Billesbolle, C.B. et al. (2023). \"Structural basis of odorant recognition by a human odorant receptor.\" Nature 615:742-749.",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:14",
+        "type": "Claim",
+        "label": "Solved structure of Human olfactory receptor OR51E2 bound to propionate in compl\u2026",
+        "full_claim": "Solved structure of Human olfactory receptor OR51E2 bound to propionate in complex with miniGs399, method=ELECTRON MICROSCOPY, resolution=3.1 A, released 2023-03-22. This is a structural cross-check only -- it does not itself make a claim about tumor direction/mechanism.",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.72,
+        "source": "PDB 8F76 -- Billesbolle, C.B. et al. (2023). \"Structural basis of odorant recognition by a human odorant receptor.\" Nature 615:742-749.",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 14
+      },
+      {
+        "id": "model:chembl_aggregated_heterologous_expression_assays_multiple_cell_systems_see_individual_assay_description_fields",
+        "type": "ModelSystem",
+        "label": "ChEMBL-aggregated heterologous expression assays (multiple cell systems, see individual assay_description fields)"
+      },
+      {
+        "id": "paper:chembl_target_chembl4523454_olfactory_receptor_5",
+        "type": "Paper",
+        "label": "ChEMBL target CHEMBL4523454 (Olfactory receptor 51E2), live API pull",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:15",
+        "type": "Claim",
+        "label": "144 bioactivity records in ChEMBL for OR51E2 (Olfactory receptor 51E2), spanning\u2026",
+        "full_claim": "144 bioactivity records in ChEMBL for OR51E2 (Olfactory receptor 51E2), spanning 26 unique molecules and 25 EC50/IC50 potency measurements. Top assay types: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with (n=24); Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with (n=24); Agonist activity at PSGR/OR51E2 in human LNCaP cells assessed as induction of change in extracellula (n=1).",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.609,
+        "source": "ChEMBL target CHEMBL4523454 (Olfactory receptor 51E2), live API pull",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 15
+      },
+      {
+        "id": "model:antagonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "ModelSystem",
+        "label": "Antagonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay"
+      },
+      {
+        "id": "paper:chembl_activity_19491341_chembl547_in_assay_chem",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491341 (CHEMBL547 in assay CHEMBL4482523, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:16",
+        "type": "Claim",
+        "label": "ISOTRETINOIN (CHEMBL547) shows IC50 = 160.0 nM at OR51E2 in assay: Antagonist ac\u2026",
+        "full_claim": "ISOTRETINOIN (CHEMBL547) shows IC50 = 160.0 nM at OR51E2 in assay: Antagonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491341 (CHEMBL547 in assay CHEMBL4482523, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 16
+      },
+      {
+        "id": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "ModelSystem",
+        "label": "Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay"
+      },
+      {
+        "id": "paper:chembl_activity_19491366_chembl773_in_assay_chem",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491366 (CHEMBL773 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:17",
+        "type": "Claim",
+        "label": "GLYCINE (CHEMBL773) shows EC50 = 58.0 nM at OR51E2 in assay: Agonist activity at\u2026",
+        "full_claim": "GLYCINE (CHEMBL773) shows EC50 = 58.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491366 (CHEMBL773 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 17
+      },
+      {
+        "id": "paper:chembl_activity_19491367_chembl4556656_in_assay_",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491367 (CHEMBL4556656 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:18",
+        "type": "Claim",
+        "label": "CHEMBL4556656 (CHEMBL4556656) shows EC50 = 1.9 nM at OR51E2 in assay: Agonist ac\u2026",
+        "full_claim": "CHEMBL4556656 (CHEMBL4556656) shows EC50 = 1.9 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491367 (CHEMBL4556656 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 18
+      },
+      {
+        "id": "paper:chembl_activity_19491368_chembl1686_in_assay_che",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491368 (CHEMBL1686 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:19",
+        "type": "Claim",
+        "label": "ALPHA-KETOGLUTARIC ACID (CHEMBL1686) shows EC50 = 5.5 nM at OR51E2 in assay: Ago\u2026",
+        "full_claim": "ALPHA-KETOGLUTARIC ACID (CHEMBL1686) shows EC50 = 5.5 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491368 (CHEMBL1686 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 19
+      },
+      {
+        "id": "paper:chembl_activity_19491369_chembl276849_in_assay_c",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491369 (CHEMBL276849 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:20",
+        "type": "Claim",
+        "label": "2-PYRROLIDONE (CHEMBL276849) shows EC50 = 1.9 nM at OR51E2 in assay: Agonist act\u2026",
+        "full_claim": "2-PYRROLIDONE (CHEMBL276849) shows EC50 = 1.9 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491369 (CHEMBL276849 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 20
+      },
+      {
+        "id": "paper:chembl_activity_19491370_chembl2447922_in_assay_",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491370 (CHEMBL2447922 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:21",
+        "type": "Claim",
+        "label": "IMIDAZOLINONE (CHEMBL2447922) shows EC50 = 0.0076 nM at OR51E2 in assay: Agonist\u2026",
+        "full_claim": "IMIDAZOLINONE (CHEMBL2447922) shows EC50 = 0.0076 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491370 (CHEMBL2447922 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 21
+      },
+      {
+        "id": "paper:chembl_activity_19491371_chembl1328799_in_assay_",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491371 (CHEMBL1328799 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:22",
+        "type": "Claim",
+        "label": "CHEMBL1328799 (CHEMBL1328799) shows EC50 = 0.00044 nM at OR51E2 in assay: Agonis\u2026",
+        "full_claim": "CHEMBL1328799 (CHEMBL1328799) shows EC50 = 0.00044 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491371 (CHEMBL1328799 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 22
+      },
+      {
+        "id": "paper:chembl_activity_19491372_chembl406291_in_assay_c",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491372 (CHEMBL406291 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:23",
+        "type": "Claim",
+        "label": "BRADYKININ (CHEMBL406291) shows EC50 = 1.3 nM at OR51E2 in assay: Agonist activi\u2026",
+        "full_claim": "BRADYKININ (CHEMBL406291) shows EC50 = 1.3 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491372 (CHEMBL406291 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 23
+      },
+      {
+        "id": "paper:chembl_activity_19491373_chembl278081_in_assay_c",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491373 (CHEMBL278081 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:24",
+        "type": "Claim",
+        "label": "HISTIDINOL (CHEMBL278081) shows EC50 = 0.035 nM at OR51E2 in assay: Agonist acti\u2026",
+        "full_claim": "HISTIDINOL (CHEMBL278081) shows EC50 = 0.035 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491373 (CHEMBL278081 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 24
+      },
+      {
+        "id": "paper:chembl_activity_19491374_chembl1234751_in_assay_",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491374 (CHEMBL1234751 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:25",
+        "type": "Claim",
+        "label": "ACETYLGLUTAMIC ACID (CHEMBL1234751) shows EC50 = 0.23 nM at OR51E2 in assay: Ago\u2026",
+        "full_claim": "ACETYLGLUTAMIC ACID (CHEMBL1234751) shows EC50 = 0.23 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491374 (CHEMBL1234751 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 25
+      },
+      {
+        "id": "paper:chembl_activity_19491375_chembl318743_in_assay_c",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491375 (CHEMBL318743 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:26",
+        "type": "Claim",
+        "label": "TETRAHYDROCURCUMIN (CHEMBL318743) shows EC50 = 570.0 nM at OR51E2 in assay: Agon\u2026",
+        "full_claim": "TETRAHYDROCURCUMIN (CHEMBL318743) shows EC50 = 570.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491375 (CHEMBL318743 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 26
+      },
+      {
+        "id": "paper:chembl_activity_19491376_chembl4566376_in_assay_",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491376 (CHEMBL4566376 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:27",
+        "type": "Claim",
+        "label": "CHEMBL4566376 (CHEMBL4566376) shows EC50 = 6.4 nM at OR51E2 in assay: Agonist ac\u2026",
+        "full_claim": "CHEMBL4566376 (CHEMBL4566376) shows EC50 = 6.4 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491376 (CHEMBL4566376 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 27
+      },
+      {
+        "id": "paper:chembl_activity_19491377_chembl4574750_in_assay_",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491377 (CHEMBL4574750 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:28",
+        "type": "Claim",
+        "label": "CHEMBL4574750 (CHEMBL4574750) shows EC50 = 26.0 nM at OR51E2 in assay: Agonist a\u2026",
+        "full_claim": "CHEMBL4574750 (CHEMBL4574750) shows EC50 = 26.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491377 (CHEMBL4574750 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 28
+      },
+      {
+        "id": "paper:chembl_activity_19491378_chembl1230192_in_assay_",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491378 (CHEMBL1230192 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:29",
+        "type": "Claim",
+        "label": "CHEMBL1230192 (CHEMBL1230192) shows EC50 = 420.0 nM at OR51E2 in assay: Agonist \u2026",
+        "full_claim": "CHEMBL1230192 (CHEMBL1230192) shows EC50 = 420.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491378 (CHEMBL1230192 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 29
+      },
+      {
+        "id": "paper:chembl_activity_19491379_chembl591036_in_assay_c",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491379 (CHEMBL591036 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:30",
+        "type": "Claim",
+        "label": "PELARGONIDIN CHLORIDE (CHEMBL591036) shows EC50 = 0.42 nM at OR51E2 in assay: Ag\u2026",
+        "full_claim": "PELARGONIDIN CHLORIDE (CHEMBL591036) shows EC50 = 0.42 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491379 (CHEMBL591036 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 30
+      },
+      {
+        "id": "paper:chembl_activity_19491380_chembl1882218_in_assay_",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491380 (CHEMBL1882218 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:31",
+        "type": "Claim",
+        "label": "CHEMBL1882218 (CHEMBL1882218) shows EC50 = 12000.0 nM at OR51E2 in assay: Agonis\u2026",
+        "full_claim": "CHEMBL1882218 (CHEMBL1882218) shows EC50 = 12000.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491380 (CHEMBL1882218 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 31
+      },
+      {
+        "id": "paper:chembl_activity_19491381_chembl985_in_assay_chem",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491381 (CHEMBL985 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:32",
+        "type": "Claim",
+        "label": "UREA (CHEMBL985) shows EC50 = 23.0 nM at OR51E2 in assay: Agonist activity at PS\u2026",
+        "full_claim": "UREA (CHEMBL985) shows EC50 = 23.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491381 (CHEMBL985 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 32
+      },
+      {
+        "id": "paper:chembl_activity_19491382_chembl4590792_in_assay_",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491382 (CHEMBL4590792 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:33",
+        "type": "Claim",
+        "label": "CHEMBL4590792 (CHEMBL4590792) shows EC50 = 1000.0 nM at OR51E2 in assay: Agonist\u2026",
+        "full_claim": "CHEMBL4590792 (CHEMBL4590792) shows EC50 = 1000.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491382 (CHEMBL4590792 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 33
+      },
+      {
+        "id": "paper:chembl_activity_19491383_chembl292467_in_assay_c",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491383 (CHEMBL292467 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:34",
+        "type": "Claim",
+        "label": "CHEMBL292467 (CHEMBL292467) shows EC50 = 11000.0 nM at OR51E2 in assay: Agonist \u2026",
+        "full_claim": "CHEMBL292467 (CHEMBL292467) shows EC50 = 11000.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491383 (CHEMBL292467 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 34
+      },
+      {
+        "id": "paper:chembl_activity_19491384_chembl299420_in_assay_c",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491384 (CHEMBL299420 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:35",
+        "type": "Claim",
+        "label": "CHEMBL299420 (CHEMBL299420) shows EC50 = 14000.0 nM at OR51E2 in assay: Agonist \u2026",
+        "full_claim": "CHEMBL299420 (CHEMBL299420) shows EC50 = 14000.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491384 (CHEMBL299420 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 35
+      },
+      {
+        "id": "paper:chembl_activity_19491385_chembl1230438_in_assay_",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491385 (CHEMBL1230438 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:36",
+        "type": "Claim",
+        "label": "CHEMBL1230438 (CHEMBL1230438) shows EC50 = 0.79 nM at OR51E2 in assay: Agonist a\u2026",
+        "full_claim": "CHEMBL1230438 (CHEMBL1230438) shows EC50 = 0.79 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491385 (CHEMBL1230438 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 36
+      },
+      {
+        "id": "paper:chembl_activity_19491386_chembl82293_in_assay_ch",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491386 (CHEMBL82293 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:37",
+        "type": "Claim",
+        "label": "PALMITIC ACID (CHEMBL82293) shows EC50 = 9.8 nM at OR51E2 in assay: Agonist acti\u2026",
+        "full_claim": "PALMITIC ACID (CHEMBL82293) shows EC50 = 9.8 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491386 (CHEMBL82293 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 37
+      },
+      {
+        "id": "paper:chembl_activity_19491387_chembl4517318_in_assay_",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491387 (CHEMBL4517318 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:38",
+        "type": "Claim",
+        "label": "CHEMBL4517318 (CHEMBL4517318) shows EC50 = 0.15 nM at OR51E2 in assay: Agonist a\u2026",
+        "full_claim": "CHEMBL4517318 (CHEMBL4517318) shows EC50 = 0.15 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491387 (CHEMBL4517318 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 38
+      },
+      {
+        "id": "paper:chembl_activity_19491388_chembl196228_in_assay_c",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491388 (CHEMBL196228 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:39",
+        "type": "Claim",
+        "label": "EPITESTOSTERONE (CHEMBL196228) shows EC50 = 0.69 nM at OR51E2 in assay: Agonist \u2026",
+        "full_claim": "EPITESTOSTERONE (CHEMBL196228) shows EC50 = 0.69 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491388 (CHEMBL196228 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 39
+      },
+      {
+        "id": "paper:chembl_activity_19491389_chembl193482_in_assay_c",
+        "type": "Paper",
+        "label": "ChEMBL activity 19491389 (CHEMBL193482 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "source_type": "database_derived"
+      },
+      {
+        "id": "claim:OR51E2:40",
+        "type": "Claim",
+        "label": "ESTRIOL (CHEMBL193482) shows EC50 = 53000.0 nM at OR51E2 in assay: Agonist activ\u2026",
+        "full_claim": "ESTRIOL (CHEMBL193482) shows EC50 = 53000.0 nM at OR51E2 in assay: Agonist activity at PSGR/OR51E2 (unknown origin) expressed in human Hana3A cells co-transfected with CRE-Luc by luciferase reporter gene assay",
+        "direction": "neutral",
+        "direction_context": "expression_pattern",
+        "weight": 0.6,
+        "source": "ChEMBL activity 19491389 (CHEMBL193482 in assay CHEMBL4482521, document CHEMBL4482311)",
+        "status": "structural",
+        "color_hint": "blue",
+        "record_id": 40
+      }
+    ],
+    "edges": [
+      {
+        "id": "e:claim:OR51E2:1:receptor",
+        "from": "claim:OR51E2:1",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 1.2,
+        "contested": true
+      },
+      {
+        "id": "e:claim:OR51E2:1:cancer",
+        "from": "claim:OR51E2:1",
+        "to": "cancer:prostate_cancer",
+        "type": "in_cancer",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:1:model",
+        "from": "claim:OR51E2:1",
+        "to": "model:lncap_cells_endogenous_receptor_also_hek293_and_pc_3_cells_and_primary_prostate_epithelial_cells",
+        "type": "in_model",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:1:paper",
+        "from": "claim:OR51E2:1",
+        "to": "paper:neuhaus_em_zhang_w_gelis_l_deng_y_noldus_j_hatt_",
+        "type": "from_paper",
+        "weight": 1.2,
+        "contested": false,
+        "source_type": "primary_study"
+      },
+      {
+        "id": "e:claim:OR51E2:1:direction",
+        "from": "claim:OR51E2:1",
+        "to": "direction:tumor_suppressive",
+        "type": "asserts_direction",
+        "weight": 1.2,
+        "contested": true,
+        "direction_context": "activation_effect"
+      },
+      {
+        "id": "e:claim:OR51E2:1:endpoint",
+        "from": "claim:OR51E2:1",
+        "to": "endpoint:proliferation",
+        "type": "measures_endpoint",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:1:mech",
+        "from": "claim:OR51E2:1",
+        "to": "mechanism:beta_ionone_binding_triggers_an_intracel",
+        "type": "via_mechanism",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:1:lig:\u03b2_ionone",
+        "from": "claim:OR51E2:1",
+        "to": "ligand:\u03b2_ionone",
+        "type": "uses_ligand",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:1:lig:androstenone",
+        "from": "claim:OR51E2:1",
+        "to": "ligand:androstenone",
+        "type": "uses_ligand",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:2:receptor",
+        "from": "claim:OR51E2:2",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 1.2,
+        "contested": true
+      },
+      {
+        "id": "e:claim:OR51E2:2:cancer",
+        "from": "claim:OR51E2:2",
+        "to": "cancer:prostate_cancer",
+        "type": "in_cancer",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:2:model",
+        "from": "claim:OR51E2:2",
+        "to": "model:lncap",
+        "type": "in_model",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:2:paper",
+        "from": "claim:OR51E2:2",
+        "to": "paper:sanz_g_leray_i_dewaele_a_sobilo_j_lerondel_s_bou",
+        "type": "from_paper",
+        "weight": 1.2,
+        "contested": false,
+        "source_type": "primary_study"
+      },
+      {
+        "id": "e:claim:OR51E2:2:direction",
+        "from": "claim:OR51E2:2",
+        "to": "direction:tumor_promoting",
+        "type": "asserts_direction",
+        "weight": 1.2,
+        "contested": true,
+        "direction_context": "activation_effect"
+      },
+      {
+        "id": "e:claim:OR51E2:2:endpoint",
+        "from": "claim:OR51E2:2",
+        "to": "endpoint:invasiveness",
+        "type": "measures_endpoint",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:2:mech",
+        "from": "claim:OR51E2:2",
+        "to": "mechanism:beta_ionone_100_um_increased_lncap_invas",
+        "type": "via_mechanism",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:2:lig:\u03b2_ionone",
+        "from": "claim:OR51E2:2",
+        "to": "ligand:\u03b2_ionone",
+        "type": "uses_ligand",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:2:lig:\u03b1_ionone",
+        "from": "claim:OR51E2:2",
+        "to": "ligand:\u03b1_ionone",
+        "type": "uses_ligand",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:3:receptor",
+        "from": "claim:OR51E2:3",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 1.2,
+        "contested": true
+      },
+      {
+        "id": "e:claim:OR51E2:3:cancer",
+        "from": "claim:OR51E2:3",
+        "to": "cancer:prostate_cancer",
+        "type": "in_cancer",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:3:model",
+        "from": "claim:OR51E2:3",
+        "to": "model:psgr_transgenic_mouse_model_probasin_promoter_lncap_xenograft_mouse",
+        "type": "in_model",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:3:paper",
+        "from": "claim:OR51E2:3",
+        "to": "paper:rodriguez_m_luo_w_weng_j_zeng_l_yi_z_siwko_s_liu",
+        "type": "from_paper",
+        "weight": 1.2,
+        "contested": false,
+        "source_type": "primary_study"
+      },
+      {
+        "id": "e:claim:OR51E2:3:direction",
+        "from": "claim:OR51E2:3",
+        "to": "direction:tumor_promoting",
+        "type": "asserts_direction",
+        "weight": 1.2,
+        "contested": true,
+        "direction_context": "activation_effect"
+      },
+      {
+        "id": "e:claim:OR51E2:3:endpoint",
+        "from": "claim:OR51E2:3",
+        "to": "endpoint:tumor_growth",
+        "type": "measures_endpoint",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:3:mech",
+        "from": "claim:OR51E2:3",
+        "to": "mechanism:probasin_promoter_driven_psgr_transgenic",
+        "type": "via_mechanism",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:4:receptor",
+        "from": "claim:OR51E2:4",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 1.2,
+        "contested": true
+      },
+      {
+        "id": "e:claim:OR51E2:4:cancer",
+        "from": "claim:OR51E2:4",
+        "to": "cancer:prostate_cancer",
+        "type": "in_cancer",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:4:model",
+        "from": "claim:OR51E2:4",
+        "to": "model:lncap_cells_inducible_expression_system",
+        "type": "in_model",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:4:paper",
+        "from": "claim:OR51E2:4",
+        "to": "paper:pronin_a_slepak_v_2021_ectopically_expressed_olf",
+        "type": "from_paper",
+        "weight": 1.2,
+        "contested": false,
+        "source_type": "primary_study"
+      },
+      {
+        "id": "e:claim:OR51E2:4:direction",
+        "from": "claim:OR51E2:4",
+        "to": "direction:tumor_suppressive",
+        "type": "asserts_direction",
+        "weight": 1.2,
+        "contested": true,
+        "direction_context": "activation_effect"
+      },
+      {
+        "id": "e:claim:OR51E2:4:endpoint",
+        "from": "claim:OR51E2:4",
+        "to": "endpoint:proliferation",
+        "type": "measures_endpoint",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:4:mech",
+        "from": "claim:OR51E2:4",
+        "to": "mechanism:inducible_expression_system_in_lncap_cel",
+        "type": "via_mechanism",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:4:lig:\u03b2_ionone",
+        "from": "claim:OR51E2:4",
+        "to": "ligand:\u03b2_ionone",
+        "type": "uses_ligand",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:4:lig:androstenone",
+        "from": "claim:OR51E2:4",
+        "to": "ligand:androstenone",
+        "type": "uses_ligand",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:5:receptor",
+        "from": "claim:OR51E2:5",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 1.2,
+        "contested": true
+      },
+      {
+        "id": "e:claim:OR51E2:5:cancer",
+        "from": "claim:OR51E2:5",
+        "to": "cancer:melanoma",
+        "type": "in_cancer",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:5:model",
+        "from": "claim:OR51E2:5",
+        "to": "model:human_primary_melanoma_tissue_and_melanoma_metastasis_samples_cultured_vgp_melanoma_cells",
+        "type": "in_model",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:5:paper",
+        "from": "claim:OR51E2:5",
+        "to": "paper:gelis_l_jovancevic_n_veitinger_s_mandal_b_arndt_",
+        "type": "from_paper",
+        "weight": 1.2,
+        "contested": false,
+        "source_type": "primary_study"
+      },
+      {
+        "id": "e:claim:OR51E2:5:direction",
+        "from": "claim:OR51E2:5",
+        "to": "direction:tumor_suppressive",
+        "type": "asserts_direction",
+        "weight": 1.2,
+        "contested": true,
+        "direction_context": "activation_effect"
+      },
+      {
+        "id": "e:claim:OR51E2:5:endpoint",
+        "from": "claim:OR51E2:5",
+        "to": "endpoint:proliferation",
+        "type": "measures_endpoint",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:5:mech",
+        "from": "claim:OR51E2:5",
+        "to": "mechanism:beta_ionone_activation_of_endogenous_or5",
+        "type": "via_mechanism",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:5:lig:\u03b2_ionone",
+        "from": "claim:OR51E2:5",
+        "to": "ligand:\u03b2_ionone",
+        "type": "uses_ligand",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:6:receptor",
+        "from": "claim:OR51E2:6",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 1.2,
+        "contested": true
+      },
+      {
+        "id": "e:claim:OR51E2:6:cancer",
+        "from": "claim:OR51E2:6",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:6:model",
+        "from": "claim:OR51E2:6",
+        "to": "model:rpe_cells_non_cancer",
+        "type": "in_model",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:6:paper",
+        "from": "claim:OR51E2:6",
+        "to": "paper:jovancevic_n_dendorfer_a_matzkies_m_et_al_2017_m",
+        "type": "from_paper",
+        "weight": 1.2,
+        "contested": false,
+        "source_type": "primary_study"
+      },
+      {
+        "id": "e:claim:OR51E2:6:direction",
+        "from": "claim:OR51E2:6",
+        "to": "direction:tumor_promoting",
+        "type": "asserts_direction",
+        "weight": 1.2,
+        "contested": true,
+        "direction_context": "activation_effect"
+      },
+      {
+        "id": "e:claim:OR51E2:6:endpoint",
+        "from": "claim:OR51E2:6",
+        "to": "endpoint:proliferation",
+        "type": "measures_endpoint",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:6:mech",
+        "from": "claim:OR51E2:6",
+        "to": "mechanism:beta_ionone_triggers_ca2_influx_primaril",
+        "type": "via_mechanism",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:6:lig:\u03b2_ionone",
+        "from": "claim:OR51E2:6",
+        "to": "ligand:\u03b2_ionone",
+        "type": "uses_ligand",
+        "weight": 1.2,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:7:receptor",
+        "from": "claim:OR51E2:7",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.48,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:7:cancer",
+        "from": "claim:OR51E2:7",
+        "to": "cancer:prostate_cancer",
+        "type": "in_cancer",
+        "weight": 0.48,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:7:model",
+        "from": "claim:OR51E2:7",
+        "to": "model:hek293_cells_transient_transfection_heterologous_or51e2_expression",
+        "type": "in_model",
+        "weight": 0.48,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:7:paper",
+        "from": "claim:OR51E2:7",
+        "to": "paper:bansal_s_gudisay_s_2025_dual_luciferase_reporter",
+        "type": "from_paper",
+        "weight": 0.48,
+        "contested": false,
+        "source_type": "preliminary"
+      },
+      {
+        "id": "e:claim:OR51E2:7:direction",
+        "from": "claim:OR51E2:7",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.48,
+        "contested": false,
+        "direction_context": "activation_effect"
+      },
+      {
+        "id": "e:claim:OR51E2:7:mech",
+        "from": "claim:OR51E2:7",
+        "to": "mechanism:creb_driven_firefly_luciferase_reports_d",
+        "type": "via_mechanism",
+        "weight": 0.24,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:8:receptor",
+        "from": "claim:OR51E2:8",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.1,
+        "contested": true
+      },
+      {
+        "id": "e:claim:OR51E2:8:cancer",
+        "from": "claim:OR51E2:8",
+        "to": "cancer:prostate_cancer",
+        "type": "in_cancer",
+        "weight": 0.1,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:8:model",
+        "from": "claim:OR51E2:8",
+        "to": "model:patent_disclosure_in_vitro_in_vivo_data_referenced_in_specification_not_independently_verified_here",
+        "type": "in_model",
+        "weight": 0.1,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:8:paper",
+        "from": "claim:OR51E2:8",
+        "to": "paper:us10588884b2_modulators_of_prostate_specific_g_p",
+        "type": "from_paper",
+        "weight": 0.1,
+        "contested": false,
+        "source_type": "patent"
+      },
+      {
+        "id": "e:claim:OR51E2:8:direction",
+        "from": "claim:OR51E2:8",
+        "to": "direction:tumor_promoting",
+        "type": "asserts_direction",
+        "weight": 0.1,
+        "contested": true,
+        "direction_context": "activation_effect"
+      },
+      {
+        "id": "e:claim:OR51E2:8:mech",
+        "from": "claim:OR51E2:8",
+        "to": "mechanism:chronic_agonist_mediated_or51e2_activati",
+        "type": "via_mechanism",
+        "weight": 0.05,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:9:receptor",
+        "from": "claim:OR51E2:9",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.1,
+        "contested": true
+      },
+      {
+        "id": "e:claim:OR51E2:9:cancer",
+        "from": "claim:OR51E2:9",
+        "to": "cancer:prostate_cancer",
+        "type": "in_cancer",
+        "weight": 0.1,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:9:model",
+        "from": "claim:OR51E2:9",
+        "to": "model:patent_disclosure_in_vitro_in_vivo_data_referenced_in_specification_not_independently_verified_here",
+        "type": "in_model",
+        "weight": 0.1,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:9:paper",
+        "from": "claim:OR51E2:9",
+        "to": "paper:us12186294b2_modulators_of_prostate_specific_g_p",
+        "type": "from_paper",
+        "weight": 0.1,
+        "contested": false,
+        "source_type": "patent"
+      },
+      {
+        "id": "e:claim:OR51E2:9:direction",
+        "from": "claim:OR51E2:9",
+        "to": "direction:tumor_promoting",
+        "type": "asserts_direction",
+        "weight": 0.1,
+        "contested": true,
+        "direction_context": "activation_effect"
+      },
+      {
+        "id": "e:claim:OR51E2:9:mech",
+        "from": "claim:OR51E2:9",
+        "to": "mechanism:same_as_us10588884b2_plus_a_proposed_inf",
+        "type": "via_mechanism",
+        "weight": 0.05,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:10:receptor",
+        "from": "claim:OR51E2:10",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.66,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:10:cancer",
+        "from": "claim:OR51E2:10",
+        "to": "cancer:pan_cancer",
+        "type": "in_cancer",
+        "weight": 0.66,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:10:model",
+        "from": "claim:OR51E2:10",
+        "to": "model:tcga_pan_cancer_cohort_cnv_calls",
+        "type": "in_model",
+        "weight": 0.66,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:10:paper",
+        "from": "claim:OR51E2:10",
+        "to": "paper:gdc_api_cnvs_endpoint_gene_ensg00000167332_live_",
+        "type": "from_paper",
+        "weight": 0.66,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:10:direction",
+        "from": "claim:OR51E2:10",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.66,
+        "contested": false,
+        "direction_context": "genetic_alteration"
+      },
+      {
+        "id": "e:claim:OR51E2:11:receptor",
+        "from": "claim:OR51E2:11",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.601,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:11:cancer",
+        "from": "claim:OR51E2:11",
+        "to": "cancer:prad",
+        "type": "in_cancer",
+        "weight": 0.601,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:11:model",
+        "from": "claim:OR51E2:11",
+        "to": "model:tcga_prad_cohort_cnv_calls",
+        "type": "in_model",
+        "weight": 0.601,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:11:paper",
+        "from": "claim:OR51E2:11",
+        "to": "paper:gdc_api_cnvs_endpoint_gene_ensg00000167332_tcga_",
+        "type": "from_paper",
+        "weight": 0.601,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:11:direction",
+        "from": "claim:OR51E2:11",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.601,
+        "contested": false,
+        "direction_context": "genetic_alteration"
+      },
+      {
+        "id": "e:claim:OR51E2:12:receptor",
+        "from": "claim:OR51E2:12",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.601,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:12:cancer",
+        "from": "claim:OR51E2:12",
+        "to": "cancer:kich",
+        "type": "in_cancer",
+        "weight": 0.601,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:12:model",
+        "from": "claim:OR51E2:12",
+        "to": "model:tcga_kich_cohort_cnv_calls",
+        "type": "in_model",
+        "weight": 0.601,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:12:paper",
+        "from": "claim:OR51E2:12",
+        "to": "paper:gdc_api_cnvs_endpoint_gene_ensg00000167332_tcga_",
+        "type": "from_paper",
+        "weight": 0.601,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:12:direction",
+        "from": "claim:OR51E2:12",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.601,
+        "contested": false,
+        "direction_context": "genetic_alteration"
+      },
+      {
+        "id": "e:claim:OR51E2:13:receptor",
+        "from": "claim:OR51E2:13",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.613,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:13:cancer",
+        "from": "claim:OR51E2:13",
+        "to": "cancer:pan_cancer",
+        "type": "in_cancer",
+        "weight": 0.613,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:13:model",
+        "from": "claim:OR51E2:13",
+        "to": "model:tcga_pan_cancer_cohort_simple_somatic_mutation_calls",
+        "type": "in_model",
+        "weight": 0.613,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:13:paper",
+        "from": "claim:OR51E2:13",
+        "to": "paper:gdc_api_ssms_endpoint_gene_ensg00000167332_live_",
+        "type": "from_paper",
+        "weight": 0.613,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:13:direction",
+        "from": "claim:OR51E2:13",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.613,
+        "contested": false,
+        "direction_context": "genetic_alteration"
+      },
+      {
+        "id": "e:claim:OR51E2:14:receptor",
+        "from": "claim:OR51E2:14",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.72,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:14:cancer",
+        "from": "claim:OR51E2:14",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.72,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:14:model",
+        "from": "claim:OR51E2:14",
+        "to": "model:electron_microscopy_structure_human_olfactory_receptor_or51e2_bound_to_propionate_in_complex_with_minigs399",
+        "type": "in_model",
+        "weight": 0.72,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:14:paper",
+        "from": "claim:OR51E2:14",
+        "to": "paper:pdb_8f76_billesbolle_c_b_et_al_2023_structural_b",
+        "type": "from_paper",
+        "weight": 0.72,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:14:direction",
+        "from": "claim:OR51E2:14",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.72,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:15:receptor",
+        "from": "claim:OR51E2:15",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.609,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:15:cancer",
+        "from": "claim:OR51E2:15",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.609,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:15:model",
+        "from": "claim:OR51E2:15",
+        "to": "model:chembl_aggregated_heterologous_expression_assays_multiple_cell_systems_see_individual_assay_description_fields",
+        "type": "in_model",
+        "weight": 0.609,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:15:paper",
+        "from": "claim:OR51E2:15",
+        "to": "paper:chembl_target_chembl4523454_olfactory_receptor_5",
+        "type": "from_paper",
+        "weight": 0.609,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:15:direction",
+        "from": "claim:OR51E2:15",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.609,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:16:receptor",
+        "from": "claim:OR51E2:16",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:16:cancer",
+        "from": "claim:OR51E2:16",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:16:model",
+        "from": "claim:OR51E2:16",
+        "to": "model:antagonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:16:paper",
+        "from": "claim:OR51E2:16",
+        "to": "paper:chembl_activity_19491341_chembl547_in_assay_chem",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:16:direction",
+        "from": "claim:OR51E2:16",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:17:receptor",
+        "from": "claim:OR51E2:17",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:17:cancer",
+        "from": "claim:OR51E2:17",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:17:model",
+        "from": "claim:OR51E2:17",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:17:paper",
+        "from": "claim:OR51E2:17",
+        "to": "paper:chembl_activity_19491366_chembl773_in_assay_chem",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:17:direction",
+        "from": "claim:OR51E2:17",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:18:receptor",
+        "from": "claim:OR51E2:18",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:18:cancer",
+        "from": "claim:OR51E2:18",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:18:model",
+        "from": "claim:OR51E2:18",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:18:paper",
+        "from": "claim:OR51E2:18",
+        "to": "paper:chembl_activity_19491367_chembl4556656_in_assay_",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:18:direction",
+        "from": "claim:OR51E2:18",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:19:receptor",
+        "from": "claim:OR51E2:19",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:19:cancer",
+        "from": "claim:OR51E2:19",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:19:model",
+        "from": "claim:OR51E2:19",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:19:paper",
+        "from": "claim:OR51E2:19",
+        "to": "paper:chembl_activity_19491368_chembl1686_in_assay_che",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:19:direction",
+        "from": "claim:OR51E2:19",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:20:receptor",
+        "from": "claim:OR51E2:20",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:20:cancer",
+        "from": "claim:OR51E2:20",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:20:model",
+        "from": "claim:OR51E2:20",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:20:paper",
+        "from": "claim:OR51E2:20",
+        "to": "paper:chembl_activity_19491369_chembl276849_in_assay_c",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:20:direction",
+        "from": "claim:OR51E2:20",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:21:receptor",
+        "from": "claim:OR51E2:21",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:21:cancer",
+        "from": "claim:OR51E2:21",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:21:model",
+        "from": "claim:OR51E2:21",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:21:paper",
+        "from": "claim:OR51E2:21",
+        "to": "paper:chembl_activity_19491370_chembl2447922_in_assay_",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:21:direction",
+        "from": "claim:OR51E2:21",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:22:receptor",
+        "from": "claim:OR51E2:22",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:22:cancer",
+        "from": "claim:OR51E2:22",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:22:model",
+        "from": "claim:OR51E2:22",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:22:paper",
+        "from": "claim:OR51E2:22",
+        "to": "paper:chembl_activity_19491371_chembl1328799_in_assay_",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:22:direction",
+        "from": "claim:OR51E2:22",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:23:receptor",
+        "from": "claim:OR51E2:23",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:23:cancer",
+        "from": "claim:OR51E2:23",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:23:model",
+        "from": "claim:OR51E2:23",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:23:paper",
+        "from": "claim:OR51E2:23",
+        "to": "paper:chembl_activity_19491372_chembl406291_in_assay_c",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:23:direction",
+        "from": "claim:OR51E2:23",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:24:receptor",
+        "from": "claim:OR51E2:24",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:24:cancer",
+        "from": "claim:OR51E2:24",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:24:model",
+        "from": "claim:OR51E2:24",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:24:paper",
+        "from": "claim:OR51E2:24",
+        "to": "paper:chembl_activity_19491373_chembl278081_in_assay_c",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:24:direction",
+        "from": "claim:OR51E2:24",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:25:receptor",
+        "from": "claim:OR51E2:25",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:25:cancer",
+        "from": "claim:OR51E2:25",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:25:model",
+        "from": "claim:OR51E2:25",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:25:paper",
+        "from": "claim:OR51E2:25",
+        "to": "paper:chembl_activity_19491374_chembl1234751_in_assay_",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:25:direction",
+        "from": "claim:OR51E2:25",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:26:receptor",
+        "from": "claim:OR51E2:26",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:26:cancer",
+        "from": "claim:OR51E2:26",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:26:model",
+        "from": "claim:OR51E2:26",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:26:paper",
+        "from": "claim:OR51E2:26",
+        "to": "paper:chembl_activity_19491375_chembl318743_in_assay_c",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:26:direction",
+        "from": "claim:OR51E2:26",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:27:receptor",
+        "from": "claim:OR51E2:27",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:27:cancer",
+        "from": "claim:OR51E2:27",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:27:model",
+        "from": "claim:OR51E2:27",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:27:paper",
+        "from": "claim:OR51E2:27",
+        "to": "paper:chembl_activity_19491376_chembl4566376_in_assay_",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:27:direction",
+        "from": "claim:OR51E2:27",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:28:receptor",
+        "from": "claim:OR51E2:28",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:28:cancer",
+        "from": "claim:OR51E2:28",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:28:model",
+        "from": "claim:OR51E2:28",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:28:paper",
+        "from": "claim:OR51E2:28",
+        "to": "paper:chembl_activity_19491377_chembl4574750_in_assay_",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:28:direction",
+        "from": "claim:OR51E2:28",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:29:receptor",
+        "from": "claim:OR51E2:29",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:29:cancer",
+        "from": "claim:OR51E2:29",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:29:model",
+        "from": "claim:OR51E2:29",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:29:paper",
+        "from": "claim:OR51E2:29",
+        "to": "paper:chembl_activity_19491378_chembl1230192_in_assay_",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:29:direction",
+        "from": "claim:OR51E2:29",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:30:receptor",
+        "from": "claim:OR51E2:30",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:30:cancer",
+        "from": "claim:OR51E2:30",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:30:model",
+        "from": "claim:OR51E2:30",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:30:paper",
+        "from": "claim:OR51E2:30",
+        "to": "paper:chembl_activity_19491379_chembl591036_in_assay_c",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:30:direction",
+        "from": "claim:OR51E2:30",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:31:receptor",
+        "from": "claim:OR51E2:31",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:31:cancer",
+        "from": "claim:OR51E2:31",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:31:model",
+        "from": "claim:OR51E2:31",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:31:paper",
+        "from": "claim:OR51E2:31",
+        "to": "paper:chembl_activity_19491380_chembl1882218_in_assay_",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:31:direction",
+        "from": "claim:OR51E2:31",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:32:receptor",
+        "from": "claim:OR51E2:32",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:32:cancer",
+        "from": "claim:OR51E2:32",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:32:model",
+        "from": "claim:OR51E2:32",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:32:paper",
+        "from": "claim:OR51E2:32",
+        "to": "paper:chembl_activity_19491381_chembl985_in_assay_chem",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:32:direction",
+        "from": "claim:OR51E2:32",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:33:receptor",
+        "from": "claim:OR51E2:33",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:33:cancer",
+        "from": "claim:OR51E2:33",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:33:model",
+        "from": "claim:OR51E2:33",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:33:paper",
+        "from": "claim:OR51E2:33",
+        "to": "paper:chembl_activity_19491382_chembl4590792_in_assay_",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:33:direction",
+        "from": "claim:OR51E2:33",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:34:receptor",
+        "from": "claim:OR51E2:34",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:34:cancer",
+        "from": "claim:OR51E2:34",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:34:model",
+        "from": "claim:OR51E2:34",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:34:paper",
+        "from": "claim:OR51E2:34",
+        "to": "paper:chembl_activity_19491383_chembl292467_in_assay_c",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:34:direction",
+        "from": "claim:OR51E2:34",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:35:receptor",
+        "from": "claim:OR51E2:35",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:35:cancer",
+        "from": "claim:OR51E2:35",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:35:model",
+        "from": "claim:OR51E2:35",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:35:paper",
+        "from": "claim:OR51E2:35",
+        "to": "paper:chembl_activity_19491384_chembl299420_in_assay_c",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:35:direction",
+        "from": "claim:OR51E2:35",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:36:receptor",
+        "from": "claim:OR51E2:36",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:36:cancer",
+        "from": "claim:OR51E2:36",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:36:model",
+        "from": "claim:OR51E2:36",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:36:paper",
+        "from": "claim:OR51E2:36",
+        "to": "paper:chembl_activity_19491385_chembl1230438_in_assay_",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:36:direction",
+        "from": "claim:OR51E2:36",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:37:receptor",
+        "from": "claim:OR51E2:37",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:37:cancer",
+        "from": "claim:OR51E2:37",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:37:model",
+        "from": "claim:OR51E2:37",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:37:paper",
+        "from": "claim:OR51E2:37",
+        "to": "paper:chembl_activity_19491386_chembl82293_in_assay_ch",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:37:direction",
+        "from": "claim:OR51E2:37",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:38:receptor",
+        "from": "claim:OR51E2:38",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:38:cancer",
+        "from": "claim:OR51E2:38",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:38:model",
+        "from": "claim:OR51E2:38",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:38:paper",
+        "from": "claim:OR51E2:38",
+        "to": "paper:chembl_activity_19491387_chembl4517318_in_assay_",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:38:direction",
+        "from": "claim:OR51E2:38",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:39:receptor",
+        "from": "claim:OR51E2:39",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:39:cancer",
+        "from": "claim:OR51E2:39",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:39:model",
+        "from": "claim:OR51E2:39",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:39:paper",
+        "from": "claim:OR51E2:39",
+        "to": "paper:chembl_activity_19491388_chembl196228_in_assay_c",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:39:direction",
+        "from": "claim:OR51E2:39",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "e:claim:OR51E2:40:receptor",
+        "from": "claim:OR51E2:40",
+        "to": "receptor:or51e2",
+        "type": "about_receptor",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:40:cancer",
+        "from": "claim:OR51E2:40",
+        "to": "cancer:unknown",
+        "type": "in_cancer",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:40:model",
+        "from": "claim:OR51E2:40",
+        "to": "model:agonist_activity_at_psgr_or51e2_unknown_origin_expressed_in_human_hana3a_cells_co_transfected_with_cre_luc_by_luciferase_reporter_gene_assay",
+        "type": "in_model",
+        "weight": 0.6,
+        "contested": false
+      },
+      {
+        "id": "e:claim:OR51E2:40:paper",
+        "from": "claim:OR51E2:40",
+        "to": "paper:chembl_activity_19491389_chembl193482_in_assay_c",
+        "type": "from_paper",
+        "weight": 0.6,
+        "contested": false,
+        "source_type": "database_derived"
+      },
+      {
+        "id": "e:claim:OR51E2:40:direction",
+        "from": "claim:OR51E2:40",
+        "to": "direction:neutral",
+        "type": "asserts_direction",
+        "weight": 0.6,
+        "contested": false,
+        "direction_context": "expression_pattern"
+      },
+      {
+        "id": "tension:claim:OR51E2:1:claim:OR51E2:2",
+        "from": "claim:OR51E2:1",
+        "to": "claim:OR51E2:2",
+        "type": "tension_with",
+        "weight": 1.2,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:1:claim:OR51E2:3",
+        "from": "claim:OR51E2:1",
+        "to": "claim:OR51E2:3",
+        "type": "tension_with",
+        "weight": 1.2,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:1:claim:OR51E2:6",
+        "from": "claim:OR51E2:1",
+        "to": "claim:OR51E2:6",
+        "type": "tension_with",
+        "weight": 1.2,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:1:claim:OR51E2:8",
+        "from": "claim:OR51E2:1",
+        "to": "claim:OR51E2:8",
+        "type": "tension_with",
+        "weight": 0.1,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:1:claim:OR51E2:9",
+        "from": "claim:OR51E2:1",
+        "to": "claim:OR51E2:9",
+        "type": "tension_with",
+        "weight": 0.1,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:4:claim:OR51E2:2",
+        "from": "claim:OR51E2:4",
+        "to": "claim:OR51E2:2",
+        "type": "tension_with",
+        "weight": 1.2,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:4:claim:OR51E2:3",
+        "from": "claim:OR51E2:4",
+        "to": "claim:OR51E2:3",
+        "type": "tension_with",
+        "weight": 1.2,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:4:claim:OR51E2:6",
+        "from": "claim:OR51E2:4",
+        "to": "claim:OR51E2:6",
+        "type": "tension_with",
+        "weight": 1.2,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:4:claim:OR51E2:8",
+        "from": "claim:OR51E2:4",
+        "to": "claim:OR51E2:8",
+        "type": "tension_with",
+        "weight": 0.1,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:4:claim:OR51E2:9",
+        "from": "claim:OR51E2:4",
+        "to": "claim:OR51E2:9",
+        "type": "tension_with",
+        "weight": 0.1,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:5:claim:OR51E2:2",
+        "from": "claim:OR51E2:5",
+        "to": "claim:OR51E2:2",
+        "type": "tension_with",
+        "weight": 1.2,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:5:claim:OR51E2:3",
+        "from": "claim:OR51E2:5",
+        "to": "claim:OR51E2:3",
+        "type": "tension_with",
+        "weight": 1.2,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:5:claim:OR51E2:6",
+        "from": "claim:OR51E2:5",
+        "to": "claim:OR51E2:6",
+        "type": "tension_with",
+        "weight": 1.2,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:5:claim:OR51E2:8",
+        "from": "claim:OR51E2:5",
+        "to": "claim:OR51E2:8",
+        "type": "tension_with",
+        "weight": 0.1,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      },
+      {
+        "id": "tension:claim:OR51E2:5:claim:OR51E2:9",
+        "from": "claim:OR51E2:5",
+        "to": "claim:OR51E2:9",
+        "type": "tension_with",
+        "weight": 0.1,
+        "contested": true,
+        "same_model_system": false,
+        "same_endpoint": false,
+        "hypothesis": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation; promoting evidence measures invasiveness, proliferation, tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint"
+      }
+    ]
+  }
+}
