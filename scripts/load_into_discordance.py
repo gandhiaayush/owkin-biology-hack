@@ -129,7 +129,10 @@ def onto_slug_cancer(raw: str) -> str:
 
 
 def main():
-    paths = [Path(p) for p in sys.argv[1:]] or list((REPO_ROOT / "data" / "receptors").glob("*.json"))
+    paths = [Path(p) for p in sys.argv[1:]] or [
+        p for p in (REPO_ROOT / "data" / "receptors").glob("*.json")
+        if not p.name.endswith("_fulltext_candidates.json")
+    ]
     if not paths:
         print("No evidence files found under data/receptors/.")
         return
