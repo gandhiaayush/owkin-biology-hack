@@ -50,10 +50,14 @@ def test_every_scorecard_has_populated_fields():
 
 
 def test_contested_sources_ranked_first():
-    """SEED_RECORDS is a genuine 2-vs-2 contested split -- every scorecard should be
-    flagged contested, and contested cards must sort ahead of non-contested ones."""
+    """SEED_RECORDS' activation_effect records (Neuhaus, Sanz) are a genuine
+    contested split; the expression_pattern records (Rodriguez, Pronin) are
+    routed to context, not activation mass, by the activation-bucket scoring
+    fix -- so at least the activation-effect cards should be contested, and
+    contested cards must sort ahead of non-contested ones."""
     cards = _build(SEED_RECORDS)
-    assert all(c.contested for c in cards)
+    activation_sources = {"Neuhaus et al. 2009, J Biol Chem", "Sanz et al. 2014, PLoS ONE"}
+    assert all(c.contested for c in cards if c.source in activation_sources)
 
     contested_flags = [c.contested for c in cards]
     # once a False appears, no True should follow (contested-first invariant)
