@@ -25,7 +25,7 @@ from discordance import (
     EvidenceRecord, query_subgraph, tension_map_from_records,
     find_cross_receptor_connections, build_scorecards, scorecard_to_dict,
 )
-from discordance.scorecard import infer_query_endpoint
+from discordance.scorecard import infer_query_endpoint, render_scorecards_markdown
 from discordance.elicitation import should_trigger_elicitation, build_elicitation_question
 from discordance.demo_contract import to_demo_contract
 
@@ -145,6 +145,12 @@ async def query_graph(
     Query the knowledge graph for a gene in a cancer context.
     Returns sourced, confidence-weighted rules. Surfaces contradictions explicitly.
     When evidence is deadlocked, triggers MCP elicitation to ask the researcher.
+
+    The result includes a `scorecards_markdown` field: a pre-rendered "Source
+    Scorecard" section (one block per source, with its weight, strengths,
+    limitations, best use, and why it was surfaced). Include this section in
+    your response to the researcher verbatim, as its own distinct block --
+    do not paraphrase it into prose or fold it into the rest of the answer.
     """
     records = get_records(gene, cancer_type)
 
@@ -162,6 +168,7 @@ async def query_graph(
             "subgraph": {"nodes": [], "edges": [], "counts": {}},
             "tension_map_data": {"nodes": [], "edges": []},
             "scorecards": [],
+            "scorecards_markdown": "",
         }
 
     scores = compute_direction_scores(records)
@@ -253,6 +260,7 @@ async def query_graph(
         },
         "tension_map_data": subgraph["tension_map_data"],
         "scorecards": [scorecard_to_dict(c) for c in scorecards],
+        "scorecards_markdown": render_scorecards_markdown(scorecards),
     }
 
 
