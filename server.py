@@ -17,14 +17,16 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 from mcp.server.fastmcp import FastMCP, Context
 from mcp.server.elicitation import AcceptedElicitation
+from mcp.server.transport_security import TransportSecuritySettings
 from mcp.shared.exceptions import McpError
 
 from discordance import (
     init_db, insert_record, get_records, get_all_records,
     detect_contradictions, compute_direction_scores, generate_rules,
     EvidenceRecord, query_subgraph, tension_map_from_records,
-    find_cross_receptor_connections,
+    find_cross_receptor_connections, build_scorecards, scorecard_to_dict,
 )
+from discordance.scorecard import infer_query_endpoint
 from discordance.elicitation import should_trigger_elicitation, build_elicitation_question
 from discordance.demo_contract import to_demo_contract
 
@@ -160,12 +162,17 @@ async def query_graph(
             "elicitation_response": None,
             "subgraph": {"nodes": [], "edges": [], "counts": {}},
             "tension_map_data": {"nodes": [], "edges": []},
+            "scorecards": [],
         }
 
     scores = compute_direction_scores(records)
     contradictions = detect_contradictions(records)
     rules = generate_rules(records)
     subgraph = query_subgraph(records, gene=gene, cancer_type=cancer_type)
+
+    scorecards = build_scorecards(
+        records, scores, contradictions, query_endpoint=infer_query_endpoint(query),
+    )
 
     elicitation_triggered = False
     elicitation_response = None
@@ -246,6 +253,7 @@ async def query_graph(
             "tensions": subgraph["tensions"],
         },
         "tension_map_data": subgraph["tension_map_data"],
+        "scorecards": [scorecard_to_dict(c) for c in scorecards],
     }
 
 
@@ -305,6 +313,11 @@ async def query_or_graph(
     `adjudication` block also always includes a `needs_judgment` + `elicitation`
     fallback shape so the demo still works if the connected client (e.g. K Pro)
     doesn't support elicitation yet -- see "Elicitation note" in KPRO_MCP_HOOKUP.md.
+
+    Demo presentation: lead with `demo_summary`, then `adjudication.verdict` /
+    `adjudication.next_steps`. Reserve `adjudication.technical`, tension
+    `technical`, and `needs_judgment` for fallback paths — do not read raw
+    boolean flags aloud to judges.
     """
     records = get_records(gene, cancer_type)
     contract = to_demo_contract(records, gene=gene, cancer_type=cancer_type, query_text=query)
@@ -369,9 +382,16 @@ if __name__ == "__main__":
     if use_http:
         mcp.settings.host = "0.0.0.0"
         mcp.settings.port = int(os.environ.get("PORT", "8000"))
+        # Cloudflare/ngrok tunnels send a non-local Host header. Default DNS-rebinding
+        # protection rejects them with "Invalid Host header" (421) — the exact failure
+        # Claude shows as "Couldn't connect to the server."
+        mcp.settings.transport_security = TransportSecuritySettings(
+            enable_dns_rebinding_protection=False,
+        )
         print(f"Starting Discordance MCP server on http://0.0.0.0:{mcp.settings.port}{mcp.settings.streamable_http_path}")
         print("Point your tunnel (ngrok/cloudflared) at this port, then use the")
-        print("resulting HTTPS URL + streamable_http_path as the connector URL in K Pro / Claude.")
+        print("resulting HTTPS URL + /mcp as the connector URL in Claude.")
+        print("Example: https://your-subdomain.trycloudflare.com/mcp  (note the /mcp suffix)")
         mcp.run(transport="streamable-http")
     else:
         mcp.run()

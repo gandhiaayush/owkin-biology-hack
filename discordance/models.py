@@ -77,6 +77,29 @@ class Rule:
 
 
 @dataclass
+class SourceScorecard:
+    """
+    Per-source summary for the end-of-query output: not just "here is the
+    evidence" but why this particular source is trustworthy (or isn't), what
+    it's actually useful for given the researcher's query, and why it was
+    surfaced at all. This is the thing a researcher reads instead of having to
+    reverse-engineer the weighting logic themselves.
+    """
+    source: str
+    source_type: SourceType
+    direction: Direction
+    weight: float
+    weight_reason: str
+    strengths: list[str]
+    limitations: list[str]
+    best_for: str
+    selection_reason: str
+    contested: bool
+    endpoint: str = "not specified"
+    unique_insight: str | None = None
+
+
+@dataclass
 class QueryResponse:
     gene: str
     cancer_type: str

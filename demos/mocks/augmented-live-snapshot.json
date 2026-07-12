@@ -1,0 +1,311 @@
+{
+  "tool": "query_or_graph",
+  "version": "0.1.0",
+  "contract_for": "Person B Query MCP -> Person C demo surface",
+  "query": {
+    "text": "Does activating OR51E2 / PSGR suppress or promote prostate cancer phenotypes? Summarize the evidence for LNCaP / prostate models, including \u03b2-ionone studies.",
+    "entities": [
+      "OR51E2",
+      "PSGR"
+    ],
+    "cancer": "prostate_cancer"
+  },
+  "receptor": {
+    "id": "OR51E2",
+    "aliases": [
+      "PSGR",
+      "OR51E2"
+    ],
+    "pdb": "8F76"
+  },
+  "consensus": [
+    {
+      "id": "e25",
+      "claim": "Screened four candidate ligands (methylmalonic acid, 2,2-difluorocyclopropane-1-carboxylate, 3,3-difluoropropanoic acid, 4,4-difluoropentanoic acid) against a propionic acid positive control for OR51E2 activation, using a CREB-driven firefly luciferase / constitutive NanoLuc dual-reporter assay in transiently transfected HEK293 cells (pCI-OR51E2 + pGL4.53[luc2/PGK] + pCRE-Luc), at 0.5M and 1M ligand concentrations.",
+      "direction": "neutral",
+      "weight": 0.48,
+      "weight_reason": "preliminary (base=0.4) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=1 \u2192 +0.000) = 0.480",
+      "source": {
+        "type": "preliminary",
+        "label": "Bansal S, Gudisay S (2025). Dual-luciferase reporter assay data, unpublished (ISEF 2025 CB",
+        "year": 2025
+      },
+      "model": "HEK293 cells, transient transfection (heterologous OR51E2 expression)",
+      "endpoint": "not specified"
+    }
+  ],
+  "tumor_suppressive": [
+    {
+      "id": "e19",
+      "claim": "Activation of OR51E2 (PSGR) by androstenone derivatives or beta-ionone inhibits proliferation of prostate cancer cells.",
+      "direction": "tumor_suppressive",
+      "weight": 1.2,
+      "weight_reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200",
+      "source": {
+        "type": "primary_study",
+        "label": "Neuhaus EM, Zhang W, Gelis L, Deng Y, Noldus J, Hatt H (2009). \"Activation of an olfactory",
+        "year": 2009
+      },
+      "model": "LNCaP cells (endogenous receptor); also HEK293 and PC-3 cells, and primary prostate epithelial cells",
+      "endpoint": "proliferation",
+      "ligand": "androstenone"
+    },
+    {
+      "id": "e22",
+      "claim": "Inducible OR51E1/OR51E2 expression in LNCaP cells suppresses proliferation and promotes cell death; the paper explicitly flags field-wide controversy over whether beta-ionone is a genuine OR51E2 agonist.",
+      "direction": "tumor_suppressive",
+      "weight": 1.2,
+      "weight_reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200",
+      "source": {
+        "type": "primary_study",
+        "label": "Pronin A, Slepak V (2021). \"Ectopically expressed olfactory receptors OR51E1 and OR51E2 su",
+        "year": 2021
+      },
+      "model": "LNCaP cells (inducible expression system)",
+      "endpoint": "proliferation",
+      "ligand": "beta-ionone"
+    },
+    {
+      "id": "e62",
+      "claim": "CRISPR-Cas9 knockout of OR51E2 in LNCaP cells INCREASES proliferation, migration, adhesion, anchorage-independent colony formation, and tumor growth -- i.e. loss of OR51E2 produces a more aggressive phenotype. In the TCGA PRAD cohort, low OR51E2 expression correlates with worse prognosis and higher Gleason grade.",
+      "direction": "tumor_suppressive",
+      "weight": 1.2,
+      "weight_reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200",
+      "source": {
+        "type": "primary_study",
+        "label": "Thomsen ARB, et al. (2025). \"CRISPR-Cas9 knockout of OR51E2 in prostate cancer cells revea",
+        "year": 2025
+      },
+      "model": "LNCaP cells (CRISPR-Cas9 knockout); cross-referenced against TCGA-PRAD cohort",
+      "endpoint": "proliferation, migration, tumor growth, prognosis correlation"
+    }
+  ],
+  "tumor_promoting": [
+    {
+      "id": "e20",
+      "claim": "Beta-ionone stimulation of PSGR/OR51E2 promotes LNCaP cell invasiveness; co-administration of alpha-ionone (a PSGR antagonist) abrogates this effect.",
+      "direction": "tumor_promoting",
+      "weight": 1.2,
+      "weight_reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200",
+      "source": {
+        "type": "primary_study",
+        "label": "Sanz G, Leray I, Dewaele A, Sobilo J, Lerondel S, Bouet S, Grebert D, Monnerie R, Pajot-Au",
+        "year": 2014
+      },
+      "model": "LNCaP",
+      "endpoint": "invasiveness",
+      "ligand": "Beta-ionone"
+    },
+    {
+      "id": "e21",
+      "claim": "PSGR (OR51E2) overexpression drives premalignant prostate lesions and larger xenograft tumors.",
+      "direction": "tumor_promoting",
+      "weight": 1.2,
+      "weight_reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200",
+      "source": {
+        "type": "primary_study",
+        "label": "Rodriguez M, Luo W, Weng J, Zeng L, Yi Z, Siwko S, Liu M (2014). \"PSGR promotes prostatic ",
+        "year": 2014
+      },
+      "model": "PSGR-transgenic mouse model (probasin promoter); LNCaP xenograft (mouse)",
+      "endpoint": "tumor_growth"
+    },
+    {
+      "id": "e61",
+      "claim": "Alpha-ionone, previously characterized (Sanz 2014) as blocking beta-ionone's pro-invasive effect, is actually a full OR51E2 agonist in its own right that promotes tumor GROWTH (not invasion) via a distinct pathway from beta-ionone. Combined alpha+beta-ionone treatment increases total tumor burden more than either ligand alone.",
+      "direction": "tumor_promoting",
+      "weight": 1.2,
+      "weight_reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200",
+      "source": {
+        "type": "primary_study",
+        "label": "Sanz G, Le Poupon C, Bouet S, et al. (2016). \"Alpha-ionone is a full agonist of the prosta",
+        "year": 2016
+      },
+      "model": "LNCaP cells / xenograft",
+      "endpoint": "tumor growth (in vivo)",
+      "ligand": "Alpha-ionone"
+    },
+    {
+      "id": "e63",
+      "claim": "In the tumor microenvironment (TME), palmitic acid binds OR51E2 on tumor-associated macrophages (TAMs) \u2014 NOT tumor cells \u2014 and enhances their pro-tumor phenotype. In vivo deletion of OR51E2 (and other chemosensors) in TAMs caused cancer regression and increased CD8+ T cell infiltration.",
+      "direction": "tumor_promoting",
+      "weight": 1.2,
+      "weight_reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200",
+      "source": {
+        "type": "primary_study",
+        "label": "Marelli G, Morina N, Portale F, et al. (2025). \"Palmitic acid activates OR51E2 on tumor-as",
+        "year": 2025
+      },
+      "model": "Human prostate tissue / mouse TAM-specific OR51E2 deletion model",
+      "endpoint": "immune evasion / TAM polarization (non-cell-autonomous)"
+    }
+  ],
+  "exploratory": [
+    {
+      "id": "e26",
+      "claim": "Discloses 24 novel OR51E2 agonists (e.g. 19-OH AD, AFMK, glycyl-glycine, kojibiose, estriol, pelargonidin, palmitic acid) and 1 antagonist (13-cis retinoic acid/isotretinoin), claiming methods to treat/prevent castrate-resistant prostate cancer (CRPC) and diagnose prostate cancer via metabolite biomarkers, based on the premise that chronic agonist-driven OR51E2 activation drives neuroendocrine trans-differentiation.",
+      "direction": "exploratory",
+      "weight": 0.1,
+      "weight_reason": "patent (base=0.1) \u00d7 (1 + replications unknown \u2192 +0.00, N=unknown \u2192 +0.000) = 0.100",
+      "source": {
+        "type": "patent",
+        "label": "US10588884B2, \"Modulators of prostate-specific G-protein receptor (PSGR/OR51E2) and method",
+        "year": 2017
+      },
+      "model": "Patent disclosure (in vitro/in vivo data referenced in specification, not independently verified here)",
+      "endpoint": "not specified",
+      "confidence": "low"
+    },
+    {
+      "id": "e27",
+      "claim": "Divisional continuation of US10588884B2 covering the same 24 agonists/1 antagonist, expanding claims to metabolomic-profiling diagnostic methods and describing a proposed link between Propionibacterium acnes infection and prostate cancer progression via OR51E2 activation.",
+      "direction": "exploratory",
+      "weight": 0.1,
+      "weight_reason": "patent (base=0.1) \u00d7 (1 + replications unknown \u2192 +0.00, N=unknown \u2192 +0.000) = 0.100",
+      "source": {
+        "type": "patent",
+        "label": "US12186294B2, \"Modulators of prostate-specific g-protein receptor (PSGR/OR51E2) and method",
+        "year": 2016
+      },
+      "model": "Patent disclosure (in vitro/in vivo data referenced in specification, not independently verified here)",
+      "endpoint": "not specified",
+      "confidence": "low"
+    }
+  ],
+  "tensions": [
+    {
+      "id": "t0",
+      "title": "OR51E2 activation outcome in prostate cancer is contested",
+      "summary": "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation, proliferation, migration, tumor growth, prognosis correlation; promoting evidence measures immune evasion / TAM polarization (non-cell-autonomous), invasiveness, tumor growth (in vivo), tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint contradiction \u2014 both effects could be simultaneously true (e.g. reduced proliferation alongside increased invasiveness is a recognized cancer biology pattern). Do not present as a flat two-sided contradiction; present as divergent evidence on distinct outcomes. Additionally: Note from Neuhaus EM: Cross-checked against CLAUDE.md Section 6 table and the friend's (Bansal/Gudisay) Literature_Review.docx summary, which  | Note from Pronin A: Confirmed via PubMed/PMC (PMC8024707) and J Biol Chem fulltext -- ligand-specificity finding and explicit controversy st",
+      "left": {
+        "label": "Tumor-suppressive",
+        "evidence_ids": [
+          "e19",
+          "e22",
+          "e62"
+        ]
+      },
+      "right": {
+        "label": "Tumor-promoting",
+        "evidence_ids": [
+          "e20",
+          "e21",
+          "e26",
+          "e27",
+          "e61",
+          "e63"
+        ]
+      },
+      "hypotheses": [
+        "CONFIRMED DIFFERENT ENDPOINTS: suppressive evidence measures proliferation, proliferation, migration, tumor growth, prognosis correlation; promoting evidence measures immune evasion / TAM polarization (non-cell-autonomous), invasiveness, tumor growth (in vivo), tumor_growth. This is contested on overall clinical/therapeutic implication, but not a strict same-endpoint contradiction \u2014 both effects could be simultaneously true (e.g. reduced proliferation alongside increased invasiveness is a recognized cancer biology pattern). Do not present as a flat two-sided contradiction; present as divergent evidence on distinct outcomes. Additionally: Note from Neuhaus EM: Cross-checked against CLAUDE.md Section 6 table and the friend's (Bansal/Gudisay) Literature_Review.docx summary, which  | Note from Pronin A: Confirmed via PubMed/PMC (PMC8024707) and J Biol Chem fulltext -- ligand-specificity finding and explicit controversy st"
+      ],
+      "same_model_system": false,
+      "same_endpoint": false,
+      "deadlock": false
+    }
+  ],
+  "scores": {
+    "tumor_suppressive_mass": 3.6,
+    "tumor_promoting_mass": 4.8,
+    "balance_abs_delta": 1.2,
+    "balance_threshold": 1.68,
+    "weight_breakdown": {
+      "tumor_suppressive": [
+        {
+          "source": "Neuhaus EM, Zhang W, Gelis L, Deng Y, Noldus J, Hatt H (2009",
+          "weight": 1.2,
+          "reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200"
+        },
+        {
+          "source": "Pronin A, Slepak V (2021). \"Ectopically expressed olfactory ",
+          "weight": 1.2,
+          "reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200"
+        },
+        {
+          "source": "Thomsen ARB, et al. (2025). \"CRISPR-Cas9 knockout of OR51E2 ",
+          "weight": 1.2,
+          "reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200"
+        }
+      ],
+      "tumor_promoting": [
+        {
+          "source": "Sanz G, Leray I, Dewaele A, Sobilo J, Lerondel S, Bouet S, G",
+          "weight": 1.2,
+          "reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200"
+        },
+        {
+          "source": "Rodriguez M, Luo W, Weng J, Zeng L, Yi Z, Siwko S, Liu M (20",
+          "weight": 1.2,
+          "reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200"
+        },
+        {
+          "source": "US10588884B2, \"Modulators of prostate-specific G-protein rec",
+          "weight": 0.1,
+          "reason": "patent (base=0.1) \u00d7 (1 + replications unknown \u2192 +0.00, N=unknown \u2192 +0.000) = 0.100"
+        },
+        {
+          "source": "US12186294B2, \"Modulators of prostate-specific g-protein rec",
+          "weight": 0.1,
+          "reason": "patent (base=0.1) \u00d7 (1 + replications unknown \u2192 +0.00, N=unknown \u2192 +0.000) = 0.100"
+        },
+        {
+          "source": "Sanz G, Le Poupon C, Bouet S, et al. (2016). \"Alpha-ionone i",
+          "weight": 1.2,
+          "reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200"
+        },
+        {
+          "source": "Marelli G, Morina N, Portale F, et al. (2025). \"Palmitic aci",
+          "weight": 1.2,
+          "reason": "primary_study (base=1.0) \u00d7 (1 + 1 independent replications \u2192 +0.20, N=unknown \u2192 +0.000) = 1.200"
+        }
+      ],
+      "note": "Individual weights sum to the mass totals above. Patents are tracked separately (commercial_interest only) and excluded from mass."
+    }
+  },
+  "rules": [
+    {
+      "id": "r0",
+      "text": "OR51E2 activation appears to suppress tumor growth (supported by 3 independent sources)",
+      "confidence": "converging evidence (N=3 sources)",
+      "n_independent_sources": 3,
+      "qualification": "Contested -- do not treat as settled"
+    },
+    {
+      "id": "r1",
+      "text": "OR51E2 activation appears to promote tumor growth or invasiveness (supported by 6 independent sources)",
+      "confidence": "converging evidence (N=6 sources)",
+      "n_independent_sources": 6,
+      "qualification": "Contested -- do not treat as settled"
+    }
+  ],
+  "adjudication": {
+    "status": "deadlock",
+    "needs_judgment": true,
+    "reason": "Support and oppose masses are within balance threshold on the same receptor/cell-line family.",
+    "elicitation": {
+      "message": "OR51E2 activation evidence is balanced between tumor-suppressive and tumor-promoting claims. How should we proceed?",
+      "options": [
+        {
+          "id": "suppressive",
+          "label": "Weight tumor-suppressive evidence more heavily"
+        },
+        {
+          "id": "promoting",
+          "label": "Weight tumor-promoting evidence more heavily"
+        },
+        {
+          "id": "keep_contested",
+          "label": "Keep as contested -- do not merge into one rule"
+        }
+      ]
+    },
+    "fallback_without_elicitation": {
+      "return_to_client": true,
+      "instruction": "If MCP elicitation is unavailable, return this object and wait for the researcher's next message selecting an option id."
+    }
+  },
+  "baseline_contrast": {
+    "plain_k_pro_expected": "A smoothed or hedged single narrative that the receptor may have context-dependent effects, without explicitly staging the primary-literature split as a first-class tension.",
+    "augmented_expected": "Explicit contested cluster (Neuhaus EM, Pronin A, Thomsen ARB vs. Marelli G, Rodriguez M, Sanz G, US10588884B2, US12186294B2) with sources, weights, endpoint labels, confidence-qualified rules, and needs_judgment elicitation."
+  }
+}

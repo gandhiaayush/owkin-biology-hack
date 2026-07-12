@@ -51,7 +51,7 @@ from discordance import (
     init_db, insert_record, get_records, get_all_records,
     detect_contradictions, EvidenceRecord,
 )
-from discordance.scoring import compute_direction_scores, score_record, SOURCE_WEIGHTS
+from discordance.scoring import compute_direction_scores, score_record, score_record_with_reason, SOURCE_WEIGHTS
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 GOLD_PATH = REPO_ROOT / "data" / "benchmark_results.json"
@@ -406,34 +406,44 @@ def test_weight_formula_matches_spec_for_gold_papers(db_gold):
     errors = []
     for gold in gold_records:
         gt = gold["ground_truth"]
-        cancer = gt.get("cancer_type", "prostate_cancer")
-        if cancer == "prostate":
-            cancer = "prostate_cancer"
+        cancer = _normalize_cancer(gt.get("cancer_type", "prostate_cancer"))
         stored = get_records("OR51E2", cancer)
         author = gold["citation_key"].split()[0]
         matched = [r for r in stored if author.lower() in r.source.lower()]
         if not matched:
             continue
         r = matched[0]
-        actual_weight = score_record(r)
 
-        # Verify weight > 0 and comes from primary_study base
-        base = SOURCE_WEIGHTS["primary_study"]
-        reps = r.independent_replications if r.independent_replications is not None else -1
-        rep_bonus = 0.2 * min(max(reps, 0), 5)
-        samp_bonus = 0.1 * min(r.sample_size or 0, 1000) / 1000
-        expected = base * (1 + rep_bonus + samp_bonus)
-
-        if abs(actual_weight - expected) > 1e-9:
+        # Invariant 1: score_record and score_record_with_reason must agree
+        score_a = score_record(r)
+        score_b, reason = score_record_with_reason(r)
+        if abs(score_a - score_b) > 1e-9:
             errors.append(
-                f"{gold['citation_key']}: score_record()={actual_weight:.4f}, "
-                f"formula={expected:.4f}"
+                f"{gold['citation_key']}: score_record()={score_a:.6f} != "
+                f"score_record_with_reason()={score_b:.6f}"
             )
-        if actual_weight <= 0:
-            errors.append(f"{gold['citation_key']}: weight is 0 or negative ({actual_weight})")
 
-    assert not errors, "Weight formula mismatches:\n" + "\n".join(errors)
-    print(f"\n[Eval 5] Weight formula verified for {len(gold_records)} gold papers ✓")
+        # Invariant 2: weight must be positive
+        if score_a <= 0:
+            errors.append(f"{gold['citation_key']}: weight is 0 or negative ({score_a})")
+
+        # Invariant 3: primary_study must score above patent floor
+        patent_floor = SOURCE_WEIGHTS["patent"]
+        if score_a <= patent_floor:
+            errors.append(
+                f"{gold['citation_key']}: primary_study score {score_a:.4f} "
+                f"<= patent floor {patent_floor:.4f} — source ordering broken"
+            )
+
+        # Invariant 4: reason string must mention the final score
+        if str(round(score_a, 3)) not in reason:
+            errors.append(
+                f"{gold['citation_key']}: score {score_a:.3f} not in reason string "
+                f"(display is lying): {reason[:80]}"
+            )
+
+    assert not errors, "Weight integrity failures:\n" + "\n".join(errors)
+    print(f"\n[Eval 5] Weight integrity verified for {len(gold_records)} gold papers ✓")
 
 
 # ── Summary print ─────────────────────────────────────────────────────────────

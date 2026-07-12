@@ -1,5 +1,9 @@
 from __future__ import annotations
+
+import re
+
 from .models import EvidenceRecord, ScoredDirection, DirectionScores, ConsensusStatus
+from .normalize import is_tumor_intrinsic_activation, cell_compartment
 
 SOURCE_WEIGHTS: dict[str, float] = {
     "primary_study": 1.0,
@@ -11,6 +15,62 @@ SOURCE_WEIGHTS: dict[str, float] = {
 
 ELICITATION_THRESHOLD = (0.4, 0.6)  # fire when suppressive_ratio is in this range
 
+_YEAR_RE = re.compile(r"(19|20)\d{2}")
+_NAMED_CELL_LINES = ("lncap", "pc3", "du145", "vcap", "22rv1", "c4-2")
+_IN_VIVO_TERMS = ("xenograft", "in vivo", "mouse", "mice", "nsg", "transgenic", "allograft")
+_SPECIFICITY_TERMS = (
+    "sirna", "knockdown", "knockout", "knock-out", "crispr", "-/-",
+    "negative control", "does not express", "do not express", "specificity",
+)
+
+
+def _source_year(source: str) -> int | None:
+    m = _YEAR_RE.search(source)
+    return int(m.group(0)) if m else None
+
+
+def _quality_bonuses(r: EvidenceRecord) -> tuple[float, list[str]]:
+    """Additive quality factors that differentiate primary studies with the same base weight."""
+    bonus = 0.0
+    parts: list[str] = []
+
+    if r.endpoint and r.endpoint != "not specified":
+        bonus += 0.05
+        parts.append(f"endpoint={r.endpoint} → +0.05")
+
+    text = f"{r.model_system} {r.claim} {r.mechanism}".lower()
+    if any(term in text for term in _IN_VIVO_TERMS):
+        bonus += 0.08
+        parts.append("in vivo/xenograft model → +0.08")
+    elif any(line in text for line in _NAMED_CELL_LINES):
+        bonus += 0.03
+        parts.append("named cell line → +0.03")
+    elif "cell line" in text or "cells" in text:
+        bonus += 0.01
+        parts.append("cell-culture model → +0.01")
+
+    year = _source_year(r.source)
+    if year is not None:
+        if year >= 2020:
+            bonus += 0.04
+            parts.append(f"recency ({year}) → +0.04")
+        elif year >= 2015:
+            bonus += 0.02
+            parts.append(f"recency ({year}) → +0.02")
+        elif year >= 2010:
+            bonus += 0.01
+            parts.append(f"recency ({year}) → +0.01")
+
+    if r.mechanism and r.mechanism != "not specified":
+        bonus += 0.03
+        parts.append("mechanism specified → +0.03")
+
+    if any(term in text for term in _SPECIFICITY_TERMS):
+        bonus += 0.05
+        parts.append("receptor-specificity control → +0.05")
+
+    return bonus, parts
+
 
 def score_record(r: EvidenceRecord) -> float:
     """Compute a numeric weight for one evidence record."""
@@ -19,7 +79,8 @@ def score_record(r: EvidenceRecord) -> float:
     reps = r.independent_replications if r.independent_replications is not None else -1
     replication_bonus = 0.2 * min(max(reps, 0), 5)
     sample_bonus = 0.1 * min(r.sample_size or 0, 1000) / 1000
-    return base * (1 + replication_bonus + sample_bonus)
+    quality_bonus, _ = _quality_bonuses(r)
+    return base * (1 + replication_bonus + sample_bonus + quality_bonus)
 
 
 def score_record_with_reason(r: EvidenceRecord) -> tuple[float, str]:
@@ -32,7 +93,8 @@ def score_record_with_reason(r: EvidenceRecord) -> tuple[float, str]:
     reps = r.independent_replications if r.independent_replications is not None else -1
     replication_bonus = 0.2 * min(max(reps, 0), 5)
     sample_bonus = 0.1 * min(r.sample_size or 0, 1000) / 1000
-    score = base * (1 + replication_bonus + sample_bonus)
+    quality_bonus, quality_parts = _quality_bonuses(r)
+    score = base * (1 + replication_bonus + sample_bonus + quality_bonus)
 
     rep_str = (
         f"{r.independent_replications} independent replications → +{replication_bonus:.2f}"
@@ -43,8 +105,12 @@ def score_record_with_reason(r: EvidenceRecord) -> tuple[float, str]:
     samp_str = (
         f"N={r.sample_size} → +{sample_bonus:.3f}" if r.sample_size else "N=unknown → +0.000"
     )
+    qual_str = (
+        ", ".join(quality_parts) if quality_parts else "no quality modifiers → +0.00"
+    )
     reason = (
-        f"{r.source_type} (base={base:.1f}) × (1 + {rep_str}, {samp_str}) = {score:.3f}"
+        f"{r.source_type} (base={base:.1f}) × (1 + {rep_str}, {samp_str}, "
+        f"quality [{qual_str}] = +{quality_bonus:.3f}) = {score:.3f}"
     )
     return score, reason
 
@@ -71,14 +137,27 @@ def compute_direction_scores(
     direction_context_filter: str = "activation_effect",
 ) -> DirectionScores:
     filtered = [r for r in records if r.direction_context == direction_context_filter]
+    # Tumor-intrinsic activation claims only — exclude TAM/immune (Marelli) and patents from mass
+    directional_pool = [
+        r for r in filtered
+        if (direction_context_filter != "activation_effect" or is_tumor_intrinsic_activation(r))
+        and r.source_type != "patent"
+    ]
 
-    suppressive_recs = [r for r in filtered if r.direction == "tumor_suppressive"]
-    promoting_recs = [r for r in filtered if r.direction == "tumor_promoting"]
+    suppressive_recs = [r for r in directional_pool if r.direction == "tumor_suppressive"]
+    promoting_recs = [r for r in directional_pool if r.direction == "tumor_promoting"]
     patent_recs = [r for r in filtered if r.source_type == "patent"]
+    immune_recs = [
+        r for r in filtered
+        if direction_context_filter == "activation_effect"
+        and cell_compartment(r) == "immune_cell"
+    ]
 
-    s_score = sum(score_record(r) for r in suppressive_recs if r.source_type != "patent")
-    p_score = sum(score_record(r) for r in promoting_recs if r.source_type != "patent")
-    commercial_score = sum(score_record(r) for r in patent_recs)
+    s_score = sum(score_record(r) for r in suppressive_recs)
+    p_score = sum(score_record(r) for r in promoting_recs)
+    commercial_score = sum(score_record(r) for r in patent_recs) + sum(
+        score_record(r) for r in immune_recs
+    )  # immune/TAM claims tracked separately, not in direction mass
 
     total = s_score + p_score
 

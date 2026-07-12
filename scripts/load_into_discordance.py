@@ -121,17 +121,18 @@ _MULTI_CANCER_MAP = {
 
 # Endpoint hints derived from known paper citations
 _CITATION_ENDPOINT_HINTS = (
-    ("neuhaus",      "proliferation"),
-    ("sanz",         "invasiveness"),
-    ("rodriguez",    "tumor_growth"),
-    ("pronin",       "proliferation"),
-    ("gelis",        "proliferation"),
-    ("jovancevic",   "proliferation"),
-    ("weber",        "proliferation"),
-    ("martin",       "car_t_cytotoxicity"),
-    ("thomsen",      "proliferation"),
-    ("xie",          "proliferation"),
-    ("marelli",      "immune_evasion"),
+    ("neuhaus", "proliferation"),
+    ("sanz", "2014", "invasiveness"),
+    ("sanz", "2016", "tumor_growth"),
+    ("rodriguez", "tumor_growth"),
+    ("pronin", "proliferation"),
+    ("gelis", "proliferation"),
+    ("jovancevic", "proliferation"),
+    ("weber", "proliferation"),
+    ("martin", "car_t_cytotoxicity"),
+    ("thomsen", "proliferation"),
+    ("xie", "proliferation"),
+    ("marelli", "immune_evasion"),
 )
 
 
@@ -140,9 +141,15 @@ def _infer_endpoint(record: dict) -> str:
     if explicit and explicit not in ("", "not specified", None):
         return explicit
     cite = (record.get("citation") or "").lower()
-    for needle, endpoint in _CITATION_ENDPOINT_HINTS:
-        if needle in cite:
-            return endpoint
+    for hint in _CITATION_ENDPOINT_HINTS:
+        if len(hint) == 3:
+            needle, year, endpoint = hint
+            if needle in cite and year in cite:
+                return endpoint
+        else:
+            needle, endpoint = hint
+            if needle in cite:
+                return endpoint
     claim = (record.get("claim") or "").lower()
     for word in ("invasiveness", "invasion", "proliferation", "apoptosis", "migration", "growth"):
         if word in claim:
@@ -381,9 +388,8 @@ def main():
         args.candidates = True
         args.expansion = True
 
-    # Determine which JSON files to load
     if args.files:
-        paths = [Path(p) for p in args.files]
+        paths = [Path(p) for p in args.files if p and not str(p).startswith("#")]
     else:
         paths = [
             p for p in (REPO_ROOT / "data" / "receptors").glob("*.json")
@@ -397,6 +403,9 @@ def main():
     total_inserted = total_skipped = 0
 
     for path in sorted(paths):
+        if not path.exists():
+            print(f"Skipping missing path: {path}")
+            continue
         ins, sk = load_json_file(path)
         total_inserted += ins
         total_skipped += sk

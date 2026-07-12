@@ -213,7 +213,12 @@ def build_graph(
     suppressive/promoting records across UNRELATED genes and cancer types as if they
     contradicted each other (e.g. an OR51B4 colorectal-cancer claim flagged as
     "tension_with" an OR51E2 prostate-cancer claim), producing tension_with edges
-    that corrupted downstream multi-hop traversal results.
+    that corrupted downstream multi-hop traversal results. Caught by running
+    find_cross_receptor_connections against real data and manually tracing why a
+    cross-receptor "connection" existed at an implausibly short hop distance --
+    not caught by any unit test, since no prior test called build_graph() with
+    mixed-gene input. Fixed here at the source so every current and future caller
+    is protected, not just find_cross_receptor_connections.
     """
     g = EvidenceGraph()
     if not records:
@@ -226,6 +231,7 @@ def build_graph(
             groups.setdefault((r.gene, r.cancer_type), []).append(r)
         for group_records in groups.values():
             contradictions.extend(detect_contradictions(group_records))
+
     contested_sources: set[str] = set()
     for c in contradictions:
         for r in c.suppressive_records + c.promoting_records:
@@ -254,13 +260,24 @@ def build_graph(
         if r.direction_context == "genetic_alteration" and "kich" in r.cancer_type.lower():
             status = "exploratory"
 
-        g.add_node(GraphNode(gene_id, "Receptor", r.gene, {"color_hint": onto.STATUS_COLORS.get("consensus")}))
+        g.add_node(GraphNode(
+            gene_id, "Receptor", r.gene,
+            {
+                "color_hint": onto.STATUS_COLORS.get("consensus"),
+                "or_subtypes": onto.receptor_subtypes(r.gene),
+            },
+        ))
         g.add_node(GraphNode(
             cancer_id, "CancerType", r.cancer_type.replace("_", " "),
             {"color_hint": onto.STATUS_COLORS.get("neutral")},
         ))
-        g.add_node(GraphNode(model_id, "ModelSystem", r.model_system))
-        g.add_node(GraphNode(paper_id, "Paper", r.source, {"source_type": r.source_type}))
+        g.add_node(GraphNode(model_id, "ModelSystem", r.model_system, {
+            "or_subtype": onto.classify_model_subtype(r.model_system),
+        }))
+        g.add_node(GraphNode(paper_id, "Paper", r.source, {
+            "source_type": r.source_type,
+            "or_subtype": onto.classify_paper_subtype(r.source_type),
+        }))
         g.add_node(GraphNode(
             direction_id, "Direction", r.direction.replace("_", " "),
             {
@@ -280,6 +297,7 @@ def build_graph(
                 "status": status,
                 "color_hint": onto.STATUS_COLORS.get(status, "gray"),
                 "record_id": r.id,
+                "or_subtype": onto.classify_claim_subtype(r),
             },
         ))
 
