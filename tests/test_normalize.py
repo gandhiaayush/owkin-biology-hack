@@ -31,11 +31,23 @@ def test_thomsen_and_sanz_share_tumor_growth_endpoint(db):
     for raw in data:
         ct = (raw.get("cancer_type") or "").replace(" ", "_")
         if ct in ("prostate", "prostate_cancer", ""):
-            insert_record(convert(raw))
+            for ev in convert(raw):
+                insert_record(ev)
     records = get_records("OR51E2", "prostate_cancer")
     sup = [r for r in records if r.direction == "tumor_suppressive"]
     pro = [r for r in records if r.direction == "tumor_promoting" and cell_compartment(r) == "tumor_cell"]
     assert endpoints_overlap(sup, pro)
+
+
+def test_invasion_does_not_trigger_immune_compartment():
+    from discordance.models import EvidenceRecord
+    r = EvidenceRecord(
+        source="Sanz 2016", source_type="primary_study",
+        claim="beta-ionone promotes invasiveness", gene="OR51E2",
+        direction="tumor_promoting", cancer_type="prostate_cancer",
+        model_system="LNCaP", mechanism="PI3K-gamma/invasion axis",
+    )
+    assert cell_compartment(r) == "tumor_cell"
 
 
 def test_marelli_is_immune_not_tumor_cell(db):
@@ -44,7 +56,8 @@ def test_marelli_is_immune_not_tumor_cell(db):
     from scripts.load_into_discordance import convert
     data = json.loads(Path("data/receptors/or51e2.json").read_text())
     for raw in data:
-        insert_record(convert(raw))
+        for ev in convert(raw):
+            insert_record(ev)
     records = get_records("OR51E2", "prostate_cancer")
     marelli = [r for r in records if "Marelli" in r.source]
     assert len(marelli) == 1
@@ -57,7 +70,8 @@ def test_auxiliary_tensions_include_cell_compartment(db):
     from scripts.load_into_discordance import convert
     data = json.loads(Path("data/receptors/or51e2.json").read_text())
     for raw in data:
-        insert_record(convert(raw))
+        for ev in convert(raw):
+            insert_record(ev)
     records = get_records("OR51E2", "prostate_cancer")
     aux = detect_auxiliary_tensions(records)
     ids = {t["id"] for t in aux}
