@@ -98,6 +98,42 @@ def test_quality_bonuses_visible_in_reason_string():
     assert "mechanism specified" in reason
 
 
+def test_mass_uses_one_record_per_citation():
+    """Duplicate activation-effect rows from the same paper must not inflate direction mass."""
+    from discordance.scoring import _activation_mass_pool
+    from discordance.normalize import citation_key
+
+    neuhaus_main = _make_record(
+        source="Neuhaus EM et al. (2009). Activation of an olfactory receptor inhibits proliferation. J Biol Chem.",
+        direction="tumor_suppressive",
+        independent_replications=3,
+        sample_size=100,
+    )
+    neuhaus_dup = _make_record(
+        source="Neuhaus EM et al. (2009). Activation of an olfactory receptor inhibits proliferation. J Biol Chem -- proliferation assay replicate.",
+        direction="tumor_suppressive",
+        independent_replications=4,
+        sample_size=186,
+    )
+    sanz_main = _make_record(
+        source="Sanz G et al. (2014). Promotion of cancer cell invasiveness. PLoS ONE.",
+        direction="tumor_promoting",
+        endpoint="invasiveness",
+    )
+    sanz_dup = _make_record(
+        source="Sanz G et al. (2014). Promotion of cancer cell invasiveness. PLoS ONE -- invasion index.",
+        direction="tumor_promoting",
+        independent_replications=3,
+        endpoint="invasiveness",
+    )
+
+    pool = _activation_mass_pool([neuhaus_main, neuhaus_dup, sanz_main, sanz_dup])
+    keys = [citation_key(r.source) for r in pool]
+    assert len(pool) == 2
+    assert len(set(keys)) == 2
+    assert citation_key(neuhaus_main.source) == citation_key(neuhaus_dup.source)
+
+
 def test_patents_not_in_literature_consensus():
     records = [
         _make_record(source="Lit study", direction="tumor_suppressive", source_type="primary_study"),
@@ -111,8 +147,8 @@ def test_patents_not_in_literature_consensus():
 
 def test_consensus_suppressive_when_only_one_direction():
     records = [
-        _make_record(source="Study A", direction="tumor_suppressive"),
-        _make_record(source="Study B", direction="tumor_suppressive", model_system="xenograft"),
+        _make_record(source="Study A et al. 2020", direction="tumor_suppressive"),
+        _make_record(source="Study B et al. 2021", direction="tumor_suppressive", model_system="xenograft"),
     ]
     scores = compute_direction_scores(records)
     assert scores.consensus_status == "consensus_suppressive"

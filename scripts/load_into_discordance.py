@@ -15,6 +15,7 @@ Usage:
 """
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -186,6 +187,49 @@ def onto_slug_cancer(raw: str) -> str:
     return raw.lower().replace(" ", "_").replace(",", "").replace("(", "").replace(")", "")[:64]
 
 
+def _is_verified(record: dict) -> bool:
+    if "verified_by_person_a" in record:
+        return bool(record["verified_by_person_a"])
+    notes = (record.get("verification_notes") or "").upper()
+    if any(tag in notes for tag in (
+        "AUTO-EXTRACTED", "NOT YET", "NOT INDEPENDENTLY", "CANDIDATE", "K PRO'S BASELINE",
+    )):
+        return False
+    return True
+
+
+def _infer_direction_context(record: dict, source_type_raw: str) -> str:
+    explicit = record.get("direction_context")
+    if explicit:
+        return explicit
+
+    if source_type_raw == "tcga":
+        return "genetic_alteration"
+    if source_type_raw == "pdb":
+        return "expression_pattern"
+    if source_type_raw == "chembl" and not _is_chembl_activity(record):
+        return "expression_pattern"
+
+    claim = (record.get("claim") or "").lower()
+    mech = (record.get("mechanism") or "").lower()
+    text = f"{claim} {mech}"
+
+    if re.search(r"crispr[- ]?cas9|crispr knockout|crispr[- ]?ko|gene knockout", text):
+        return "genetic_alteration"
+    if "knockout" in text and "or51e2" in text:
+        return "genetic_alteration"
+    if re.search(r"\bshrna\b|sirna knockdown|knockdown of (psgr|or51e2)", text):
+        return "genetic_alteration"
+    if "inducible" in text and ("overexpress" in text or "expression" in text):
+        return "expression_pattern"
+    if "overexpression drives" in text or "psgr overexpression" in text:
+        return "expression_pattern"
+    if "transgenic" in text and "overexpress" in text:
+        return "expression_pattern"
+
+    return "activation_effect"
+
+
 def convert(record: dict) -> list[EvidenceRecord]:
     """
     Convert one Person A JSON record to one or more EvidenceRecord objects.
@@ -196,27 +240,16 @@ def convert(record: dict) -> list[EvidenceRecord]:
     """
     source_type_raw = record["source_type"]
     source_type = SOURCE_TYPE_MAP.get(source_type_raw, "preliminary")
+    if not _is_verified(record):
+        source_type = "preliminary"
 
-    # Direction context:
-    # - TCGA records → genetic_alteration
-    # - PDB records → expression_pattern (structural)
-    # - ChEMBL SUMMARY record → expression_pattern (pharmacology metadata)
-    # - ChEMBL ACTIVITY records → activation_effect (binding IS activation-relevant)
-    # - Everything else → activation_effect
-    if source_type_raw == "tcga":
-        direction_context = "genetic_alteration"
-    elif source_type_raw == "pdb":
-        direction_context = "expression_pattern"
-    elif source_type_raw == "chembl" and not _is_chembl_activity(record):
-        direction_context = "expression_pattern"  # summary record: pharmacology metadata only
-    else:
-        direction_context = "activation_effect"
+    direction_context = _infer_direction_context(record, source_type_raw)
 
     direction_raw = record.get("direction", "unclear")
     direction = DIRECTION_MAP.get(direction_raw, "neutral")
 
     confidence_note = record.get("verification_notes") or ""
-    if not record.get("verified_by_person_a", True):
+    if not _is_verified(record):
         confidence_note = "UNVERIFIED. " + confidence_note
 
     cancer_raw = record.get("cancer_type")

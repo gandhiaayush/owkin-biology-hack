@@ -10,6 +10,7 @@
     "sample_size": 100,
     "replication_count": 3,
     "cancer_type": "prostate",
+    "direction_context": "activation_effect",
     "verified_by_person_a": true,
     "verification_notes": "Cross-checked against CLAUDE.md Section 6 table and the friend's (Bansal/Gudisay) Literature_Review.docx summary, which independently confirms cell lines, ligands, and MAPK/Ca2+ mechanism in more methodological detail than the bare citation. Single primary study on this specific claim (no independent replication located yet) -- treat as unreplicated pending further search. FULL-TEXT VERIFICATION (2026-07-12, live pull of the PMC web-rendered article at pmc.ncbi.nlm.nih.gov/articles/PMC2713531/ -- note this succeeded even though the PMC efetch XML API for this same ID returns metadata-only with no <body>; the two access paths are NOT equivalent for this record). This full-text read corrects and substantially enriches the original abstract/secondary-summary-derived record: (1) MECHANISM CORRECTION -- p44/42 (ERK1/2) was explicitly tested and showed NO modulation in LNCaP; only p38 and SAPK/JNK were activated. The original mechanism text listing p44/42 alongside p38/SAPK-JNK as if all three were activated was inaccurate (it derived from an antibody list used for validation, not from the actual positive-result pathway). (2) NEW N VALUES: siRNA-knockdown Ca2+ quantification used n=22 siRNA-expressing vs n=186 control cells (beta-ionone) and n=26 vs n=201 (ADT), each from four independent transfections/experiments -- filled into sample_size/replication_count above (100+ cells analyzed per condition, 3 repeat experiments minimum referenced across figures). (3) Specific ligand names identified (not just 'androstenone derivatives'): ADT, 6-dehydrotestosterone, 1,4,6-androstatriene-17-ol-3-one. (4) Two additional sub-claims recorded separately below: the siRNA receptor-specificity knockdown control, and the MAPK-inhibitor pharmacological rescue with IC50 data.",
     "raw_excerpt_or_link": "doi:10.1074/jbc.M109.012096; corroborating summary in data/intake/or51e2/Literature Review.docx"
@@ -25,6 +26,7 @@
     "sample_size": null,
     "replication_count": 3,
     "cancer_type": "prostate",
+    "direction_context": "activation_effect",
     "verified_by_person_a": true,
     "verification_notes": "RESOLVED (priority-one verification task from CLAUDE.md Section 6/12): pulled and read the actual Sanz et al. 2014 full text via PLoS ONE (not the friend's intake materials -- a similarly titled melanoma paper in Literature_Review.docx is a different study, Gelis et al. 2017, see below; do not conflate). Sanz measures INVASIVENESS (collagen-gel invasion index), not proliferation -- a different endpoint from Neuhaus 2009's proliferation assay. The Sanz authors explicitly acknowledge the apparent conflict in their own discussion: beta-ionone's pro-invasive effect here is 'not in agreement with the results of Neuhaus et al.' on proliferation, and they frame this as two distinct, potentially co-occurring phenotypes (reduced proliferation + increased invasiveness is a recognized cancer biology pattern), not necessarily a same-endpoint contradiction. CONCLUSION: this is a real, citable divergence in the literature on whether activating OR51E2 is net beneficial or harmful therapeutically, but it is nuanced rather than a flat contradiction -- both effects (anti-proliferative AND pro-invasive) could be simultaneously true. Present it to Person B/the demo as 'evidence is contested on clinical implication, though the mechanism papers do not strictly contradict each other on a shared endpoint' rather than a clean two-sided contradiction. UPDATE (found via K Pro baseline capture, cross-checked): Sanz et al.'s own 2016 Oncotarget follow-up revises the alpha-ionone characterization used in this 2014 paper -- alpha-ionone is NOT simply a PSGR antagonist as stated here; the 2016 paper found it is a full agonist that promotes tumor GROWTH via a separate pathway from beta-ionone's pro-invasive effect. The claim/mechanism text below reflects the 2014 paper's own characterization at time of publication; see the linked 2016 record for the corrected picture. Do not present alpha-ionone as an antagonist without this caveat. FULL-TEXT FIGURE VERIFICATION (PMC3885679, live pull): the in vitro LNCaP invasion assay (Figure 2c) explicitly reports n=3 with a two-tailed Student's t-test, control SD=13.42%. This paper studies TWO cell systems in parallel (BON neuroendocrine cells with OR1G1/OR17-40, and LNCaP with PSGR/OR51E2) -- do not confuse the BON-cell invasion factors (2.7x/2.5x) with the LNCaP/PSGR invasion factor (2.75x) reported for this record; they are from different receptor/cell-line pairs in the same paper. Three additional sub-claims from this paper are recorded as separate evidence records below (in vivo mouse metastasis, PI3K-gamma/Gbeta-gamma mechanism rescue, and a mineral-oil vehicle confound / negative-result finding) rather than folded into this one, since they measure genuinely distinct endpoints.",
     "raw_excerpt_or_link": "doi:10.1371/journal.pone.0085110"
@@ -40,6 +42,7 @@
     "sample_size": 7,
     "replication_count": 3,
     "cancer_type": "prostate",
+    "direction_context": "expression_pattern",
     "verified_by_person_a": true,
     "verification_notes": "Confirmed via PubMed/Oncogenesis record (PMID 25111863; PMC5189964) -- study design, NF-kB mechanism, and xenograft growth-promotion finding all match CLAUDE.md Section 6 summary. FULL-TEXT FIGURE VERIFICATION (PMC5189964, live pull): xenograft tumor-size comparison (Figure 5, orthotopic LNCaP-Ctrl vs. LNCaP-PSGR implantation) used n=7 mice per group (urinary system weight, P=0.023; morphologic tumor-formation difference, P=0.001). The transgenic-mouse inflammatory cytokine/NF-kB analysis (Figure 3a) used three mice per genotype per experiment (P=0.01 and P=0.001 for specific cytokines). Figure 4a additionally shows PTEN (phosphatase and tensin homolog) expression is altered alongside PSGR in prostate cancer cell lines -- a specific tumor-suppressor-pathway interaction not captured in the original abstract-derived claim above, worth a follow-up record if PTEN status becomes relevant to interpreting this receptor's role.",
     "raw_excerpt_or_link": "doi:10.1038/oncsis.2014.29"
@@ -55,6 +58,7 @@
     "sample_size": null,
     "replication_count": 3,
     "cancer_type": "prostate",
+    "direction_context": "expression_pattern",
     "verified_by_person_a": true,
     "verification_notes": "Confirmed via PubMed/PMC (PMC8024707) and J Biol Chem fulltext -- ligand-specificity finding and explicit controversy statement both match CLAUDE.md Section 6 summary. This paper's own ligand-specificity data (OR51E2 = acetate/propionate, not beta-ionone) is itself a relevant data point for interpreting whether Neuhaus/Sanz's beta-ionone results generalize.",
     "raw_excerpt_or_link": "doi:10.1016/j.jbc.2021.100475"
@@ -642,6 +646,7 @@
     "sample_size": null,
     "replication_count": 1,
     "cancer_type": "prostate",
+    "direction_context": "activation_effect",
     "verified_by_person_a": false,
     "verification_notes": "NOT YET independently verified against full text -- added from K Pro's baseline-capture answer during live testing, which cited this as a follow-up to Sanz 2014 (114 citations on the 2014 paper; this 2016 follow-up reported ~30 citations per K Pro's summary). Corrects the 'alpha-ionone = antagonist' claim in the Sanz 2014 record. Treat as preliminary/single-source until someone reads the actual Oncotarget paper -- this is flagged honestly as unverified, consistent with the project's confidence-qualification discipline, not silently upgraded to verified status.",
     "endpoint": "tumor growth (in vivo)"
@@ -657,8 +662,9 @@
     "sample_size": null,
     "replication_count": 1,
     "cancer_type": "prostate",
+    "direction_context": "genetic_alteration",
     "verified_by_person_a": false,
-    "verification_notes": "NOT YET independently verified against full text -- added from K Pro's baseline-capture answer during live testing (7 citations per K Pro's summary, so very recent/2025). High-value addition: this is a literature claim that directly references the same TCGA-PRAD cohort our TCGA pull already covers (see scripts/tcga_pull.py output) -- worth cross-checking this claim's TCGA correlation against our own live TCGA-PRAD pull if time allows, since that would be a genuine literature-to-data cross-validation, not just another citation. Flagged as unverified/single-source until full text is read.\n\nTCGA CROSS-VALIDATION (computed, 500 TCGA-PRAD cases): conclusion=CONTRADICTS_THOMSEN. CNV-Gain cases (proxy for higher expression) have HIGHER mean Gleason group (4.35) than CNV-Neutral cases (3.14), which is the OPPOSITE of Thomsen's claim. Note: CNV gain ≠ RNA expression — this is a proxy check only, not a direct expression measurement. Treat as a signal, not a refutation. CNV-Loss cases (proxy for lower expression): mean Gleason 4.06 (n=17). This is a CNV-based proxy check, not a direct expression-vs-Gleason test. The Thomsen claim is about RNA expression level, which requires downloading STAR-counts files from GDC (not accessible via simple REST API). CNV gain correlates with expression on average but is not equivalent. Treat this as a corroborating signal or a red flag, not a definitive confirmation or refutation.",
+    "verification_notes": "NOT YET independently verified against full text -- added from K Pro baseline capture. This is a literature claim that directly references the same TCGA-PRAD cohort our TCGA pull already covers (see scripts/tcga_pull.py output) -- worth cross-checking this claim's TCGA correlation against our own live TCGA-PRAD pull if time allows, since that would be a genuine literature-to-data cross-validation, not just another citation. Flagged as unverified/single-source until full text is read.\n\nTCGA CROSS-VALIDATION (computed, 500 TCGA-PRAD cases): conclusion=CONTRADICTS_THOMSEN. CNV-Gain cases (proxy for higher expression) have HIGHER mean Gleason group (4.35) than CNV-Neutral cases (3.14), which is the OPPOSITE of Thomsen's claim. Note: CNV gain ≠ RNA expression — this is a proxy check only, not a direct expression measurement. Treat as a signal, not a refutation. CNV-Loss cases (proxy for lower expression): mean Gleason 4.06 (n=17). This is a CNV-based proxy check, not a direct expression-vs-Gleason test. The Thomsen claim is about RNA expression level, which requires downloading STAR-counts files from GDC (not accessible via simple REST API). CNV gain correlates with expression on average but is not equivalent. Treat this as a corroborating signal or a red flag, not a definitive confirmation or refutation.",
     "endpoint": "proliferation, migration, tumor growth, prognosis correlation"
   },
   {
@@ -688,6 +694,7 @@
     "sample_size": 5,
     "replication_count": 1,
     "cancer_type": "prostate",
+    "direction_context": "supporting_evidence",
     "verified_by_person_a": true,
     "verification_notes": "NEW record from full-text figure/results read (PMC3885679, live pull) -- this in vivo metastasis-model data was NOT captured in the original abstract-derived Sanz record above; abstracts do not report in vivo N or the tumor-take-rate finding. n=5 mice per group confirmed from Results text ('3 out of 5 animals for Tyson glands and 2 out of 5 animals for lungs'). This is a substantially stronger tumor-promoting claim than the in vitro invasion assay alone (Figure 2c) since it demonstrates actual increased metastatic spread in a live-animal model, not just an in vitro invasion-index proxy. IMPORTANT CONFOUND (see separate mineral-oil record): the vehicle (mineral oil) alone also increased metastasis counts vs. untreated controls, so part of this effect is not attributable to beta-ionone specifically -- the paper's own framing is that beta-ionone adds an effect ON TOP OF a mineral-oil baseline effect (more metastases, and uniquely to lungs/Tyson glands), not that mineral oil is a clean negative control.",
     "raw_excerpt_or_link": "doi:10.1371/journal.pone.0085110, Figures 4-5 and accompanying Results text"
@@ -703,6 +710,7 @@
     "sample_size": null,
     "replication_count": 3,
     "cancer_type": "prostate",
+    "direction_context": "supporting_evidence",
     "verified_by_person_a": true,
     "verification_notes": "NEW record from full-text figure read (PMC3885679, live pull), n=3 confirmed in caption ('bars indicate standard deviation (n = 3)', two-tailed Student's t-test; control SD=4.74% for BON cells, 13.86% for LNCaP cells). The paper reports an explicit ~80% reduction figure for the BON-cell/OR1G1 system but does NOT give an equivalent percentage for the LNCaP/PSGR system -- text says the PI3K-gamma/gallein result 'was confirmed for LNCaP cells' without a specific number, so don't overstate this as quantitatively matched to the BON-cell figure.",
     "raw_excerpt_or_link": "doi:10.1371/journal.pone.0085110, Figure 3 and Results text"
@@ -718,6 +726,7 @@
     "sample_size": null,
     "replication_count": 7,
     "cancer_type": "prostate",
+    "direction_context": "supporting_evidence",
     "verified_by_person_a": true,
     "verification_notes": "NEW record from full-text figure read (PMC3885679, live pull) -- this is exactly the kind of negative/confound finding that is invisible in an abstract and would never have surfaced without reading the actual figure captions and Results text. Explicit quote: 'Results obtained with mineral oil alone and with mineral oil containing beta-ionone are not significantly different' (n=3, two-tailed Student's t-test, control SD=3.67%). Calcium imaging panel (b) used n=7 (control SD=15.96%). IMPORTANT: this means the in vivo mouse experiment (see separate record) does not have a clean vehicle-only negative control -- mineral oil itself activates PSGR, so the 'untreated vs. mineral-oil-vehicle vs. beta-ionone' three-arm design in vivo has a confounded middle arm. This should lower confidence in attributing the FULL in vivo metastasis effect specifically to beta-ionone, though the paper's own data shows beta-ionone still adds an effect beyond the mineral-oil baseline (unique lung/Tyson-gland metastases only in the beta-ionone arm).",
     "raw_excerpt_or_link": "doi:10.1371/journal.pone.0085110, Figure 6 and Results text"
@@ -733,6 +742,7 @@
     "sample_size": null,
     "replication_count": null,
     "cancer_type": "prostate",
+    "direction_context": "supporting_evidence",
     "verified_by_person_a": true,
     "verification_notes": "NEW record from full-text read (PMC8024707, live pull), directly confirming the base record's claim that OR51E2 itself (not just OR51E1) is implicated -- verified this explicitly since the paper's figures are titled around OR51E1 specifically (e.g. 'Figure 6: Overexpression of OR51E1 inhibits LNCaP cell proliferation'), which could otherwise be misread as an OR51E1-only finding. The Discussion states explicitly: 'Our data are unexpected because they show that OR51E1 and OR51E2 not only do not promote growth but also are toxic to cells... supported by both the overexpression and knockdown of the endogenous receptors.' No replicate/N count given for the OR51E2-specific comparison panel in the text reviewed; the general LNCaP doubling time reported elsewhere in the paper is ~28 hours under untreated control conditions, for reference.",
     "raw_excerpt_or_link": "doi:10.1016/j.jbc.2021.100475, Results section 'Ligand, receptor, and cell-type specificity of OR-mediated cytostasis'"
@@ -748,6 +758,7 @@
     "sample_size": 186,
     "replication_count": 4,
     "cancer_type": "prostate",
+    "direction_context": "supporting_evidence",
     "verified_by_person_a": true,
     "verification_notes": "NEW record from full-text read (PMC web article, PMC2713531) -- this receptor-specificity knockdown control was not captured in the original abstract-derived record. Real N values: beta-ionone condition n=22 (siRNA) vs n=186 (control) cells, from 4 independent transfections; ADT condition n=26 (siRNA) vs n=201 (control) cells, from 4 independent experiments. sample_size field uses the larger control-arm N (186) as representative; see claim/mechanism for the full n breakdown across both ligand conditions.",
     "raw_excerpt_or_link": "doi:10.1074/jbc.M109.012096, Figure 3 and Results text (PMC web article)"
@@ -763,8 +774,43 @@
     "sample_size": null,
     "replication_count": null,
     "cancer_type": "prostate",
+    "direction_context": "supporting_evidence",
     "verified_by_person_a": true,
     "verification_notes": "NEW record from full-text read (PMC web article, PMC2713531). This is the mechanistic rescue experiment that pins down p38/SAPK-JNK (not ERK1/2/p44-42) as necessary for the antiproliferative effect -- important because it directly corrects the original record's mechanism field, which had incorrectly implied p44/42 involvement. No N/replication count given explicitly for this specific inhibitor-rescue experiment in the text reviewed.",
     "raw_excerpt_or_link": "doi:10.1074/jbc.M109.012096, Figure 4E-F and Results text (PMC web article)"
+  },
+  {
+    "receptor": "OR51E2",
+    "source_type": "literature",
+    "citation": "Xu X, Khater M, Wu G (2022). \"The olfactory receptor OR51E2 activates ERK1/2 through the Golgi-localized Gβγ-PI3Kγ-ARF1 pathway in prostate cancer cells.\" Front Pharmacol 13:1009380.",
+    "claim": "Beta-ionone dose-dependently activates ERK1/2 in prostate cancer cells (EC50 ~20 μM) via a Golgi-localized Gβγ-PI3Kγ-ARF1 pathway; CRISPR knockout of Gγ9, PI3Kγ, or ARF1, and pharmacological inhibition of Gβγ (gallein) or PI3Kγ (AS-604850), each abolishes beta-ionone-induced ERK1/2 activation. No ERK1/2 response in HEK293 (OR51E2-negative) cells.",
+    "mechanism": "Beta-ionone → OR51E2 → Gβγ translocation to Golgi → PI3Kγ → ARF1 → ERK1/2 phosphorylation. Spatially coordinated at the Golgi apparatus.",
+    "direction": "tumor-promoting",
+    "model_system": "Prostate cancer cell lines (DU145 and others); HEK293 negative control",
+    "sample_size": null,
+    "replication_count": 1,
+    "cancer_type": "prostate",
+    "direction_context": "activation_effect",
+    "verified_by_person_a": false,
+    "verification_notes": "PRELIMINARY — abstract/PMC skim only, not Person A full-text verified. Mechanism paper (ERK activation) rather than direct proliferation/invasion endpoint; direction inferred as tumor-promoting from MAPK hyper-activation framing and alignment with Sanz PI3Kγ/Gβγ pathway. Does NOT directly measure proliferation — treat as supporting mechanistic context for the contested activation narrative, not as independent phenotypic evidence.",
+    "endpoint": "ERK1/2 phosphorylation (MAPK signaling)",
+    "raw_excerpt_or_link": "doi:10.3389/fphar.2022.1009380"
+  },
+  {
+    "receptor": "OR51E2",
+    "source_type": "literature",
+    "citation": "Abaffy T, Bain JR, Muehlbauer MJ, Spasojevic I, Lodha S, Bruguera E, O'Neal SK, Kim SY, Matsunami H (2018). \"A Testosterone Metabolite 19-Hydroxyandrostenedione Induces Neuroendocrine Trans-Differentiation of Prostate Cancer Cells via an Ectopic Olfactory Receptor.\" Front Oncol 8:162.",
+    "claim": "Screened 24 OR51E2 agonists and 1 antagonist; endogenous agonist 19-hydroxyandrostenedione (19-OH AD, aromatase product) activation decreases cell viability, induces cell cycle arrest, and upregulates neuronal/neuroendocrine (NE) markers (e.g. neuron-specific enolase). NE marker induction abolished in OR51E2-KO cells.",
+    "mechanism": "OR51E2 agonist activation → decreased intracellular anabolic signals → cell cycle arrest + neuroendocrine trans-differentiation (NEtD). 19-OH AD is endogenously produced upon receptor activation in LNCaP cells.",
+    "direction": "tumor-suppressive",
+    "model_system": "LNCaP prostate cancer cells; OR51E2-KO validation",
+    "sample_size": null,
+    "replication_count": 1,
+    "cancer_type": "prostate",
+    "direction_context": "activation_effect",
+    "verified_by_person_a": false,
+    "verification_notes": "PRELIMINARY — abstract-level only, not Person A full-text verified. Direction is ambiguous for clinical interpretation: decreased viability/cell cycle arrest reads tumor-suppressive on proliferation, but NE trans-differentiation is associated with aggressive CRPC/NEPC phenotypes (non-mitotic NE-like cells may provide paracrine growth support to surrounding carcinoma). Load as tumor-suppressive with this NE-differentiation caveat — do not fold into high-confidence activation mass until verified.",
+    "endpoint": "viability, cell cycle arrest, NE marker expression",
+    "raw_excerpt_or_link": "doi:10.3389/fonc.2018.00162"
   }
 ]

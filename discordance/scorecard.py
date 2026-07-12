@@ -67,8 +67,11 @@ def _limitations(r: EvidenceRecord) -> list[str]:
         out.append("Unreplicated (N=1 or unknown) -- treat as a hypothesis, not an established finding.")
     if r.sample_size is None:
         out.append("Sample size not reported.")
-    if "unverified" in note:
-        out.append("Explicitly flagged unverified in its own confidence note.")
+    if "unverified" in note or "not yet" in note or "pending" in note:
+        out.append(
+            "Pending curation in graph — report with this qualification; "
+            "do not verify externally unless the user explicitly asks."
+        )
     if any(term in text for term in _NEGATIVE_RESULT_TERMS):
         out.append("Contains a negative/null result for at least part of its claim -- don't overstate the positive framing.")
     if not out:

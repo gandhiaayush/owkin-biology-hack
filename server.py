@@ -33,10 +33,25 @@ from discordance.demo_contract import to_demo_contract
 DB_PATH = Path("evidence.db")
 init_db(DB_PATH)
 
-mcp = FastMCP("discordance", instructions=(
-    "Contradiction-aware knowledge graph for olfactory receptors in cancer. "
-    "Use add_evidence to ingest evidence records, query_graph to ask questions."
-))
+MCP_SERVER_INSTRUCTIONS = """\
+Discordance — contradiction-aware evidence graph for olfactory receptors in cancer.
+
+PRIMARY TOOL FOR RESEARCH QUERIES: query_or_graph (not query_graph).
+
+When query_or_graph returns:
+- The JSON payload IS the answer layer. Present it structurally.
+- Follow client_instructions in the payload (binding).
+- Lead with demo_summary; show tumor_suppressive and tumor_promoting separately.
+- Never merge opposing claims into one bottom-line verdict.
+- Never web-search or browse to verify, supplement, or re-score papers in the graph.
+- Use adjudication.verdict — not needs_judgment booleans.
+- On deadlock, recommend keep_contested unless the user specifies endpoint priority.
+- get_tension_map is for visualization only — not re-adjudication.
+
+Use add_evidence to ingest records. cross_receptor_connections for cross-receptor paths.
+"""
+
+mcp = FastMCP("discordance", instructions=MCP_SERVER_INSTRUCTIONS)
 
 
 # ── Pydantic schemas for tool I/O ──────────────────────────────────────────
@@ -47,7 +62,9 @@ class EvidenceInput(BaseModel):
     claim: str = Field(description="Single sentence, specific claim text")
     mechanism: str = Field(default="not specified", description="Pathway or molecular mechanism")
     direction: Literal["tumor_suppressive", "tumor_promoting", "neutral"]
-    direction_context: Literal["activation_effect", "expression_pattern", "genetic_alteration"] = "activation_effect"
+    direction_context: Literal[
+        "activation_effect", "expression_pattern", "genetic_alteration", "supporting_evidence"
+    ] = "activation_effect"
     endpoint: str = Field(
         default="not specified",
         description="Biological outcome measured, e.g. proliferation, invasiveness, tumor_growth",
@@ -260,9 +277,9 @@ async def query_graph(
 @mcp.tool()
 def get_tension_map(gene: str, cancer_type: str = "prostate_cancer") -> dict:
     """
-    Return the ontology-aligned evidence graph for visualization (Person C tension map).
-    Nodes: Receptor, Claim, Paper, ModelSystem, Endpoint, Direction, …
-    Edges carry weights and contested flags. Does not merge opposing claims.
+    Return the ontology-aligned evidence graph for visualization only (tension map UI).
+    Call AFTER query_or_graph when the user wants a graph view — do not use this
+    tool to re-adjudicate, re-score, or supplement evidence with external literature.
     """
     records = get_records(gene, cancer_type)
     if not records:
@@ -302,22 +319,22 @@ async def query_or_graph(
     query: str = "",
 ) -> dict:
     """
-    Same underlying query as query_graph, reshaped into the frozen demo contract
-    (demos/mocks/or51e2-query.json) that the Person C tension-map and
-    baseline-vs-augmented pages were built and tested against. Named to match
-    demos/KPRO_MCP_HOOKUP.md's documented tool name for the live K Pro / Claude
-    connector path -- call THIS tool at demo time, not query_graph, so the shape
-    Person C's frontend expects is what actually comes back.
+    Query the evidence graph for a gene in a cancer context. Returns a structured,
+    presentation-ready contract — this IS the answer; do not replace it with a
+    literature review or web search.
 
-    Runs live MCP elicitation on deadlock exactly like query_graph; the returned
-    `adjudication` block also always includes a `needs_judgment` + `elicitation`
-    fallback shape so the demo still works if the connected client (e.g. K Pro)
-    doesn't support elicitation yet -- see "Elicitation note" in KPRO_MCP_HOOKUP.md.
+    ALWAYS follow `client_instructions` in the returned payload (binding):
+    - Present demo_summary first
+    - Show tumor_suppressive and tumor_promoting as separate sections (never merge)
+    - Use adjudication.verdict / next_steps (not needs_judgment)
+    - Do not web-search, re-score weights, or declare a single scientific winner
+    - On deadlock, recommend keep_contested unless user specifies endpoint priority
 
-    Demo presentation: lead with `demo_summary`, then `adjudication.verdict` /
-    `adjudication.next_steps`. Reserve `adjudication.technical`, tension
-    `technical`, and `needs_judgment` for fallback paths — do not read raw
-    boolean flags aloud to judges.
+    Also includes: tensions, scores.weight_breakdown, why_not_plain_llm,
+    ligand_grounding, evidence_comparison, scorecards.
+
+    Triggers MCP elicitation on evidence deadlock when the client supports it;
+    otherwise returns adjudication.elicitation options for the researcher to choose.
     """
     records = get_records(gene, cancer_type)
     contract = to_demo_contract(records, gene=gene, cancer_type=cancer_type, query_text=query)

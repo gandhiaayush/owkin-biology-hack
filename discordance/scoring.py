@@ -3,7 +3,12 @@ from __future__ import annotations
 import re
 
 from .models import EvidenceRecord, ScoredDirection, DirectionScores, ConsensusStatus
-from .normalize import is_tumor_intrinsic_activation, cell_compartment
+from .normalize import (
+    is_tumor_intrinsic_activation,
+    cell_compartment,
+    citation_key,
+    count_independent_sources,
+)
 
 SOURCE_WEIGHTS: dict[str, float] = {
     "primary_study": 1.0,
@@ -115,10 +120,35 @@ def score_record_with_reason(r: EvidenceRecord) -> tuple[float, str]:
     return score, reason
 
 
+def _best_per_citation(records: list[EvidenceRecord]) -> list[EvidenceRecord]:
+    """One mass-bearing record per paper — highest weight wins."""
+    best: dict[str, EvidenceRecord] = {}
+    best_w: dict[str, float] = {}
+    for r in records:
+        key = citation_key(r.source)
+        w = score_record(r)
+        if key not in best or w > best_w[key]:
+            best[key] = r
+            best_w[key] = w
+    return list(best.values())
+
+
+def _activation_mass_pool(records: list[EvidenceRecord]) -> list[EvidenceRecord]:
+    """Tumor-intrinsic ligand-activation claims only; one row per citation."""
+    pool = [
+        r for r in records
+        if r.direction_context == "activation_effect"
+        and is_tumor_intrinsic_activation(r)
+        and r.source_type not in ("patent", "preliminary")
+        and r.direction in ("tumor_suppressive", "tumor_promoting")
+    ]
+    return _best_per_citation(pool)
+
+
 def get_confidence_label(records: list[EvidenceRecord]) -> str:
     if not records:
         return "no evidence"
-    n = len(records)
+    n = count_independent_sources(records)
     max_reps = max(
         (r.independent_replications for r in records if r.independent_replications is not None),
         default=None,
@@ -129,27 +159,32 @@ def get_confidence_label(records: list[EvidenceRecord]) -> str:
         if max_reps == 0:
             return "unreplicated (N=1) — treat as hypothesis"
         return f"replicated (N=1 primary, {max_reps} independent) — moderate confidence"
-    return f"converging evidence (N={n} sources)"
+    return f"converging evidence (N={n} independent sources)"
 
 
 def compute_direction_scores(
     records: list[EvidenceRecord],
     direction_context_filter: str = "activation_effect",
 ) -> DirectionScores:
-    filtered = [r for r in records if r.direction_context == direction_context_filter]
-    # Tumor-intrinsic activation claims only — exclude TAM/immune (Marelli) and patents from mass
-    directional_pool = [
-        r for r in filtered
-        if (direction_context_filter != "activation_effect" or is_tumor_intrinsic_activation(r))
-        and r.source_type != "patent"
-    ]
+    if direction_context_filter == "activation_effect":
+        directional_pool = _activation_mass_pool(records)
+    else:
+        filtered = [r for r in records if r.direction_context == direction_context_filter]
+        directional_pool = [
+            r for r in filtered
+            if r.source_type not in ("patent", "preliminary")
+        ]
+        directional_pool = _best_per_citation(directional_pool)
 
     suppressive_recs = [r for r in directional_pool if r.direction == "tumor_suppressive"]
     promoting_recs = [r for r in directional_pool if r.direction == "tumor_promoting"]
+
+    filtered = [r for r in records if r.direction_context == direction_context_filter]
     patent_recs = [r for r in filtered if r.source_type == "patent"]
     immune_recs = [
-        r for r in filtered
+        r for r in records
         if direction_context_filter == "activation_effect"
+        and r.direction_context == "activation_effect"
         and cell_compartment(r) == "immune_cell"
     ]
 

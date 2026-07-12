@@ -106,8 +106,8 @@ def test_four_seed_records_produce_one_contradiction(db):
     contradictions = detect_contradictions(records)
     assert len(contradictions) == 1
     c = contradictions[0]
-    assert len(c.suppressive_records) == 2
-    assert len(c.promoting_records) == 2
+    assert len(c.suppressive_records) == 1
+    assert len(c.promoting_records) == 1
     assert c.deadlock is True
 
 
@@ -145,8 +145,8 @@ def test_unknown_endpoint_does_not_falsely_soften_framing(db):
     (flat contradiction framing) until endpoints are positively confirmed distinct.
     """
     os.environ["DISCORDANCE_DB"] = str(db)
-    insert_record(_make_record(source="Study A", direction="tumor_suppressive"))
-    insert_record(_make_record(source="Study B", direction="tumor_promoting", model_system="xenograft"))
+    insert_record(_make_record(source="Study A et al. 2020", direction="tumor_suppressive"))
+    insert_record(_make_record(source="Study B et al. 2021", direction="tumor_promoting", model_system="xenograft"))
     records = get_records("OR51E2", "prostate_cancer")
     contradictions = detect_contradictions(records)
     assert contradictions[0].same_endpoint is True

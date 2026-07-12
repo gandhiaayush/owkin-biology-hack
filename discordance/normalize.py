@@ -136,14 +136,26 @@ def is_tumor_intrinsic_activation(record: EvidenceRecord) -> bool:
     return cell_compartment(record) == "tumor_cell"
 
 
+def citation_key(source: str) -> str:
+    """Normalize a citation to a dedup key (DOI or first-author+year)."""
+    doi_match = re.search(r"\bdoi[:\s]+(10\.[^\s,;\"']+)", source, re.IGNORECASE)
+    if doi_match:
+        return doi_match.group(1).lower().rstrip(".")
+    year_match = re.search(r"(19|20)\d{2}", source)
+    year = year_match.group(0) if year_match else "unknown-year"
+    author_match = re.match(r"\s*([A-Za-z][A-Za-z\-]*)", source)
+    first_author = author_match.group(1).lower() if author_match else "unknown-author"
+    return f"{first_author}-{year}"
+
+
 def count_independent_sources(records: list[EvidenceRecord]) -> int:
-    """Count non-patent primary/review sources, collapsing obvious patent families."""
+    """Count distinct papers (citation keys), excluding patents and preliminary extractions."""
     seen: set[str] = set()
     n = 0
     for r in records:
-        if r.source_type == "patent":
+        if r.source_type in ("patent", "preliminary"):
             continue
-        key = r.source.split("(")[0].strip().lower()[:60]
+        key = citation_key(r.source)
         if key in seen:
             continue
         seen.add(key)
