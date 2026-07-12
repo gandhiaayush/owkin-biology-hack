@@ -137,7 +137,8 @@ def detect_auxiliary_tensions(records: list[EvidenceRecord]) -> list[dict]:
     controversy = [r for r in ligand_records if "controversy" in (r.confidence_note or "").lower()]
     alpha_full_agonist = [
         r for r in ligand_records
-        if re.search(r"alpha-ionone|α-ionone", r.claim, re.I) and "full agonist" in r.claim.lower()
+        if re.search(r"alpha-ionone|α-ionone", r.claim, re.I)
+        and re.search(r"full\s+\w*\s*agonist|agonist in its own right", r.claim, re.I)
     ]
     beta_driven = [r for r in ligand_records if re.search(r"beta-ionone|β-ionone", r.claim, re.I)]
     if controversy or (alpha_full_agonist and beta_driven):

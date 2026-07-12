@@ -186,6 +186,49 @@ def onto_slug_cancer(raw: str) -> str:
     return raw.lower().replace(" ", "_").replace(",", "").replace("(", "").replace(")", "")[:64]
 
 
+_GENETIC_MANIPULATION_TERMS = (
+    # Only terms unambiguous as the PRIMARY intervention (not a specificity control).
+    # "ko mouse / ko mice / -/- mice" are excluded because they almost always appear
+    # in ligand-activation papers as specificity controls ("no effect in KO mice,
+    # confirming receptor specificity") rather than as the main experiment — keeping
+    # them here mis-classifies Kim 2025 propionate (a ligand-activation paper with
+    # a KO mouse confirmation) as genetic_alteration.
+    "crispr", "knockout of or", "knock-out of or",
+    "transgenic", "probasin promoter", "shrna knockdown",
+    "sirna knockdown",
+)
+_OVEREXPRESSION_TERMS = (
+    "inducible expression", "inducible or51e", "ectopically expressed",
+    "ectopic expression", "overexpression system", "overexpressing", "overexpression",
+    "stable overexpression", "transduced with",
+    "lentiviral transduction", "adenoviral transduction",
+)
+
+
+def _classify_experiment_context(record: dict) -> str:
+    """
+    Infer the correct direction_context from the PRIMARY FINDING stated in the claim.
+
+    activation_effect  — ligand applied to cells expressing endogenous receptor
+    expression_pattern — ectopic overexpression without exogenous ligand
+    genetic_alteration — CRISPR/transgenic/knockout/knockin as the main experiment
+
+    IMPORTANT: only the `claim` field is checked, not mechanism or verification_notes.
+    Mechanism often mentions control methods (e.g. Neuhaus uses siRNA as a specificity
+    control, but the CLAIM is about ligand activation). Using mechanism text would
+    incorrectly reclassify ligand-activation papers that employed genetic controls.
+    """
+    claim = (record.get("claim") or "").lower()
+
+    # Genetic manipulation as the PRIMARY experiment reported in the claim
+    if any(t in claim for t in _GENETIC_MANIPULATION_TERMS):
+        return "genetic_alteration"
+    # Ectopic overexpression without ligand as the PRIMARY experiment
+    if any(t in claim for t in _OVEREXPRESSION_TERMS):
+        return "expression_pattern"
+    return "activation_effect"
+
+
 def convert(record: dict) -> list[EvidenceRecord]:
     """
     Convert one Person A JSON record to one or more EvidenceRecord objects.
@@ -202,6 +245,8 @@ def convert(record: dict) -> list[EvidenceRecord]:
     # - PDB records → expression_pattern (structural)
     # - ChEMBL SUMMARY record → expression_pattern (pharmacology metadata)
     # - ChEMBL ACTIVITY records → activation_effect (binding IS activation-relevant)
+    # - Genetic manipulation experiments (CRISPR, transgenic, probasin) → genetic_alteration
+    # - Ectopic overexpression without ligand (inducible expression, ectopic OR) → expression_pattern
     # - Everything else → activation_effect
     if source_type_raw == "tcga":
         direction_context = "genetic_alteration"
@@ -210,14 +255,28 @@ def convert(record: dict) -> list[EvidenceRecord]:
     elif source_type_raw == "chembl" and not _is_chembl_activity(record):
         direction_context = "expression_pattern"  # summary record: pharmacology metadata only
     else:
-        direction_context = "activation_effect"
+        direction_context = _classify_experiment_context(record)
 
     direction_raw = record.get("direction", "unclear")
     direction = DIRECTION_MAP.get(direction_raw, "neutral")
 
+    # Unverified primary_study records get preliminary weight (0.4 base, not 1.0).
+    # They contribute to graph coverage but must not anchor the directional mass —
+    # they haven't been checked against full text and could be extraction artifacts.
+    if not record.get("verified_by_person_a", True) and source_type == "primary_study":
+        source_type = "preliminary"
+
     confidence_note = record.get("verification_notes") or ""
     if not record.get("verified_by_person_a", True):
-        confidence_note = "UNVERIFIED. " + confidence_note
+        confidence_note = "UNVERIFIED (not full-text checked). " + confidence_note
+    # Flag the Sanz vehicle/mineral-oil confound explicitly so the demo contract
+    # can surface it — mineral oil alone activates PSGR, so the beta-ionone arm's
+    # incremental effect over vehicle is not statistically significant.
+    if "mineral oil" in (record.get("claim") or "").lower() or (
+        "vehicle" in (record.get("claim") or "").lower()
+        and "sanz" in (record.get("citation") or "").lower()
+    ):
+        confidence_note = "VEHICLE CONFOUND: " + confidence_note
 
     cancer_raw = record.get("cancer_type")
     endpoint = _infer_endpoint(record)
