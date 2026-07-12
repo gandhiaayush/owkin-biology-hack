@@ -1,0 +1,304 @@
+{
+  "aggregate_pct": 100.0,
+  "total_earned": 29.0,
+  "total_max": 29.0,
+  "per_query": [
+    {
+      "id": "Q1",
+      "description": "OR51E2 / prostate \u2014 contested, deadlock, different endpoints",
+      "pct": 100.0,
+      "earned": 6.0,
+      "max": 6.0,
+      "fields": {
+        "consensus_status": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected='contested', got='contested'"
+        },
+        "elicitation_needed": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=True, got=True"
+        },
+        "tension_detected": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=True, got=True (1 contradiction(s))"
+        },
+        "same_endpoint": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=False, got=False. Different endpoints confirmed \u2713"
+        },
+        "paper_recall": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "4/4 expected papers found: found=['Neuhaus', 'Sanz', 'Rodriguez', 'Pronin'], missing=[]"
+        },
+        "record_counts": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "suppressive: 6>=2=\u2713, promoting: 13>=2=\u2713"
+        }
+      }
+    },
+    {
+      "id": "Q2",
+      "description": "OR51E2 / colorectal \u2014 consensus suppressive, 2 independent 2025 papers",
+      "pct": 100.0,
+      "earned": 5.0,
+      "max": 5.0,
+      "fields": {
+        "consensus_status": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected='consensus_suppressive', got='consensus_suppressive'"
+        },
+        "elicitation_needed": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=False, got=False"
+        },
+        "tension_detected": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=False, got=False (0 contradiction(s))"
+        },
+        "paper_recall": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "1/1 expected papers found: found=['Kim'], missing=[]"
+        },
+        "record_counts": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "suppressive: 2>=1=\u2713, promoting: 0>=0=\u2713"
+        }
+      }
+    },
+    {
+      "id": "Q3",
+      "description": "OR51E2 / KICH \u2014 exploratory CNV signal, no functional literature",
+      "pct": 100.0,
+      "earned": 4.0,
+      "max": 4.0,
+      "fields": {
+        "consensus_status": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected='no_data', got='no_data'"
+        },
+        "elicitation_needed": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=False, got=False"
+        },
+        "tension_detected": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=False, got=False (0 contradiction(s))"
+        },
+        "paper_recall": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "1/1 expected papers found: found=['TCGA-KICH'], missing=[]"
+        }
+      }
+    },
+    {
+      "id": "Q4",
+      "description": "OR2H1 / lung \u2014 CAR-T target, single verified paper (Martin 2022)",
+      "pct": 100.0,
+      "earned": 4.0,
+      "max": 4.0,
+      "fields": {
+        "consensus_status": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected='single_source', got='single_source'"
+        },
+        "elicitation_needed": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=False, got=False"
+        },
+        "tension_detected": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=False, got=False (0 contradiction(s))"
+        },
+        "paper_recall": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "1/1 expected papers found: found=['Martin'], missing=[]"
+        }
+      }
+    },
+    {
+      "id": "Q5a",
+      "description": "OR51E2 / melanoma \u2014 suppressive (Gelis 2017), no tension, no elicitation",
+      "pct": 100.0,
+      "earned": 5.0,
+      "max": 5.0,
+      "fields": {
+        "consensus_status": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected='single_source', got='single_source'"
+        },
+        "elicitation_needed": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=False, got=False"
+        },
+        "tension_detected": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=False, got=False (0 contradiction(s))"
+        },
+        "paper_recall": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "1/1 expected papers found: found=['Gelis'], missing=[]"
+        },
+        "record_counts": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "suppressive: 1>=1=\u2713, promoting: 0>=0=\u2713"
+        }
+      }
+    },
+    {
+      "id": "Q5",
+      "description": "OR51B4 / colorectal \u2014 single verified paper (Weber 2017), PLC/p38/Akt",
+      "pct": 100.0,
+      "earned": 5.0,
+      "max": 5.0,
+      "fields": {
+        "consensus_status": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected='single_source', got='single_source'"
+        },
+        "elicitation_needed": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=False, got=False"
+        },
+        "tension_detected": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "expected=False, got=False (0 contradiction(s))"
+        },
+        "paper_recall": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "1/1 expected papers found: found=['Weber'], missing=[]"
+        },
+        "record_counts": {
+          "earned": 1.0,
+          "max": 1.0,
+          "note": "suppressive: 1>=1=\u2713, promoting: 0>=0=\u2713"
+        }
+      }
+    }
+  ],
+  "parameter_sweep": {
+    "baseline_default_weights_pct": 100.0,
+    "best_pct": 100.0,
+    "best_config": {
+      "config": {
+        "primary_study": 1.0,
+        "review": 0.5,
+        "database_derived": 0.4,
+        "preliminary": 0.2,
+        "patent": 0.05,
+        "elicitation_threshold": [
+          0.35,
+          0.55
+        ]
+      },
+      "total": 29.0,
+      "pct": 100.0
+    },
+    "top_5": [
+      {
+        "config": {
+          "primary_study": 1.0,
+          "review": 0.5,
+          "database_derived": 0.4,
+          "preliminary": 0.2,
+          "patent": 0.05,
+          "elicitation_threshold": [
+            0.35,
+            0.55
+          ]
+        },
+        "total": 29.0,
+        "pct": 100.0
+      },
+      {
+        "config": {
+          "primary_study": 1.0,
+          "review": 0.5,
+          "database_derived": 0.4,
+          "preliminary": 0.2,
+          "patent": 0.05,
+          "elicitation_threshold": [
+            0.35,
+            0.6
+          ]
+        },
+        "total": 29.0,
+        "pct": 100.0
+      },
+      {
+        "config": {
+          "primary_study": 1.0,
+          "review": 0.5,
+          "database_derived": 0.4,
+          "preliminary": 0.2,
+          "patent": 0.05,
+          "elicitation_threshold": [
+            0.35,
+            0.65
+          ]
+        },
+        "total": 29.0,
+        "pct": 100.0
+      },
+      {
+        "config": {
+          "primary_study": 1.0,
+          "review": 0.5,
+          "database_derived": 0.4,
+          "preliminary": 0.2,
+          "patent": 0.05,
+          "elicitation_threshold": [
+            0.4,
+            0.55
+          ]
+        },
+        "total": 29.0,
+        "pct": 100.0
+      },
+      {
+        "config": {
+          "primary_study": 1.0,
+          "review": 0.5,
+          "database_derived": 0.4,
+          "preliminary": 0.2,
+          "patent": 0.05,
+          "elicitation_threshold": [
+            0.4,
+            0.6
+          ]
+        },
+        "total": 29.0,
+        "pct": 100.0
+      }
+    ],
+    "delta_vs_baseline": 0.0,
+    "n_configs_evaluated": 432
+  }
+}
