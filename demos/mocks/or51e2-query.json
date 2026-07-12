@@ -188,5 +188,86 @@
   "baseline_contrast": {
     "plain_k_pro_expected": "A smoothed or hedged single narrative that OR51E2 may have context-dependent effects in prostate cancer, without explicitly staging the Neuhaus vs Sanz/Rodriguez primary-literature split as a first-class tension.",
     "augmented_expected": "Explicit contested cluster with sources, weights, endpoint labels, confidence-qualified rules, and needs_judgment elicitation."
-  }
+  },
+  "scorecards": [
+    {
+      "source": "Neuhaus et al. 2009, J Biol Chem",
+      "source_type": "primary_study",
+      "direction": "tumor_suppressive",
+      "weight": 1.0,
+      "weight_reason": "primary_study (base=1.0) × (1 + 3 independent replications → +0.40, N=100 → +0.010) = 1.410",
+      "strengths": [
+        "Peer-reviewed primary data, not a review or preliminary extraction.",
+        "Independently replicated (3x) -- not a one-off result.",
+        "Reasonably powered (N=100).",
+        "Includes a receptor-specificity control (knockdown/knockout/negative-control cell line).",
+        "Endpoint explicitly identified (proliferation), not left ambiguous."
+      ],
+      "limitations": [
+        "No major limitation flagged."
+      ],
+      "best_for": "Directly answers the 'proliferation' question this query is asking about.",
+      "selection_reason": "Selected because it's part of the contested cluster -- one side of a tumor-suppressive vs. tumor-promoting split that the graph could not resolve on its own.",
+      "contested": true,
+      "endpoint": "proliferation"
+    },
+    {
+      "source": "Sanz et al. 2014, PLoS ONE",
+      "source_type": "primary_study",
+      "direction": "tumor_promoting",
+      "weight": 1.86,
+      "weight_reason": "primary_study (base=1.0) × (1 + 3 independent replications → +0.40, N=unknown → +0.000) = 1.400",
+      "strengths": [
+        "Peer-reviewed primary data, not a review or preliminary extraction.",
+        "Independently replicated (3x) -- not a one-off result.",
+        "In vivo evidence, not just a cell-culture proxy.",
+        "Endpoint explicitly identified (invasiveness), not left ambiguous."
+      ],
+      "limitations": [
+        "Sample size not reported.",
+        "Contains a negative/null result for at least part of its claim -- don't overstate the positive framing."
+      ],
+      "best_for": "Directly answers the 'proliferation' question this query is asking about (answers a related but distinct question here -- measures invasiveness, not proliferation).",
+      "selection_reason": "Selected because it's part of the contested cluster -- one side of a tumor-promoting vs. tumor-suppressive split that the graph could not resolve on its own.",
+      "contested": true,
+      "endpoint": "invasiveness"
+    },
+    {
+      "source": "Rodriguez et al. 2014, Oncogenesis",
+      "source_type": "primary_study",
+      "direction": "tumor_promoting",
+      "weight": 1.4,
+      "weight_reason": "primary_study (base=1.0) × (1 + 3 independent replications → +0.40, N=7 → +0.001) = 1.401",
+      "strengths": [
+        "Peer-reviewed primary data, not a review or preliminary extraction.",
+        "Independently replicated (3x) -- not a one-off result.",
+        "In vivo evidence, not just a cell-culture proxy."
+      ],
+      "limitations": [
+        "No major limitation flagged."
+      ],
+      "best_for": "Supports the tumor-promoting case for OR51E2 in prostate cancer.",
+      "selection_reason": "Selected because it's part of the contested cluster -- one side of a tumor-promoting vs. tumor-suppressive split that the graph could not resolve on its own.",
+      "contested": true,
+      "endpoint": "tumor growth"
+    },
+    {
+      "source": "PDB 8F76",
+      "source_type": "database_derived",
+      "direction": "neutral",
+      "weight": 0.6,
+      "weight_reason": "database_derived (base=0.6) × (1 + replications unknown → +0.00, N=unknown → +0.000) = 0.600",
+      "strengths": [
+        "No standout strength beyond baseline source-type credibility."
+      ],
+      "limitations": [
+        "Unreplicated (N=1 or unknown) -- treat as a hypothesis, not an established finding.",
+        "Sample size not reported."
+      ],
+      "best_for": "Corroborating expression/CNV/structural signal only -- not a direction or mechanism claim on its own.",
+      "selection_reason": "Selected as background context (expression/structural/commercial data) rather than a direct direction claim.",
+      "contested": false,
+      "endpoint": "structure"
+    }
+  ]
 }

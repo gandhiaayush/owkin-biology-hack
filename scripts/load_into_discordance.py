@@ -62,7 +62,8 @@ CANCER_TYPE_MAP = {
 # When Person A's JSON omits endpoint, infer from known demo papers / claim text.
 _CITATION_ENDPOINT_HINTS = (
     ("neuhaus", "proliferation"),
-    ("sanz", "invasiveness"),
+    ("sanz", "2014", "invasiveness"),
+    ("sanz", "2016", "tumor_growth"),
     ("rodriguez", "tumor_growth"),
     ("pronin", "proliferation"),
     ("gelis", "proliferation"),
@@ -77,9 +78,15 @@ def _infer_endpoint(record: dict) -> str:
     if explicit and explicit not in ("", "not specified", None):
         return explicit
     cite = (record.get("citation") or "").lower()
-    for needle, endpoint in _CITATION_ENDPOINT_HINTS:
-        if needle in cite:
-            return endpoint
+    for hint in _CITATION_ENDPOINT_HINTS:
+        if len(hint) == 3:
+            needle, year, endpoint = hint
+            if needle in cite and year in cite:
+                return endpoint
+        else:
+            needle, endpoint = hint
+            if needle in cite:
+                return endpoint
     claim = (record.get("claim") or "").lower()
     for word in ("invasiveness", "invasion", "proliferation", "apoptosis", "migration", "growth"):
         if word in claim:
@@ -130,7 +137,10 @@ def onto_slug_cancer(raw: str) -> str:
 
 def main():
     cli_paths = [p for p in sys.argv[1:] if p and not p.startswith("#")]
-    paths = [Path(p) for p in cli_paths] or list((REPO_ROOT / "data" / "receptors").glob("*.json"))
+    paths = [Path(p) for p in cli_paths] or [
+        p for p in (REPO_ROOT / "data" / "receptors").glob("*.json")
+        if not p.name.endswith("_fulltext_candidates.json")
+    ]
     if not paths:
         print("No evidence files found under data/receptors/.")
         return

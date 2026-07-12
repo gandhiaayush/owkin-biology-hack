@@ -71,10 +71,19 @@ def _extract_citation_key(source: str) -> str:
 _CITATION_STYLE_SOURCE_TYPES = {"primary_study", "review"}
 
 
-def _source_hash(gene: str, source: str, direction: str, source_type: str = "primary_study") -> str:
+def _source_hash(
+    gene: str, source: str, direction: str, source_type: str = "primary_study", claim: str = "",
+) -> str:
     """
     For citation-style sources (primary_study, review), normalize to (first
-    author, year) so the same paper cited two different ways collides correctly.
+    author, year) so the same paper cited two different ways collides correctly
+    -- PLUS a short digest of the claim text, so multiple genuine sub-claims
+    from the same paper (e.g. one evidence record per figure/experiment) don't
+    silently collapse into a single row. Restating the *same* claim under a
+    differently-formatted citation still dedupes correctly (claim text matches);
+    a *different* figure/experiment from the same paper does not (claim text
+    differs), which is the actual multi-claim-per-paper use case this graph
+    needs to support (see PMC full-text figure extraction work).
 
     For everything else (database_derived, patent, preliminary), the source
     string is a description, not a citation -- e.g. "GDC API cnvs endpoint,
@@ -85,7 +94,9 @@ def _source_hash(gene: str, source: str, direction: str, source_type: str = "pri
     real TCGA pulls -- see CLAUDE.md/commit history). Hash the full string instead.
     """
     if source_type in _CITATION_STYLE_SOURCE_TYPES:
-        key_part = _extract_citation_key(source)
+        citation_key = _extract_citation_key(source)
+        claim_digest = hashlib.sha256(claim.lower().strip().encode()).hexdigest()[:12]
+        key_part = f"{citation_key}|{claim_digest}"
     else:
         key_part = source.lower().strip()
     key = f"{gene.lower()}|{key_part}|{direction.lower()}"
@@ -95,7 +106,7 @@ def _source_hash(gene: str, source: str, direction: str, source_type: str = "pri
 def insert_record(r: EvidenceRecord) -> Optional[int]:
     """Insert one evidence record. Returns the new row id, or None if duplicate (ignored)."""
     normalized = _normalize_model_system(r.model_system)
-    h = _source_hash(r.gene, r.source, r.direction, r.source_type)
+    h = _source_hash(r.gene, r.source, r.direction, r.source_type, r.claim)
     with _connect() as conn:
         cur = conn.execute(
             """

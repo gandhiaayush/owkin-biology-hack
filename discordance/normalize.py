@@ -116,11 +116,13 @@ def model_overlap_kind(
 def cell_compartment(record: EvidenceRecord) -> str:
     """tumor_cell | immune_cell | mixed — inferred from claim/mechanism/model text."""
     text = f"{record.claim} {record.mechanism} {record.model_system}".lower()
-    immune_markers = (
-        "macrophage", "tam", "tumor-associated macrophage", "immune",
-        "non-cell-autonomous", "cd8", "tme", "immunosupp",
+    # Word-boundary checks — avoid false positives like "immune" inside "invasion"
+    # or "tme" inside "co-treatment".
+    immune_patterns = (
+        r"\bmacrophage", r"\btam\b", r"tumor-associated macrophage",
+        r"\bimmune\b", r"non-cell-autonomous", r"\bcd8\b", r"\btme\b", r"immunosupp",
     )
-    if any(m in text for m in immune_markers):
+    if any(re.search(p, text) for p in immune_patterns):
         return "immune_cell"
     return "tumor_cell"
 

@@ -48,6 +48,8 @@ def _model_system_key(suppressive: list[EvidenceRecord], promoting: list[Evidenc
 def generate_divergence_hypothesis(
     suppressive: list[EvidenceRecord],
     promoting: list[EvidenceRecord],
+    *,
+    include_curation_notes: bool = True,
 ) -> str:
     model_key = _model_system_key(suppressive, promoting)
     same_endpoint = _endpoint_key(suppressive, promoting)
@@ -69,6 +71,9 @@ def generate_divergence_hypothesis(
             (model_key, "different_direction"),
             "Opposing directional claims detected. Review model systems, endpoints, and ligand specificity.",
         )
+
+    if not include_curation_notes:
+        return base
 
     notes = []
     for r in suppressive + promoting:
@@ -98,7 +103,7 @@ def detect_contradictions(
     if not suppressive or not promoting:
         return []
 
-    hypothesis = generate_divergence_hypothesis(suppressive, promoting)
+    hypothesis = generate_divergence_hypothesis(suppressive, promoting, include_curation_notes=True)
 
     total = len(suppressive) + len(promoting)
     ratio = len(suppressive) / total
@@ -149,10 +154,13 @@ def detect_auxiliary_tensions(records: list[EvidenceRecord]) -> list[dict]:
 
     # 2. Cell compartment (tumor intrinsic vs TAM / immune)
     immune = [r for r in activation if cell_compartment(r) == "immune_cell"]
-    tumor = [r for r in activation if cell_compartment(r) == "tumor_cell" and r.direction in (
-        "tumor_suppressive", "tumor_promoting"
-    )]
-    if immune and tumor:
+    tumor_directional = [
+        r for r in activation
+        if cell_compartment(r) == "tumor_cell"
+        and r.direction in ("tumor_suppressive", "tumor_promoting")
+        and r.source_type != "patent"
+    ]
+    if immune and tumor_directional:
         tensions.append({
             "id": "t_cell_compartment",
             "title": "Cell compartment split (tumor cell vs TAM)",
@@ -162,10 +170,11 @@ def detect_auxiliary_tensions(records: list[EvidenceRecord]) -> list[dict]:
                 "into tumor-cell direction mass."
             ),
             "immune_evidence_ids": [f"e{r.id}" for r in immune if r.id is not None],
-            "tumor_evidence_ids": [f"e{r.id}" for r in tumor if r.id is not None],
+            "tumor_intrinsic_evidence_ids": [f"e{r.id}" for r in tumor_directional if r.id is not None],
         })
 
     # 3. Gain-of-function vs loss-of-function
+    tumor = tumor_directional
     ko_records = [r for r in tumor if re.search(r"knockout|knock-out|ko\b|crispr", r.claim, re.I)]
     oe_records = [r for r in tumor if re.search(r"overexpression|transgenic|psgr-transgenic", r.claim, re.I)]
     if ko_records and oe_records:
