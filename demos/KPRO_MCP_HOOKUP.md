@@ -99,37 +99,28 @@ Keep that process alive during the demo.
 
 ---
 
-## Step 3 — Connect the client (pick the path that exists)
+## Step 3 — Connect the client
 
-### Path A — K Pro in-product MCP / connectors (preferred if available)
+### Primary path — Claude + custom MCP connector (confirmed approach)
 
-1. Open `https://k.owkin.com` and sign in  
-2. Look for **Settings → Connectors / MCP / Tools / Integrations**  
-   (exact label may be hackathon-specific — ask an Owkin mentor if missing)  
-3. **Add custom MCP server / connector**  
-4. Name: `Discordance`  
-5. URL: your HTTPS `/mcp` endpoint  
-6. Auth: none for demo, or API key if you added one  
-7. Save → Connect → verify tools appear in the session  
-
-### Path B — Claude custom connector (documented twin of Owkin’s own flow)
-
-Owkin documents this pattern for *their* MCP into Claude. Same UI works for *your* remote MCP:
+We are using **Claude.ai + Discordance MCP** as the augmented path.
 
 1. Claude.ai → **Settings → Connectors → Add custom connector**  
-   (Team: Admin settings → Connectors)  
+   (Team plan: Admin settings → Connectors)  
 2. Name: `Discordance`  
 3. URL: `https://<your-tunnel>/mcp`  
-4. Leave OAuth client id/secret empty unless you implemented OAuth  
-5. **Connect**, approve, confirm tools show up  
+4. Leave OAuth client id/secret empty  
+5. **Connect**, approve, confirm `query_or_graph` and other tools appear  
+
+This is the same connector pattern Owkin uses for their own Pathology Explorer MCP — identical UI, just our server URL.
 
 Refs:
 - https://docs.owkin.com/connect-and-integrate/pathology-explorer-mcp-ai-powered-tissue-analysis/getting-started  
 - https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp  
 
-### Path C — Local stdio (dev only, not the pitch)
+### Fallback — Local stdio (dev / debugging only)
 
-Claude Desktop / Cursor `mcp.json`:
+Claude Desktop `mcp.json`:
 
 ```json
 {
@@ -142,7 +133,9 @@ Claude Desktop / Cursor `mcp.json`:
 }
 ```
 
-Good for debugging. Do **not** rely on this for the K Pro baseline-vs-augmented stage pitch unless organizers say local tooling counts.
+### K Pro connector (if organizers enable it)
+
+If Owkin enables custom remote MCP connectors in K Pro during the hackathon, the same HTTPS tunnel URL works — paste it into Settings → Connectors / Integrations. No code change needed; the server already runs in HTTP mode.
 
 ---
 
@@ -166,10 +159,10 @@ Pass if:
 
 ## Step 5 — Demo choreography (Person C)
 
-1. **Tab 1 — Baseline:** plain K Pro, Discordance tools **off / not mentioned**  
-2. **Tab 2 — Augmented:** same question with Discordance connected  
+1. **Tab 1 — Baseline:** plain Claude (no Discordance connector), saved answer in `demos/mocks/baseline-kpro.txt`  
+2. **Tab 2 — Augmented:** Claude.ai with Discordance connector active — same question, tool call visible  
 3. **Tab 3 — Tension map:** `demos/or51e2-tension-map.html`  
-4. If elicitation unsupported: use `needs_judgment` options in the tool result and have the “researcher” reply with an option id  
+4. If elicitation unsupported by Claude: use `needs_judgment` options in the tool result and have the “researcher” reply with an option id  
 
 ---
 
