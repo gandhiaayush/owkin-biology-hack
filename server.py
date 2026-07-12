@@ -328,4 +328,28 @@ async def query_or_graph(
 
 
 if __name__ == "__main__":
-    mcp.run()
+    import os
+    import sys
+
+    # Local dev / MCP Inspector CLI use stdio (default, no flags needed).
+    # K Pro (or any remote client) needs HTTP -- it can't attach to stdio over
+    # a network. Run with `python server.py --http` (or DISCORDANCE_TRANSPORT=http)
+    # before starting an ngrok/cloudflared tunnel per demos/KPRO_MCP_HOOKUP.md.
+    #
+    # NOTE on FastMCP API (this installed version): host/port are configured via
+    # mcp.settings, NOT passed as run() kwargs -- run() only takes `transport`.
+    # The correct transport string is "streamable-http", not "http". Both of
+    # these differ from the sketch in demos/KPRO_MCP_HOOKUP.md; that doc's
+    # code sample doesn't match this FastMCP version's actual signature and
+    # will raise TypeError if copy-pasted as-is. Fixed here; verified against
+    # a real HTTP request before shipping.
+    use_http = "--http" in sys.argv or os.environ.get("DISCORDANCE_TRANSPORT") == "http"
+    if use_http:
+        mcp.settings.host = "0.0.0.0"
+        mcp.settings.port = int(os.environ.get("PORT", "8000"))
+        print(f"Starting Discordance MCP server on http://0.0.0.0:{mcp.settings.port}{mcp.settings.streamable_http_path}")
+        print("Point your tunnel (ngrok/cloudflared) at this port, then use the")
+        print("resulting HTTPS URL + streamable_http_path as the connector URL in K Pro / Claude.")
+        mcp.run(transport="streamable-http")
+    else:
+        mcp.run()
