@@ -1,5 +1,6 @@
 from __future__ import annotations
 from .models import EvidenceRecord, Rule
+from .normalize import count_independent_sources
 from .contradiction import detect_contradictions
 from .scoring import compute_direction_scores
 
@@ -23,12 +24,13 @@ def generate_rules(
     rules: list[Rule] = []
 
     if scores.suppressive.records:
-        sources = [r.source for r in scores.suppressive.records]
+        lit_sources = [r for r in scores.suppressive.records if r.source_type != "patent"]
+        sources = [r.source for r in lit_sources]
         mechanisms = list({r.mechanism for r in scores.suppressive.records if r.mechanism != "not specified"})
         mechanism_text = "; ".join(mechanisms) if mechanisms else "mechanism not specified"
         rules.append(Rule(
             direction="tumor_suppressive",
-            claim=_synthesize_claim("tumor_suppressive", scores.suppressive.records),
+            claim=_synthesize_claim("tumor_suppressive", lit_sources),
             confidence_label=scores.suppressive.confidence_label,
             sources=sources,
             mechanism=mechanism_text,
@@ -36,12 +38,13 @@ def generate_rules(
         ))
 
     if scores.promoting.records:
-        sources = [r.source for r in scores.promoting.records]
+        lit_sources = [r for r in scores.promoting.records if r.source_type != "patent"]
+        sources = [r.source for r in lit_sources]
         mechanisms = list({r.mechanism for r in scores.promoting.records if r.mechanism != "not specified"})
         mechanism_text = "; ".join(mechanisms) if mechanisms else "mechanism not specified"
         rules.append(Rule(
             direction="tumor_promoting",
-            claim=_synthesize_claim("tumor_promoting", scores.promoting.records),
+            claim=_synthesize_claim("tumor_promoting", lit_sources),
             confidence_label=scores.promoting.confidence_label,
             sources=sources,
             mechanism=mechanism_text,
@@ -54,7 +57,7 @@ def generate_rules(
 def _synthesize_claim(direction: str, records: list[EvidenceRecord]) -> str:
     """Build a short natural-language claim from the record set. Never says 'always true'."""
     gene = records[0].gene if records else "this receptor"
-    n = len(records)
+    n = count_independent_sources(records)
     qualifier = "may" if n == 1 else "appears to"
     verb = "suppress tumor growth" if direction == "tumor_suppressive" else "promote tumor growth or invasiveness"
     caveat = " (single source — treat as hypothesis)" if n == 1 else f" (supported by {n} independent sources)"

@@ -1,0 +1,196 @@
+@prefix : <http://owkin.com/discordance/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://owkin.com/discordance/ontology#> a owl:Ontology ;
+    rdfs:label "Discordance OR-in-Cancer Evidence Ontology" ;
+    rdfs:comment "Contradiction-aware evidence graph for olfactory receptors in cancer." .
+
+
+# ── Classes ──
+:Receptor a owl:Class ; rdfs:label "Receptor" .
+:CancerType a owl:Class ; rdfs:label "CancerType" .
+:ModelSystem a owl:Class ; rdfs:label "ModelSystem" .
+:Endpoint a owl:Class ; rdfs:label "Endpoint" .
+:Paper a owl:Class ; rdfs:label "Paper" .
+:Claim a owl:Class ; rdfs:label "Claim" .
+:Direction a owl:Class ; rdfs:label "Direction" .
+:Ligand a owl:Class ; rdfs:label "Ligand" .
+:Mechanism a owl:Class ; rdfs:label "Mechanism" .
+:ClassA_OR a owl:Class ; rdfs:subClassOf :Receptor ; rdfs:label "ClassA_OR" .
+:EctopicallyExpressedOR a owl:Class ; rdfs:subClassOf :Receptor ; rdfs:label "EctopicallyExpressedOR" .
+:OdorantLigand a owl:Class ; rdfs:subClassOf :Ligand ; rdfs:label "OdorantLigand" .
+:MetaboliteLigand a owl:Class ; rdfs:subClassOf :Ligand ; rdfs:label "MetaboliteLigand" .
+:BiasedAgonist a owl:Class ; rdfs:subClassOf :Ligand ; rdfs:label "BiasedAgonist" .
+:EndogenousReceptorModel a owl:Class ; rdfs:subClassOf :ModelSystem ; rdfs:label "EndogenousReceptorModel" .
+:HeterologousExpressionModel a owl:Class ; rdfs:subClassOf :ModelSystem ; rdfs:label "HeterologousExpressionModel" .
+:XenograftModel a owl:Class ; rdfs:subClassOf :ModelSystem ; rdfs:label "XenograftModel" .
+:CohortStudy a owl:Class ; rdfs:subClassOf :ModelSystem ; rdfs:label "CohortStudy" .
+:ProliferationEndpoint a owl:Class ; rdfs:subClassOf :Endpoint ; rdfs:label "ProliferationEndpoint" .
+:InvasivenessEndpoint a owl:Class ; rdfs:subClassOf :Endpoint ; rdfs:label "InvasivenessEndpoint" .
+:ApoptosisEndpoint a owl:Class ; rdfs:subClassOf :Endpoint ; rdfs:label "ApoptosisEndpoint" .
+:ExpressionEndpoint a owl:Class ; rdfs:subClassOf :Endpoint ; rdfs:label "ExpressionEndpoint" .
+:PrognosisEndpoint a owl:Class ; rdfs:subClassOf :Endpoint ; rdfs:label "PrognosisEndpoint" .
+:ActivationEffectClaim a owl:Class ; rdfs:subClassOf :Claim ; rdfs:label "ActivationEffectClaim" .
+:ExpressionPatternClaim a owl:Class ; rdfs:subClassOf :Claim ; rdfs:label "ExpressionPatternClaim" .
+:GeneticAlterationClaim a owl:Class ; rdfs:subClassOf :Claim ; rdfs:label "GeneticAlterationClaim" .
+:CommercialInterestClaim a owl:Class ; rdfs:subClassOf :Claim ; rdfs:label "CommercialInterestClaim" .
+:PrimaryStudyPaper a owl:Class ; rdfs:subClassOf :Paper ; rdfs:label "PrimaryStudyPaper" .
+:ReviewPaper a owl:Class ; rdfs:subClassOf :Paper ; rdfs:label "ReviewPaper" .
+:PatentDocument a owl:Class ; rdfs:subClassOf :Paper ; rdfs:label "PatentDocument" .
+:DatabaseDerivedRecord a owl:Class ; rdfs:subClassOf :Paper ; rdfs:label "DatabaseDerivedRecord" .
+:PreliminaryStudyPaper a owl:Class ; rdfs:subClassOf :Paper ; rdfs:label "PreliminaryStudyPaper" .
+
+# ── Properties ──
+:about_receptor a owl:ObjectProperty ; rdfs:label "about_receptor" ; rdfs:domain :Claim ; rdfs:range [ owl:unionOf (:Receptor, :ClassA_OR) ] .
+:in_cancer a owl:ObjectProperty ; rdfs:label "in_cancer" ; rdfs:domain :Claim ; rdfs:range [ owl:unionOf (:CancerType) ] .
+:in_model a owl:ObjectProperty ; rdfs:label "in_model" ; rdfs:domain :Claim ; rdfs:range [ owl:unionOf (:ModelSystem) ] .
+:measures_endpoint a owl:ObjectProperty ; rdfs:label "measures_endpoint" ; rdfs:domain :Claim ; rdfs:range [ owl:unionOf (:Endpoint) ] .
+:asserts_direction a owl:ObjectProperty ; rdfs:label "asserts_direction" ; rdfs:domain :Claim ; rdfs:range [ owl:unionOf (:Direction) ] .
+:from_paper a owl:ObjectProperty ; rdfs:label "from_paper" ; rdfs:domain :Claim ; rdfs:range [ owl:unionOf (:Paper) ] .
+:via_mechanism a owl:ObjectProperty ; rdfs:label "via_mechanism" ; rdfs:domain :Claim ; rdfs:range [ owl:unionOf (:Mechanism) ] .
+:uses_ligand a owl:ObjectProperty ; rdfs:label "uses_ligand" ; rdfs:domain :Claim ; rdfs:range [ owl:unionOf (:Ligand, :OdorantLigand, :BiasedAgonist) ] .
+:tension_with a owl:ObjectProperty ; rdfs:label "tension_with" ; rdfs:domain :Claim ; rdfs:range [ owl:unionOf (:Claim) ] .
+:hasDirection a owl:DatatypeProperty ; rdfs:label "tumor_suppressive | tumor_promoting | neutral" .
+:hasWeight a owl:DatatypeProperty ; rdfs:label "evidence weight score" .
+:hasDirectionContext a owl:DatatypeProperty ; rdfs:label "activation_effect | expression_pattern | genetic_alteration" .
+:hasSourceType a owl:DatatypeProperty ; rdfs:label "primary_study | review | patent | …" .
+
+# ── Evidence individuals (sample) ──
+:receptor_or51e2 a :ClassA_OR, :Receptor ; rdfs:label "OR51E2" .
+:ligand_β_ionone a :OdorantLigand, :Ligand ; rdfs:label "β-ionone" .
+:model_lncap_cells_endogenous_receptor_also_hek293_and_pc_3_cells_and_primary_prostate_epithelial_cells a :HeterologousExpressionModel, :ModelSystem ; rdfs:label "LNCaP cells (endogenous receptor); also HEK293 and PC-3 cells, and primary prostate epithelial cells" .
+:endpoint_proliferation a :ProliferationEndpoint, :Endpoint ; rdfs:label "proliferation" .
+:paper_neuhaus_em_zhang_w_gelis_l_deng_ a :PrimaryStudyPaper ; rdfs:label "Neuhaus EM, Zhang W, Gelis L, Deng Y, Noldus J, Hatt H (2009). "Activation of an" .
+:claim_19 a :ActivationEffectClaim ;
+    :from_paper :paper_neuhaus_em_zhang_w_gelis_l_deng_ ;
+    :about_receptor :receptor_or51e2 ;
+    :hasDirection "tumor_suppressive" ;
+    :hasDirectionContext "activation_effect" ;
+    :hasSourceType "primary_study" ;
+    rdfs:label "Activation of OR51E2 (PSGR) by androstenone derivatives or beta-ionone inhibits proliferation of prostate cancer cells." .
+:claim_19 :uses_ligand :ligand_β_ionone .
+:claim_19 :in_model :model_lncap_cells_endogenous_receptor_also_hek293_and_pc_3_cells_and_primary_prostate_epithelial_cells .
+:claim_19 :measures_endpoint :endpoint_proliferation .
+:receptor_or51e2 a :ClassA_OR, :Receptor ; rdfs:label "OR51E2" .
+:ligand_β_ionone a :OdorantLigand, :Ligand ; rdfs:label "β-ionone" .
+:model_lncap a :EndogenousReceptorModel, :ModelSystem ; rdfs:label "LNCaP" .
+:endpoint_invasiveness a :InvasivenessEndpoint, :Endpoint ; rdfs:label "invasiveness" .
+:paper_sanz_g_leray_i_dewaele_a_sobilo_ a :PrimaryStudyPaper ; rdfs:label "Sanz G, Leray I, Dewaele A, Sobilo J, Lerondel S, Bouet S, Grebert D, Monnerie R" .
+:claim_20 a :ActivationEffectClaim ;
+    :from_paper :paper_sanz_g_leray_i_dewaele_a_sobilo_ ;
+    :about_receptor :receptor_or51e2 ;
+    :hasDirection "tumor_promoting" ;
+    :hasDirectionContext "activation_effect" ;
+    :hasSourceType "primary_study" ;
+    rdfs:label "Beta-ionone stimulation of PSGR/OR51E2 promotes LNCaP cell invasiveness; co-administration of alpha-ionone (a PSGR antag" .
+:claim_20 :uses_ligand :ligand_β_ionone .
+:claim_20 :in_model :model_lncap .
+:claim_20 :measures_endpoint :endpoint_invasiveness .
+:receptor_or51e2 a :ClassA_OR, :Receptor ; rdfs:label "OR51E2" .
+:paper_rodriguez_m_luo_w_weng_j_zeng_l_ a :PrimaryStudyPaper ; rdfs:label "Rodriguez M, Luo W, Weng J, Zeng L, Yi Z, Siwko S, Liu M (2014). "PSGR promotes " .
+:model_psgr_transgenic_mouse_model_probasin_promoter_lncap_xenograft_mouse a :XenograftModel, :ModelSystem ; rdfs:label "PSGR-transgenic mouse model (probasin promoter); LNCaP xenograft (mouse)" .
+:endpoint_tumor_growth a :ProliferationEndpoint, :Endpoint ; rdfs:label "tumor_growth" .
+:claim_21 a :ActivationEffectClaim ;
+    :from_paper :paper_rodriguez_m_luo_w_weng_j_zeng_l_ ;
+    :about_receptor :receptor_or51e2 ;
+    :hasDirection "tumor_promoting" ;
+    :hasDirectionContext "activation_effect" ;
+    :hasSourceType "primary_study" ;
+    rdfs:label "PSGR (OR51E2) overexpression drives premalignant prostate lesions and larger xenograft tumors." .
+:claim_21 :in_model :model_psgr_transgenic_mouse_model_probasin_promoter_lncap_xenograft_mouse .
+:claim_21 :measures_endpoint :endpoint_tumor_growth .
+:receptor_or51e2 a :ClassA_OR, :Receptor ; rdfs:label "OR51E2" .
+:ligand_β_ionone a :OdorantLigand, :Ligand ; rdfs:label "β-ionone" .
+:model_lncap_cells_inducible_expression_system a :EndogenousReceptorModel, :ModelSystem ; rdfs:label "LNCaP cells (inducible expression system)" .
+:endpoint_proliferation a :ProliferationEndpoint, :Endpoint ; rdfs:label "proliferation" .
+:paper_pronin_a_slepak_v_2021_ectopical a :PrimaryStudyPaper ; rdfs:label "Pronin A, Slepak V (2021). "Ectopically expressed olfactory receptors OR51E1 and" .
+:claim_22 a :ActivationEffectClaim ;
+    :from_paper :paper_pronin_a_slepak_v_2021_ectopical ;
+    :about_receptor :receptor_or51e2 ;
+    :hasDirection "tumor_suppressive" ;
+    :hasDirectionContext "activation_effect" ;
+    :hasSourceType "primary_study" ;
+    rdfs:label "Inducible OR51E1/OR51E2 expression in LNCaP cells suppresses proliferation and promotes cell death; the paper explicitly" .
+:claim_22 :uses_ligand :ligand_β_ionone .
+:claim_22 :in_model :model_lncap_cells_inducible_expression_system .
+:claim_22 :measures_endpoint :endpoint_proliferation .
+:receptor_or51e2 a :ClassA_OR, :Receptor ; rdfs:label "OR51E2" .
+:paper_bansal_s_gudisay_s_2025_dual_luc a :PreliminaryStudyPaper ; rdfs:label "Bansal S, Gudisay S (2025). Dual-luciferase reporter assay data, unpublished (IS" .
+:model_hek293_cells_transient_transfection_heterologous_or51e2_expression a :HeterologousExpressionModel, :ModelSystem ; rdfs:label "HEK293 cells, transient transfection (heterologous OR51E2 expression)" .
+:claim_25 a :ActivationEffectClaim ;
+    :from_paper :paper_bansal_s_gudisay_s_2025_dual_luc ;
+    :about_receptor :receptor_or51e2 ;
+    :hasDirection "neutral" ;
+    :hasDirectionContext "activation_effect" ;
+    :hasSourceType "preliminary" ;
+    rdfs:label "Screened four candidate ligands (methylmalonic acid, 2,2-difluorocyclopropane-1-carboxylate, 3,3-difluoropropanoic acid," .
+:claim_25 :in_model :model_hek293_cells_transient_transfection_heterologous_or51e2_expression .
+:receptor_or51e2 a :ClassA_OR, :Receptor ; rdfs:label "OR51E2" .
+:ligand_palmitic_acid a :OdorantLigand, :Ligand ; rdfs:label "palmitic acid" .
+:model_patent_disclosure_in_vitro_in_vivo_data_referenced_in_specification_not_independently_verified_here a :XenograftModel, :ModelSystem ; rdfs:label "Patent disclosure (in vitro/in vivo data referenced in specification, not independently verified here)" .
+:paper_us10588884b2_modulators_of_prost a :PatentDocument ; rdfs:label "US10588884B2, "Modulators of prostate-specific G-protein receptor (PSGR/OR51E2) " .
+:claim_26 a :CommercialInterestClaim ;
+    :from_paper :paper_us10588884b2_modulators_of_prost ;
+    :about_receptor :receptor_or51e2 ;
+    :hasDirection "tumor_promoting" ;
+    :hasDirectionContext "activation_effect" ;
+    :hasSourceType "patent" ;
+    rdfs:label "Discloses 24 novel OR51E2 agonists (e.g. 19-OH AD, AFMK, glycyl-glycine, kojibiose, estriol, pelargonidin, palmitic acid" .
+:claim_26 :uses_ligand :ligand_palmitic_acid .
+:claim_26 :in_model :model_patent_disclosure_in_vitro_in_vivo_data_referenced_in_specification_not_independently_verified_here .
+:receptor_or51e2 a :ClassA_OR, :Receptor ; rdfs:label "OR51E2" .
+:paper_us12186294b2_modulators_of_prost a :PatentDocument ; rdfs:label "US12186294B2, "Modulators of prostate-specific g-protein receptor (PSGR/OR51E2) " .
+:model_patent_disclosure_in_vitro_in_vivo_data_referenced_in_specification_not_independently_verified_here a :XenograftModel, :ModelSystem ; rdfs:label "Patent disclosure (in vitro/in vivo data referenced in specification, not independently verified here)" .
+:claim_27 a :CommercialInterestClaim ;
+    :from_paper :paper_us12186294b2_modulators_of_prost ;
+    :about_receptor :receptor_or51e2 ;
+    :hasDirection "tumor_promoting" ;
+    :hasDirectionContext "activation_effect" ;
+    :hasSourceType "patent" ;
+    rdfs:label "Divisional continuation of US10588884B2 covering the same 24 agonists/1 antagonist, expanding claims to metabolomic-prof" .
+:claim_27 :in_model :model_patent_disclosure_in_vitro_in_vivo_data_referenced_in_specification_not_independently_verified_here .
+:receptor_or51e2 a :ClassA_OR, :Receptor ; rdfs:label "OR51E2" .
+:ligand_β_ionone a :OdorantLigand, :Ligand ; rdfs:label "β-ionone" .
+:model_lncap_cells_xenograft a :XenograftModel, :ModelSystem ; rdfs:label "LNCaP cells / xenograft" .
+:endpoint_tumor_growth_in_vivo a :ProliferationEndpoint, :Endpoint ; rdfs:label "tumor growth (in vivo)" .
+:paper_sanz_g_le_poupon_c_bouet_s_et_al a :PrimaryStudyPaper ; rdfs:label "Sanz G, Le Poupon C, Bouet S, et al. (2016). "Alpha-ionone is a full agonist of " .
+:claim_61 a :ActivationEffectClaim ;
+    :from_paper :paper_sanz_g_le_poupon_c_bouet_s_et_al ;
+    :about_receptor :receptor_or51e2 ;
+    :hasDirection "tumor_promoting" ;
+    :hasDirectionContext "activation_effect" ;
+    :hasSourceType "primary_study" ;
+    rdfs:label "Alpha-ionone, previously characterized (Sanz 2014) as blocking beta-ionone's pro-invasive effect, is actually a full OR5" .
+:claim_61 :uses_ligand :ligand_β_ionone .
+:claim_61 :in_model :model_lncap_cells_xenograft .
+:claim_61 :measures_endpoint :endpoint_tumor_growth_in_vivo .
+:receptor_or51e2 a :ClassA_OR, :Receptor ; rdfs:label "OR51E2" .
+:paper_thomsen_arb_et_al_2025_crispr_ca a :PrimaryStudyPaper ; rdfs:label "Thomsen ARB, et al. (2025). "CRISPR-Cas9 knockout of OR51E2 in prostate cancer c" .
+:model_lncap_cells_crispr_cas9_knockout_cross_referenced_against_tcga_prad_cohort a :CohortStudy, :ModelSystem ; rdfs:label "LNCaP cells (CRISPR-Cas9 knockout); cross-referenced against TCGA-PRAD cohort" .
+:endpoint_proliferation_migration_tumor_growth_prognosis_correlation a :ProliferationEndpoint, :Endpoint ; rdfs:label "proliferation, migration, tumor growth, prognosis correlation" .
+:claim_62 a :ActivationEffectClaim ;
+    :from_paper :paper_thomsen_arb_et_al_2025_crispr_ca ;
+    :about_receptor :receptor_or51e2 ;
+    :hasDirection "tumor_suppressive" ;
+    :hasDirectionContext "activation_effect" ;
+    :hasSourceType "primary_study" ;
+    rdfs:label "CRISPR-Cas9 knockout of OR51E2 in LNCaP cells INCREASES proliferation, migration, adhesion, anchorage-independent colony" .
+:claim_62 :in_model :model_lncap_cells_crispr_cas9_knockout_cross_referenced_against_tcga_prad_cohort .
+:claim_62 :measures_endpoint :endpoint_proliferation_migration_tumor_growth_prognosis_correlation .
+:receptor_or51e2 a :ClassA_OR, :Receptor ; rdfs:label "OR51E2" .
+:ligand_palmitic_acid a :OdorantLigand, :Ligand ; rdfs:label "palmitic acid" .
+:model_human_prostate_tissue_mouse_tam_specific_or51e2_deletion_model a :XenograftModel, :ModelSystem ; rdfs:label "Human prostate tissue / mouse TAM-specific OR51E2 deletion model" .
+:endpoint_immune_evasion_tam_polarization_non_cell_autonomous a :ProliferationEndpoint, :Endpoint ; rdfs:label "immune evasion / TAM polarization (non-cell-autonomous)" .
+:paper_marelli_g_morina_n_portale_f_et_ a :PrimaryStudyPaper ; rdfs:label "Marelli G, Morina N, Portale F, et al. (2025). "Palmitic acid activates OR51E2 o" .
+:claim_63 a :ActivationEffectClaim ;
+    :from_paper :paper_marelli_g_morina_n_portale_f_et_ ;
+    :about_receptor :receptor_or51e2 ;
+    :hasDirection "tumor_promoting" ;
+    :hasDirectionContext "activation_effect" ;
+    :hasSourceType "primary_study" ;
+    rdfs:label "In the tumor microenvironment (TME), palmitic acid binds OR51E2 on tumor-associated macrophages (TAMs) — NOT tumor cells" .
+:claim_63 :uses_ligand :ligand_palmitic_acid .
+:claim_63 :in_model :model_human_prostate_tissue_mouse_tam_specific_or51e2_deletion_model .
+:claim_63 :measures_endpoint :endpoint_immune_evasion_tam_polarization_non_cell_autonomous .

@@ -129,7 +129,8 @@ def onto_slug_cancer(raw: str) -> str:
 
 
 def main():
-    paths = [Path(p) for p in sys.argv[1:]] or list((REPO_ROOT / "data" / "receptors").glob("*.json"))
+    cli_paths = [p for p in sys.argv[1:] if p and not p.startswith("#")]
+    paths = [Path(p) for p in cli_paths] or list((REPO_ROOT / "data" / "receptors").glob("*.json"))
     if not paths:
         print("No evidence files found under data/receptors/.")
         return
@@ -138,6 +139,9 @@ def main():
     total_inserted = 0
     total_skipped = 0
     for path in paths:
+        if not path.exists():
+            print(f"Skipping missing path: {path}")
+            continue
         records = json.loads(path.read_text())
         print(f"{path}: {len(records)} records")
         for raw in records:

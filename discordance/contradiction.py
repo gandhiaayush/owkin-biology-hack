@@ -1,11 +1,19 @@
 from __future__ import annotations
+import re
 from .models import EvidenceRecord, ContradictionPair
+from .normalize import (
+    endpoints_confirmed_different,
+    endpoints_overlap,
+    model_overlap_kind,
+    models_overlap,
+    cell_compartment,
+)
 
 _DIVERGENCE_PATTERNS = {
     ("same_model", "different_direction"): (
-        "Same model system with opposing directional claims: likely differences in endpoint measured "
-        "(e.g. proliferation vs. invasiveness), ligand concentration or purity, or assay protocol. "
-        "Check whether both papers measure the same biological outcome before treating as a true contradiction."
+        "Same model family with opposing directional claims on overlapping endpoints. "
+        "Review ligand identity/purity, assay protocol, and whether gain-of-function vs "
+        "loss-of-function designs are being compared."
     ),
     ("different_model", "different_direction"): (
         "Different model systems with opposing directional claims: may reflect tumor microenvironment "
@@ -22,30 +30,19 @@ _DIVERGENCE_PATTERNS = {
 
 def _endpoint_key(suppressive: list[EvidenceRecord], promoting: list[EvidenceRecord]) -> bool:
     """
-    Returns True only when every record on both sides has a *known* (not "not
-    specified") endpoint AND all those endpoints are identical. Returns False as
-    soon as we can confirm the endpoints differ. When endpoint data is missing on
-    either side, we can't confirm either way -- default to True (assume same
-    endpoint / flat contradiction) rather than silently downgrading language on an
-    assumption. Endpoint must be positively confirmed different to soften framing.
+    True when endpoints overlap (same outcome family) OR cannot be confirmed different.
+    False only when both sides have known tokens and zero overlap.
     """
-    all_records = suppressive + promoting
-    known_endpoints = {r.endpoint for r in all_records if r.endpoint != "not specified"}
-    if len(known_endpoints) >= 2:
+    if endpoints_confirmed_different(suppressive, promoting):
         return False
+    if endpoints_overlap(suppressive, promoting):
+        return True
+    # Unknown endpoints — conservative default (do not falsely soften)
     return True
 
 
 def _model_system_key(suppressive: list[EvidenceRecord], promoting: list[EvidenceRecord]) -> str:
-    s_models = {r.model_system for r in suppressive}
-    p_models = {r.model_system for r in promoting}
-    overlap = s_models & p_models
-    if overlap:
-        return "same_model"
-    all_models = s_models | p_models
-    if len(all_models) > 2:
-        return "mixed_model"
-    return "different_model"
+    return model_overlap_kind(suppressive, promoting)
 
 
 def generate_divergence_hypothesis(
@@ -89,13 +86,14 @@ def detect_contradictions(
     direction_context_filter: str = "activation_effect",
 ) -> list[ContradictionPair]:
     """
-    Given evidence for one gene (+ optional cancer filter upstream), return
-    ContradictionPair objects for opposing directions under the same direction_context.
+    Return ContradictionPair objects for opposing directions under the same direction_context.
+    Uses tumor-intrinsic activation records only for the primary direction split.
     """
     filtered = [r for r in records if r.direction_context == direction_context_filter]
+    tumor_intrinsic = [r for r in filtered if cell_compartment(r) == "tumor_cell" and r.source_type != "patent"]
 
-    suppressive = [r for r in filtered if r.direction == "tumor_suppressive"]
-    promoting = [r for r in filtered if r.direction == "tumor_promoting"]
+    suppressive = [r for r in tumor_intrinsic if r.direction == "tumor_suppressive"]
+    promoting = [r for r in tumor_intrinsic if r.direction == "tumor_promoting"]
 
     if not suppressive or not promoting:
         return []
@@ -116,3 +114,71 @@ def detect_contradictions(
             deadlock=deadlock,
         )
     ]
+
+
+def detect_auxiliary_tensions(records: list[EvidenceRecord]) -> list[dict]:
+    """
+    Secondary tension axes beyond the primary direction split.
+    These do not replace the main contradiction — they explain *why* a flat merge fails.
+    """
+    tensions: list[dict] = []
+    activation = [r for r in records if r.direction_context == "activation_effect"]
+
+    # 1. Ligand validity / biased agonism
+    ligand_records = [
+        r for r in activation
+        if re.search(r"beta-ionone|alpha-ionone|β-ionone|α-ionone", f"{r.claim} {r.mechanism}", re.I)
+    ]
+    controversy = [r for r in ligand_records if "controversy" in (r.confidence_note or "").lower()]
+    alpha_full_agonist = [
+        r for r in ligand_records
+        if re.search(r"alpha-ionone|α-ionone", r.claim, re.I) and "full agonist" in r.claim.lower()
+    ]
+    beta_driven = [r for r in ligand_records if re.search(r"beta-ionone|β-ionone", r.claim, re.I)]
+    if controversy or (alpha_full_agonist and beta_driven):
+        tensions.append({
+            "id": "t_ligand_validity",
+            "title": "Ligand validity / biased agonism",
+            "summary": (
+                "Beta-ionone agonism at OR51E2 is explicitly contested; alpha-ionone was later "
+                "reclassified from antagonist control to full agonist (Sanz 2014 vs Sanz 2016). "
+                "Promoting claims that depend on beta-ionone pharmacology are load-bearing and disputed."
+            ),
+            "evidence_ids": [f"e{r.id}" for r in ligand_records if r.id is not None],
+        })
+
+    # 2. Cell compartment (tumor intrinsic vs TAM / immune)
+    immune = [r for r in activation if cell_compartment(r) == "immune_cell"]
+    tumor = [r for r in activation if cell_compartment(r) == "tumor_cell" and r.direction in (
+        "tumor_suppressive", "tumor_promoting"
+    )]
+    if immune and tumor:
+        tensions.append({
+            "id": "t_cell_compartment",
+            "title": "Cell compartment split (tumor cell vs TAM)",
+            "summary": (
+                "Some OR51E2 claims are tumor-cell intrinsic; others are macrophage/TAM non-cell-autonomous. "
+                "These are not opposing claims about the same compartment — do not bucket immune claims "
+                "into tumor-cell direction mass."
+            ),
+            "immune_evidence_ids": [f"e{r.id}" for r in immune if r.id is not None],
+            "tumor_evidence_ids": [f"e{r.id}" for r in tumor if r.id is not None],
+        })
+
+    # 3. Gain-of-function vs loss-of-function
+    ko_records = [r for r in tumor if re.search(r"knockout|knock-out|ko\b|crispr", r.claim, re.I)]
+    oe_records = [r for r in tumor if re.search(r"overexpression|transgenic|psgr-transgenic", r.claim, re.I)]
+    if ko_records and oe_records:
+        tensions.append({
+            "id": "t_gain_loss",
+            "title": "Gain-of-function vs loss-of-function",
+            "summary": (
+                "CRISPR knockout and transgenic overexpression studies point in opposite directions "
+                "on shared endpoints (e.g. tumor growth). Classic expression-level / dosage confound — "
+                "treat as its own hypothesis axis, not a flat literature disagreement."
+            ),
+            "loss_of_function_ids": [f"e{r.id}" for r in ko_records if r.id is not None],
+            "gain_of_function_ids": [f"e{r.id}" for r in oe_records if r.id is not None],
+        })
+
+    return tensions

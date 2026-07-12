@@ -28,6 +28,9 @@ from .contradiction import detect_contradictions
 from .rules import generate_rules
 from .graph import build_graph
 from .scoring import ELICITATION_THRESHOLD
+from .identifiers import receptor_external_ids, cancer_external_ids
+from .normalize import cell_compartment, count_independent_sources
+from .contradiction import detect_auxiliary_tensions
 
 # Known receptor aliases / structural cross-refs, for the `receptor` block.
 # Extend this as receptor #2/#3 get added -- falls back to a reasonable default
@@ -132,7 +135,7 @@ def to_demo_contract(
     for idx, r in enumerate(records):
         status = status_by_id.get(r.id)
         entry = _evidence_entry(r, idx, status)
-        if status == "exploratory":
+        if status == "exploratory" or r.source_type == "patent" or cell_compartment(r) == "immune_cell":
             exploratory.append(entry)
         elif r.direction == "tumor_suppressive":
             suppressive.append(entry)
@@ -149,28 +152,33 @@ def to_demo_contract(
             "summary": c.divergence_hypothesis,
             "left": {
                 "label": "Tumor-suppressive",
-                "evidence_ids": [_evidence_id(r, j) for j, r in enumerate(c.suppressive_records)],
+                "evidence_ids": [_evidence_id(r, 0) for r in c.suppressive_records],
             },
             "right": {
                 "label": "Tumor-promoting",
-                "evidence_ids": [_evidence_id(r, j) for j, r in enumerate(c.promoting_records)],
+                "evidence_ids": [_evidence_id(r, 0) for r in c.promoting_records],
             },
             "hypotheses": [c.divergence_hypothesis],
             "same_model_system": c.same_model_system,
             "same_endpoint": c.same_endpoint,
             "deadlock": c.deadlock,
         })
+    tensions.extend(detect_auxiliary_tensions(records))
 
-    rules_out = [
-        {
+    rules_out = []
+    for i, rule in enumerate(rules):
+        direction_records = [
+            r for r in records
+            if r.direction == rule.direction and r.source_type != "patent"
+            and cell_compartment(r) == "tumor_cell"
+        ]
+        rules_out.append({
             "id": f"r{i}",
-            "text": r.claim,
-            "confidence": r.confidence_label,
-            "n_independent_sources": len(r.sources),
-            "qualification": "Contested -- do not treat as settled" if r.contested else "",
-        }
-        for i, r in enumerate(rules)
-    ]
+            "text": rule.claim,
+            "confidence": rule.confidence_label,
+            "n_independent_sources": count_independent_sources(direction_records),
+            "qualification": "Contested -- do not treat as settled" if rule.contested else "",
+        })
 
     delta = abs(scores.suppressive.score - scores.promoting.score)
     total_mass = scores.suppressive.score + scores.promoting.score
@@ -233,6 +241,8 @@ def to_demo_contract(
     }
 
     alias_info = _RECEPTOR_INFO.get(gene.upper(), {"aliases": [gene], "pdb": None})
+    ext_ids = receptor_external_ids(gene)
+    cancer_ids = cancer_external_ids(cancer_type)
 
     return {
         "tool": "query_or_graph",
@@ -245,8 +255,9 @@ def to_demo_contract(
             ),
             "entities": sorted(set([gene] + alias_info.get("aliases", []))),
             "cancer": cancer_type,
+            "cancer_external_ids": cancer_ids,
         },
-        "receptor": {"id": gene, **alias_info},
+        "receptor": {"id": gene, **alias_info, "external_ids": ext_ids},
         "consensus": consensus,
         "tumor_suppressive": suppressive,
         "tumor_promoting": promoting,

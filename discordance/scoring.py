@@ -1,5 +1,6 @@
 from __future__ import annotations
 from .models import EvidenceRecord, ScoredDirection, DirectionScores, ConsensusStatus
+from .normalize import is_tumor_intrinsic_activation, cell_compartment
 
 SOURCE_WEIGHTS: dict[str, float] = {
     "primary_study": 1.0,
@@ -71,14 +72,27 @@ def compute_direction_scores(
     direction_context_filter: str = "activation_effect",
 ) -> DirectionScores:
     filtered = [r for r in records if r.direction_context == direction_context_filter]
+    # Tumor-intrinsic activation claims only — exclude TAM/immune (Marelli) and patents from mass
+    directional_pool = [
+        r for r in filtered
+        if (direction_context_filter != "activation_effect" or is_tumor_intrinsic_activation(r))
+        and r.source_type != "patent"
+    ]
 
-    suppressive_recs = [r for r in filtered if r.direction == "tumor_suppressive"]
-    promoting_recs = [r for r in filtered if r.direction == "tumor_promoting"]
+    suppressive_recs = [r for r in directional_pool if r.direction == "tumor_suppressive"]
+    promoting_recs = [r for r in directional_pool if r.direction == "tumor_promoting"]
     patent_recs = [r for r in filtered if r.source_type == "patent"]
+    immune_recs = [
+        r for r in filtered
+        if direction_context_filter == "activation_effect"
+        and cell_compartment(r) == "immune_cell"
+    ]
 
-    s_score = sum(score_record(r) for r in suppressive_recs if r.source_type != "patent")
-    p_score = sum(score_record(r) for r in promoting_recs if r.source_type != "patent")
-    commercial_score = sum(score_record(r) for r in patent_recs)
+    s_score = sum(score_record(r) for r in suppressive_recs)
+    p_score = sum(score_record(r) for r in promoting_recs)
+    commercial_score = sum(score_record(r) for r in patent_recs) + sum(
+        score_record(r) for r in immune_recs
+    )  # immune/TAM claims tracked separately, not in direction mass
 
     total = s_score + p_score
 

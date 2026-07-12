@@ -135,7 +135,15 @@ def build_graph(
     if not records:
         return g
 
-    contradictions = contradictions if contradictions is not None else detect_contradictions(records)
+    from collections import defaultdict
+    by_context: dict[tuple[str, str], list[EvidenceRecord]] = defaultdict(list)
+    for r in records:
+        by_context[(r.gene, r.cancer_type)].append(r)
+    if contradictions is None:
+        contradictions = []
+        for group in by_context.values():
+            contradictions.extend(detect_contradictions(group))
+
     contested_sources: set[str] = set()
     for c in contradictions:
         for r in c.suppressive_records + c.promoting_records:
@@ -164,13 +172,24 @@ def build_graph(
         if r.direction_context == "genetic_alteration" and "kich" in r.cancer_type.lower():
             status = "exploratory"
 
-        g.add_node(GraphNode(gene_id, "Receptor", r.gene, {"color_hint": onto.STATUS_COLORS.get("consensus")}))
+        g.add_node(GraphNode(
+            gene_id, "Receptor", r.gene,
+            {
+                "color_hint": onto.STATUS_COLORS.get("consensus"),
+                "or_subtypes": onto.receptor_subtypes(r.gene),
+            },
+        ))
         g.add_node(GraphNode(
             cancer_id, "CancerType", r.cancer_type.replace("_", " "),
             {"color_hint": onto.STATUS_COLORS.get("neutral")},
         ))
-        g.add_node(GraphNode(model_id, "ModelSystem", r.model_system))
-        g.add_node(GraphNode(paper_id, "Paper", r.source, {"source_type": r.source_type}))
+        g.add_node(GraphNode(model_id, "ModelSystem", r.model_system, {
+            "or_subtype": onto.classify_model_subtype(r.model_system),
+        }))
+        g.add_node(GraphNode(paper_id, "Paper", r.source, {
+            "source_type": r.source_type,
+            "or_subtype": onto.classify_paper_subtype(r.source_type),
+        }))
         g.add_node(GraphNode(
             direction_id, "Direction", r.direction.replace("_", " "),
             {
@@ -190,6 +209,7 @@ def build_graph(
                 "status": status,
                 "color_hint": onto.STATUS_COLORS.get(status, "gray"),
                 "record_id": r.id,
+                "or_subtype": onto.classify_claim_subtype(r),
             },
         ))
 

@@ -17,6 +17,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 from mcp.server.fastmcp import FastMCP, Context
 from mcp.server.elicitation import AcceptedElicitation
+from mcp.server.transport_security import TransportSecuritySettings
 from mcp.shared.exceptions import McpError
 
 from discordance import (
@@ -369,9 +370,16 @@ if __name__ == "__main__":
     if use_http:
         mcp.settings.host = "0.0.0.0"
         mcp.settings.port = int(os.environ.get("PORT", "8000"))
+        # Cloudflare/ngrok tunnels send a non-local Host header. Default DNS-rebinding
+        # protection rejects them with "Invalid Host header" (421) — the exact failure
+        # Claude shows as "Couldn't connect to the server."
+        mcp.settings.transport_security = TransportSecuritySettings(
+            enable_dns_rebinding_protection=False,
+        )
         print(f"Starting Discordance MCP server on http://0.0.0.0:{mcp.settings.port}{mcp.settings.streamable_http_path}")
         print("Point your tunnel (ngrok/cloudflared) at this port, then use the")
-        print("resulting HTTPS URL + streamable_http_path as the connector URL in K Pro / Claude.")
+        print("resulting HTTPS URL + /mcp as the connector URL in Claude.")
+        print("Example: https://your-subdomain.trycloudflare.com/mcp  (note the /mcp suffix)")
         mcp.run(transport="streamable-http")
     else:
         mcp.run()

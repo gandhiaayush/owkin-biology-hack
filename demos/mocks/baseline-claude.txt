@@ -1,0 +1,15 @@
+PLAIN CLAUDE BASELINE — TO BE CAPTURED
+Frozen question: Does activating OR51E2 / PSGR suppress or promote prostate cancer
+phenotypes? Summarize the evidence for LNCaP / prostate models, including β-ionone studies.
+
+Connector: none (Discordance MCP disconnected)
+
+INSTRUCTIONS:
+1. Open a new Claude chat with NO custom connectors enabled.
+2. Paste the frozen question above.
+3. Replace this file with the full Claude response.
+4. Compare against:
+   - demos/mocks/baseline-kpro.txt (real K Pro answer, already captured)
+   - demos/mocks/augmented-live-snapshot.json (Discordance tool output)
+
+See demos/CLAUDE_CONNECTOR_SETUP.md for the augmented benchmark prompt.
