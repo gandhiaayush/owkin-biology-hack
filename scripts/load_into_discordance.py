@@ -248,9 +248,23 @@ def convert(record: dict) -> list[EvidenceRecord]:
     direction_raw = record.get("direction", "unclear")
     direction = DIRECTION_MAP.get(direction_raw, "neutral")
 
+    # Unverified primary_study records get preliminary weight (0.4 base, not 1.0).
+    # They contribute to graph coverage but must not anchor the directional mass —
+    # they haven't been checked against full text and could be extraction artifacts.
+    if not _is_verified(record) and source_type == "primary_study":
+        source_type = "preliminary"
+
     confidence_note = record.get("verification_notes") or ""
     if not _is_verified(record):
         confidence_note = "UNVERIFIED. " + confidence_note
+    # Flag the Sanz vehicle/mineral-oil confound explicitly so the demo contract
+    # can surface it — mineral oil alone activates PSGR, so the beta-ionone arm's
+    # incremental effect over vehicle is not statistically significant.
+    if "mineral oil" in (record.get("claim") or "").lower() or (
+        "vehicle" in (record.get("claim") or "").lower()
+        and "sanz" in (record.get("citation") or "").lower()
+    ):
+        confidence_note = "VEHICLE CONFOUND: " + confidence_note
 
     cancer_raw = record.get("cancer_type")
     endpoint = _infer_endpoint(record)

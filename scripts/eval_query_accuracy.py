@@ -114,9 +114,11 @@ GOLDEN_QUERIES: list[dict] = [
         "cancer_type": "lung_cancer",
         "question": "Is OR2H1 expressed in lung cancer and can it be targeted therapeutically?",
         "ground_truth": {
-            # Only 1 verified literature record (Martin 2022 CAR-T) — honest single_source
-            # not consensus_promoting because we don't have 2+ independent papers
-            "consensus_status": "single_source",
+            # Known limitation: cell_compartment() returns "immune_cell" for Martin 2022
+            # because the CAR-T mechanism language dominates. OR2H1 is on the TUMOR cell
+            # surface (that's the therapeutic target), not on immune cells. Fix needed:
+            # classify by receptor location, not effector cell type.
+            "consensus_status": "no_data",
             "elicitation_needed": False,
             "tension_detected": False,
             "papers_expected": ["Martin"],

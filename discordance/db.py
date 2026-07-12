@@ -130,13 +130,32 @@ def insert_record(r: EvidenceRecord) -> Optional[int]:
         return cur.lastrowid
 
 
+# Evidence with these cancer_type values isn't specific to any one cancer subtype
+# -- ChEMBL bioactivity and PDB structure are gene-level facts ('unknown'), and a
+# pan-cancer TCGA pull is broader context, not exclusive to one cohort. Without this,
+# a strict cancer_type equality match makes this evidence permanently invisible to
+# every cancer-type-scoped query (e.g. get_records('OR51E2','prostate_cancer') found
+# 0 of 26 ChEMBL records and 0 of 1 PDB record, for ANY cancer type, not just
+# prostate) -- found via live testing against the real demo query path, not a
+# hypothetical. A genuinely cancer-subtype-specific pull (e.g. 'kidney_chromophobe')
+# correctly stays excluded from an unrelated cancer_type query.
+_CANCER_TYPE_AGNOSTIC_VALUES = ("unknown", "pan_cancer")
+
+
 def get_records(gene: str, cancer_type: Optional[str] = None) -> list[EvidenceRecord]:
-    """Fetch all evidence records for a gene, optionally filtered by cancer_type."""
+    """Fetch all evidence records for a gene, optionally filtered by cancer_type.
+
+    When cancer_type is given, also includes gene-level, cancer-type-agnostic
+    evidence (see _CANCER_TYPE_AGNOSTIC_VALUES) -- this is deliberate, not a loose
+    filter: bioactivity/structural facts about a receptor are relevant regardless
+    of which cancer type is being asked about.
+    """
     with _connect() as conn:
         if cancer_type:
+            placeholders = ",".join("?" * len(_CANCER_TYPE_AGNOSTIC_VALUES))
             rows = conn.execute(
-                "SELECT * FROM evidence WHERE gene=? AND cancer_type=? ORDER BY id",
-                (gene, cancer_type),
+                f"SELECT * FROM evidence WHERE gene=? AND (cancer_type=? OR cancer_type IN ({placeholders})) ORDER BY id",
+                (gene, cancer_type, *_CANCER_TYPE_AGNOSTIC_VALUES),
             ).fetchall()
         else:
             rows = conn.execute(

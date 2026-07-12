@@ -113,6 +113,56 @@ def _build_demo_summary(
     )
 
 
+def _build_patent_block(records: list[EvidenceRecord]) -> list[dict]:
+    """
+    Build a structured representation of patent records for the demo contract.
+
+    Patents are evidence of commercial interest, not biological validation.
+    They are tracked separately from literature and never folded into the
+    directional mass — but they ARE in the knowledge graph as exploratory nodes,
+    and their disclosed ligands create edges to Ligand nodes that the graph
+    traversal can reach.
+
+    Returns one entry per patent record with: citation, claim, disclosed ligands
+    (extracted from the claim text), and a commercial_interest flag so Person C's
+    frontend can render them distinctly (e.g. amber/gold, separate from green/red).
+    """
+    from .graph import _infer_ligands
+    patent_records = [r for r in records if r.source_type == "patent"]
+    # Build ligand lists; track the best list seen so far to inherit on continuations.
+    best_ligands: list[tuple[str, dict]] = []
+    out = []
+    for r in patent_records:
+        ligands_with_meta = _infer_ligands(r.claim, r.mechanism, r.source)
+        # Divisional continuations say "same agonists as parent" — inherit parent ligands
+        is_continuation = any(
+            kw in r.claim.lower()
+            for kw in ("divisional continuation", "same 24", "covering the same")
+        )
+        if not ligands_with_meta and is_continuation and best_ligands:
+            ligands_with_meta = best_ligands
+        if ligands_with_meta:
+            best_ligands = ligands_with_meta
+        entry = {
+            "source": r.source[:100],
+            "claim": r.claim[:200],
+            "direction": r.direction,
+            "cancer_type": r.cancer_type,
+            "commercial_interest": True,
+            "weight": round(score_record(r), 3),
+            "weight_note": "Patent weight (0.1 base) excluded from directional mass — commercial interest only",
+            "disclosed_ligands": [
+                {"name": label, **meta}
+                for label, meta in ligands_with_meta
+            ],
+            "confidence_note": r.confidence_note[:120] if r.confidence_note else "",
+        }
+        if is_continuation:
+            entry["continuation_note"] = "Divisional continuation — covers same compounds as parent patent above"
+        out.append(entry)
+    return out
+
+
 def _build_knowledge_gaps(gene: str, records: list[EvidenceRecord]) -> list[dict]:
     """Papers commonly cited in reviews but absent from the loaded graph."""
     if gene.upper() != "OR51E2":
@@ -638,6 +688,12 @@ def to_demo_contract(
             "tumor_promoting_mass": round(scores.promoting.score, 3),
             "balance_abs_delta": round(delta, 3),
             "balance_threshold": balance_threshold,
+            # Patents are tracked here as commercial interest — they show that
+            # companies have IP stakes in this receptor, but are never folded
+            # into the literature consensus mass (primary_study/review) because
+            # commercial interest is not the same as biological validation.
+            "commercial_interest_score": round(scores.commercial_interest_score, 3),
+            "patents": _build_patent_block(records),
             "weight_breakdown": {
                 "tumor_suppressive": [
                     {"source": r.source[:60], "weight": round(score_record(r), 3),
