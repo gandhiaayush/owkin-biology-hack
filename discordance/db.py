@@ -131,11 +131,21 @@ def insert_record(r: EvidenceRecord) -> Optional[int]:
 
 
 def get_records(gene: str, cancer_type: Optional[str] = None) -> list[EvidenceRecord]:
-    """Fetch all evidence records for a gene, optionally filtered by cancer_type."""
+    """Fetch evidence records for a gene, optionally filtered by cancer_type.
+
+    When cancer_type is specified, also includes database-derived records
+    (ChEMBL, PDB) stored under cancer_type='unknown' — these contain ligand-
+    potency data and structural info that are receptor-level facts, not cancer-
+    type-specific, and are needed for ligand grounding in any cancer query.
+    """
     with _connect() as conn:
         if cancer_type:
             rows = conn.execute(
-                "SELECT * FROM evidence WHERE gene=? AND cancer_type=? ORDER BY id",
+                """
+                SELECT * FROM evidence
+                WHERE gene=? AND (cancer_type=? OR (source_type='database_derived' AND cancer_type='unknown'))
+                ORDER BY id
+                """,
                 (gene, cancer_type),
             ).fetchall()
         else:
