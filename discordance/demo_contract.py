@@ -31,7 +31,7 @@ from .scoring import ELICITATION_THRESHOLD
 from .identifiers import receptor_external_ids, cancer_external_ids
 from .normalize import cell_compartment, count_independent_sources, citation_key
 from .contradiction import detect_auxiliary_tensions, generate_divergence_hypothesis
-from .scorecard import build_scorecards, scorecard_to_dict, infer_query_endpoint
+from .scorecard import build_scorecards, scorecard_to_dict, infer_query_endpoint, render_scorecards_markdown
 
 # Known receptor aliases / structural cross-refs, for the `receptor` block.
 # Extend this as receptor #2/#3 get added -- falls back to a reasonable default
@@ -415,12 +415,16 @@ def to_demo_contract(
             "evidence_comparison": [],
             "knowledge_gaps": [],
             "scorecards": [],
+            "scorecards_markdown": "",
         }
 
     scores = compute_direction_scores(records)
     contradictions = detect_contradictions(records)
     rules = generate_rules(records)
     graph = build_graph(records, contradictions)
+    scorecards = build_scorecards(
+        records, scores, contradictions, query_endpoint=infer_query_endpoint(query_text),
+    )
 
     status_by_id = {
         n.meta.get("record_id"): n.meta.get("status")
@@ -659,7 +663,6 @@ def to_demo_contract(
         "ligand_grounding": ligand_grounding,
         "evidence_comparison": evidence_comparison,
         "knowledge_gaps": _build_knowledge_gaps(gene, records),
-        "scorecards": [scorecard_to_dict(c) for c in build_scorecards(
-            records, scores, contradictions, query_endpoint=infer_query_endpoint(query_text),
-        )],
+        "scorecards": [scorecard_to_dict(c) for c in scorecards],
+        "scorecards_markdown": render_scorecards_markdown(scorecards),
     }
