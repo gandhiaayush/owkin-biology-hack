@@ -28,6 +28,7 @@ from .contradiction import detect_contradictions
 from .rules import generate_rules
 from .graph import build_graph
 from .scoring import ELICITATION_THRESHOLD
+from .scorecard import build_scorecards, scorecard_to_dict, infer_query_endpoint
 
 # Known receptor aliases / structural cross-refs, for the `receptor` block.
 # Extend this as receptor #2/#3 get added -- falls back to a reasonable default
@@ -115,6 +116,7 @@ def to_demo_contract(
                 "plain_k_pro_expected": "No comparison available -- no evidence loaded yet.",
                 "augmented_expected": "No comparison available -- no evidence loaded yet.",
             },
+            "scorecards": [],
         }
 
     scores = compute_direction_scores(records)
@@ -277,4 +279,7 @@ def to_demo_contract(
         "rules": rules_out,
         "adjudication": adjudication,
         "baseline_contrast": baseline_contrast,
+        "scorecards": [scorecard_to_dict(c) for c in build_scorecards(
+            records, scores, contradictions, query_endpoint=infer_query_endpoint(query_text),
+        )],
     }
