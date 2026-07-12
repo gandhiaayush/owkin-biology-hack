@@ -45,6 +45,12 @@ _LIGAND_RE = re.compile(
     r"(β-ionone|beta-ionone|α-ionone|alpha-ionone|androstenone|propionate|acetate)",
     re.IGNORECASE,
 )
+_CHEMBL_COMPOUND_RE = re.compile(
+    r'^([A-Z][A-Z0-9\-\' ]{2,40}?)\s+\(CHEMBL\d+\)', re.MULTILINE
+)
+_POTENCY_RE = re.compile(
+    r'(IC50|EC50|Ki|Kd)\s*=\s*([\d.]+)\s*(nM|uM|µM|pM|mM)', re.IGNORECASE
+)
 
 
 def _source_block(r: EvidenceRecord) -> dict:
@@ -63,6 +69,205 @@ def _ligand(r: EvidenceRecord) -> Optional[str]:
 
 def _evidence_id(r: EvidenceRecord, idx: int) -> str:
     return f"e{r.id if r.id is not None else idx}"
+
+
+def _short_source(source: str) -> str:
+    return source.split(",")[0].split("(")[0].strip()
+
+
+def _build_demo_summary(
+    gene: str,
+    cancer_type: str,
+    scores,
+    contradictions,
+    needs_judgment: bool,
+) -> str:
+    cancer_label = cancer_type.replace("_", " ")
+    if scores.consensus_status == "no_data":
+        return f"No evidence loaded yet for {gene} in {cancer_label}."
+
+    if not contradictions:
+        return (
+            f"For {gene} in {cancer_label}, the loaded evidence points one way "
+            f"({scores.overall_confidence_label}). No unresolved split detected."
+        )
+
+    c = contradictions[0]
+    sup_n = len(c.suppressive_records)
+    pro_n = len(c.promoting_records)
+    endpoint_note = (
+        "Studies measured different outcomes (e.g. proliferation vs. invasiveness), "
+        "so both sides could be partially true."
+        if not c.same_endpoint
+        else "Studies disagree on the same kind of outcome in overlapping model systems."
+    )
+    balance_note = (
+        "Evidence weight is roughly balanced — the graph will not pick a winner automatically."
+        if needs_judgment
+        else "One side currently weighs more, but opposing primary studies remain."
+    )
+    return (
+        f"Activating {gene} in {cancer_label} is contested: {sup_n} study-side(s) read "
+        f"tumor-suppressive (slows cancer), {pro_n} read tumor-promoting (helps cancer grow "
+        f"or spread). {endpoint_note} {balance_note}"
+    )
+
+
+def _build_adjudication_verdict(needs_judgment: bool, same_endpoint: bool) -> str:
+    if needs_judgment:
+        if same_endpoint:
+            return "contested — evidence is split on the same outcome"
+        return "contested — evidence is split across related outcomes"
+    return "contested — one side leads, but disagreement remains"
+
+
+def _build_ligand_grounding(records: list[EvidenceRecord]) -> dict:
+    """Surface ChEMBL potency data when present — grounds ligand claims in binding data."""
+    chembl_activities = [
+        r for r in records
+        if r.source_type == "database_derived" and "chembl" in r.source.lower()
+        and _POTENCY_RE.search(r.claim)
+    ]
+    summary_rec = next(
+        (r for r in records if r.source_type == "database_derived" and "bioactivity records" in r.claim.lower()),
+        None,
+    )
+    compounds: list[dict] = []
+    for r in chembl_activities:
+        pot = _POTENCY_RE.search(r.claim)
+        compound = _CHEMBL_COMPOUND_RE.match(r.claim.strip())
+        if not pot:
+            continue
+        name = compound.group(1).strip() if compound else r.claim.split(" shows ")[0]
+        assay = "agonist" if "agonist" in r.claim.lower() else (
+            "antagonist" if "antagonist" in r.claim.lower() else "unknown"
+        )
+        compounds.append({
+            "compound": name,
+            "potency_type": pot.group(1).upper(),
+            "value": float(pot.group(2)),
+            "units": pot.group(3),
+            "assay_type": assay,
+            "source": r.source[:80],
+        })
+    compounds.sort(key=lambda c: c["value"])
+    top = compounds[:5]
+    beta_note = (
+        "β-ionone is debated as a genuine OR51E2 agonist (Pronin 2021); "
+        "ChEMBL lists patent-screen agonists/antagonists with measured EC50/IC50 "
+        "but not β-ionone potency at this target."
+    )
+    return {
+        "chembl_target": "CHEMBL4523454",
+        "activity_count": len(chembl_activities),
+        "summary": (
+            summary_rec.claim[:200] if summary_rec else
+            f"{len(chembl_activities)} ChEMBL potency records loaded for this receptor."
+        ),
+        "top_compounds": top,
+        "beta_ionone_note": beta_note,
+        "plain_llm_gap": (
+            "A browser-only summary rarely attaches sub-nM EC50 values from ChEMBL "
+            "to the contested β-ionone narrative."
+            if top else
+            "No ChEMBL potency records loaded — ligand grounding unavailable for this query."
+        ),
+    }
+
+
+def _build_evidence_comparison(
+    records: list[EvidenceRecord],
+    scores,
+) -> list[dict]:
+    """Transparent audit: why one promoting study outweighs another."""
+    promoting = sorted(
+        scores.promoting.records,
+        key=lambda r: score_record(r),
+        reverse=True,
+    )
+    if len(promoting) < 2:
+        return []
+
+    comparisons: list[dict] = []
+    for higher, lower in zip(promoting, promoting[1:]):
+        hw, hr = score_record_with_reason(higher)
+        lw, lr = score_record_with_reason(lower)
+        delta = round(hw - lw, 3)
+        reasons: list[str] = []
+        if higher.endpoint != lower.endpoint:
+            reasons.append(
+                f"Different endpoints ({higher.endpoint} vs {lower.endpoint}) — "
+                "not a same-outcome contradiction."
+            )
+        if "xenograft" in (higher.model_system or "").lower() and "xenograft" not in (lower.model_system or "").lower():
+            reasons.append("Higher study uses in vivo/xenograft evidence (+quality bonus).")
+        if (higher.sample_size or 0) > (lower.sample_size or 0):
+            reasons.append(f"Larger reported N ({higher.sample_size} vs {lower.sample_size or 'unknown'}).")
+        if not reasons:
+            reasons.append("Quality/recency/mechanism bonuses in the weight formula differentiate these records.")
+        comparisons.append({
+            "higher": _short_source(higher.source),
+            "lower": _short_source(lower.source),
+            "weight_delta": delta,
+            "higher_weight": round(hw, 3),
+            "lower_weight": round(lw, 3),
+            "higher_reason": hr,
+            "lower_reason": lr,
+            "why_higher_wins": reasons,
+        })
+    return comparisons
+
+
+def _build_why_not_plain_llm(
+    gene: str,
+    scores,
+    contradictions,
+    needs_judgment: bool,
+    auxiliary_tensions: list[dict],
+    ligand_grounding: dict,
+    evidence_comparison: list[dict],
+) -> list[str]:
+    bullets: list[str] = []
+    if contradictions and not contradictions[0].same_endpoint:
+        bullets.append(
+            "Endpoint-aware tension: proliferation (Neuhaus) vs invasiveness (Sanz) flagged as "
+            "related outcomes, not forced into a false same-endpoint contradiction."
+        )
+    if needs_judgment:
+        bullets.append(
+            f"Deterministic deadlock at mass ratio {scores.suppressive.score:.2f} vs "
+            f"{scores.promoting.score:.2f} — triggers elicitation instead of merging sides."
+        )
+    if any(t.get("id") == "t_ligand_validity" for t in auxiliary_tensions):
+        bullets.append(
+            "Auxiliary ligand-validity tension: β-ionone agonism explicitly contested; "
+            "α-ionone reclassified from antagonist to full agonist (biased agonism)."
+        )
+    if any(t.get("id") == "t_cell_compartment" for t in auxiliary_tensions):
+        bullets.append(
+            "Immune-compartment firewall: TAM/macrophage claims excluded from tumor-cell direction mass."
+        )
+    if ligand_grounding.get("top_compounds"):
+        top = ligand_grounding["top_compounds"][0]
+        bullets.append(
+            f"ChEMBL potency grounding: {top['compound']} {top['potency_type']}="
+            f"{top['value']}{top['units']} ({top['assay_type']}) — not inferable from abstracts alone."
+        )
+    if evidence_comparison:
+        c = evidence_comparison[0]
+        bullets.append(
+            f"Auditable weight math: {c['higher']} ({c['higher_weight']}) vs "
+            f"{c['lower']} ({c['lower_weight']}) — formula shown, not a vibe score."
+        )
+    if scores.commercial_interest_score > 0:
+        bullets.append(
+            "Patents tracked as commercial_interest edges only — never folded into literature consensus mass."
+        )
+    if not bullets:
+        bullets.append(
+            f"Confidence-qualified rules for {gene} — never asserted as universally true off single papers."
+        )
+    return bullets[:4]
 
 
 def _evidence_entry(r: EvidenceRecord, idx: int, status: Optional[str]) -> dict:
@@ -119,6 +324,10 @@ def to_demo_contract(
                 "plain_k_pro_expected": "No comparison available -- no evidence loaded yet.",
                 "augmented_expected": "No comparison available -- no evidence loaded yet.",
             },
+            "demo_summary": "No evidence loaded yet for this receptor and cancer type.",
+            "why_not_plain_llm": ["No evidence loaded — ingest records before comparing to plain K Pro."],
+            "ligand_grounding": {"activity_count": 0, "top_compounds": [], "beta_ionone_note": "", "plain_llm_gap": ""},
+            "evidence_comparison": [],
             "scorecards": [],
         }
 
@@ -134,7 +343,9 @@ def to_demo_contract(
     }
 
     consensus, suppressive, promoting, exploratory = [], [], [], []
+    id_by_record: dict[int, str] = {}
     for idx, r in enumerate(records):
+        id_by_record[id(r)] = _evidence_id(r, idx)
         status = status_by_id.get(r.id)
         entry = _evidence_entry(r, idx, status)
         if status == "exploratory" or r.source_type == "patent" or cell_compartment(r) == "immune_cell":
@@ -148,26 +359,36 @@ def to_demo_contract(
 
     tensions = []
     for i, c in enumerate(contradictions):
+        plain_summary = c.divergence_hypothesis
+        if not c.same_endpoint:
+            plain_summary = (
+                "Primary studies disagree on what activating this receptor does, but they often "
+                "measured different outcomes (for example proliferation vs. invasiveness). "
+                "That is tension worth surfacing, not proof that one paper must be wrong."
+            )
         tensions.append({
             "id": f"t{i}",
             "title": f"{gene} activation outcome in {cancer_type.replace('_', ' ')} is contested",
-            "summary": c.divergence_hypothesis,
+            "summary": plain_summary,
             "left": {
                 "label": "Tumor-suppressive",
-                "evidence_ids": [_evidence_id(r, 0) for r in c.suppressive_records],
+                "evidence_ids": [id_by_record[id(r)] for r in c.suppressive_records],
             },
             "right": {
                 "label": "Tumor-promoting",
-                "evidence_ids": [_evidence_id(r, 0) for r in c.promoting_records],
+                "evidence_ids": [id_by_record[id(r)] for r in c.promoting_records],
             },
             "hypotheses": [
                 generate_divergence_hypothesis(
                     c.suppressive_records, c.promoting_records, include_curation_notes=False
                 )
             ],
-            "same_model_system": c.same_model_system,
-            "same_endpoint": c.same_endpoint,
-            "deadlock": c.deadlock,
+            "technical": {
+                "same_model_system": c.same_model_system,
+                "same_endpoint": c.same_endpoint,
+                "deadlock": c.deadlock,
+                "raw_hypothesis": c.divergence_hypothesis,
+            },
         })
     tensions.extend(detect_auxiliary_tensions(records))
 
@@ -195,39 +416,72 @@ def to_demo_contract(
     ratio_window_half_width = (ELICITATION_THRESHOLD[1] - ELICITATION_THRESHOLD[0]) / 2
     balance_threshold = round(ratio_window_half_width * 2 * total_mass, 3) if total_mass > 0 else 0.0
     needs_judgment = bool(scores.elicitation_needed and contradictions)
+    same_endpoint = contradictions[0].same_endpoint if contradictions else True
+    verdict = _build_adjudication_verdict(needs_judgment, same_endpoint)
 
-    def _short(source: str) -> str:
-        return source.split(",")[0].split("(")[0].strip()
-
-    sup_sources = ", ".join(sorted({_short(r.source) for r in contradictions[0].suppressive_records})) if contradictions else ""
-    pro_sources = ", ".join(sorted({_short(r.source) for r in contradictions[0].promoting_records})) if contradictions else ""
+    sup_sources = ", ".join(sorted({_short_source(r.source) for r in contradictions[0].suppressive_records})) if contradictions else ""
+    pro_sources = ", ".join(sorted({_short_source(r.source) for r in contradictions[0].promoting_records})) if contradictions else ""
 
     adjudication = {
+        "verdict": verdict,
+        "summary": (
+            "The literature does not agree on whether activating this receptor helps or hurts "
+            "prostate cancer. Weighted evidence is nearly tied, so the tool stops instead of "
+            "declaring a winner."
+            if needs_judgment else
+            "Opposing studies remain, but weighted evidence currently leans one way."
+        ),
+        "next_steps": (
+            [
+                "Choose which outcome matters most for your question (proliferation vs. invasion/growth).",
+                "Or keep the split visible — do not merge into a single 'always true' rule.",
+            ]
+            if needs_judgment else
+            ["Review scorecards to see which sources drive the current lean."]
+        ),
+        # Backward-compatible fields used by demos/tests/MCP fallback path
         "status": "deadlock" if needs_judgment else scores.consensus_status,
         "needs_judgment": needs_judgment,
         "reason": (
-            "Support and oppose masses are within balance threshold on the same "
-            "receptor/cell-line family."
+            "Weighted tumor-suppressive and tumor-promoting evidence are nearly balanced "
+            f"({scores.suppressive.score:.2f} vs {scores.promoting.score:.2f})."
             if needs_judgment else
-            "Evidence is not currently balanced enough to require adjudication."
+            "Evidence is not currently balanced enough to require researcher input."
         ),
         "elicitation": {
             "message": (
-                f"{gene} activation evidence is balanced between tumor-suppressive and "
-                "tumor-promoting claims. How should we proceed?"
+                f"Evidence for {gene} activation is split. Should we prioritize the "
+                "tumor-suppressive studies, the tumor-promoting studies, or keep both sides "
+                "visible without merging them?"
             ),
             "options": [
-                {"id": "suppressive", "label": "Weight tumor-suppressive evidence more heavily"},
-                {"id": "promoting", "label": "Weight tumor-promoting evidence more heavily"},
-                {"id": "keep_contested", "label": "Keep as contested -- do not merge into one rule"},
+                {
+                    "id": "suppressive",
+                    "label": "Prioritize tumor-suppressive studies (slows proliferation/cell death)",
+                },
+                {
+                    "id": "promoting",
+                    "label": "Prioritize tumor-promoting studies (invasion, xenograft growth)",
+                },
+                {
+                    "id": "keep_contested",
+                    "label": "Keep as contested — show both sides, no merged bottom line",
+                },
             ],
         } if needs_judgment else None,
         "fallback_without_elicitation": {
             "return_to_client": True,
             "instruction": (
-                "If MCP elicitation is unavailable, return this object and wait for the "
-                "researcher's next message selecting an option id."
+                "If live elicitation is unavailable, present the options above and wait for "
+                "the researcher to reply with an option id (e.g. keep_contested)."
             ),
+        },
+        "technical": {
+            "consensus_status": scores.consensus_status,
+            "balance_abs_delta": round(delta, 3),
+            "balance_threshold": balance_threshold,
+            "deadlock": needs_judgment,
+            "elicitation_ratio_window": list(ELICITATION_THRESHOLD),
         },
     }
 
@@ -239,12 +493,22 @@ def to_demo_contract(
         ),
         "augmented_expected": (
             f"Explicit contested cluster ({sup_sources or 'suppressive sources'} vs. "
-            f"{pro_sources or 'promoting sources'}) with sources, weights, endpoint labels, "
-            "confidence-qualified rules, and needs_judgment elicitation."
+            f"{pro_sources or 'promoting sources'}) with sources, differentiated weights, "
+            "endpoint labels, confidence-qualified rules, and a plain-language verdict."
             if contradictions else
             "Sourced, confidence-weighted claims with no unresolved contradiction currently detected."
         ),
     }
+
+    demo_summary = _build_demo_summary(gene, cancer_type, scores, contradictions, needs_judgment)
+
+    auxiliary_tensions = [t for t in tensions if t.get("id", "").startswith("t_")]
+    ligand_grounding = _build_ligand_grounding(records)
+    evidence_comparison = _build_evidence_comparison(records, scores)
+    why_not_plain_llm = _build_why_not_plain_llm(
+        gene, scores, contradictions, needs_judgment,
+        auxiliary_tensions, ligand_grounding, evidence_comparison,
+    )
 
     alias_info = _RECEPTOR_INFO.get(gene.upper(), {"aliases": [gene], "pdb": None})
     ext_ids = receptor_external_ids(gene)
@@ -294,6 +558,10 @@ def to_demo_contract(
         "rules": rules_out,
         "adjudication": adjudication,
         "baseline_contrast": baseline_contrast,
+        "demo_summary": demo_summary,
+        "why_not_plain_llm": why_not_plain_llm,
+        "ligand_grounding": ligand_grounding,
+        "evidence_comparison": evidence_comparison,
         "scorecards": [scorecard_to_dict(c) for c in build_scorecards(
             records, scores, contradictions, query_endpoint=infer_query_endpoint(query_text),
         )],

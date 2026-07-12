@@ -313,6 +313,11 @@ async def query_or_graph(
     `adjudication` block also always includes a `needs_judgment` + `elicitation`
     fallback shape so the demo still works if the connected client (e.g. K Pro)
     doesn't support elicitation yet -- see "Elicitation note" in KPRO_MCP_HOOKUP.md.
+
+    Demo presentation: lead with `demo_summary`, then `adjudication.verdict` /
+    `adjudication.next_steps`. Reserve `adjudication.technical`, tension
+    `technical`, and `needs_judgment` for fallback paths — do not read raw
+    boolean flags aloud to judges.
     """
     records = get_records(gene, cancer_type)
     contract = to_demo_contract(records, gene=gene, cancer_type=cancer_type, query_text=query)

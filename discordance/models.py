@@ -96,6 +96,7 @@ class SourceScorecard:
     selection_reason: str
     contested: bool
     endpoint: str = "not specified"
+    unique_insight: str | None = None
 
 
 @dataclass

@@ -45,6 +45,7 @@
     <h1>Baseline vs Augmented</h1>
     <p class="sub">Side-by-side for the live demo. Left = what plain aggregation tends to do. Right = Discordance Query mock (same shape Person B should return).</p>
     <div class="q" id="q"></div>
+    <div class="q" id="summary" style="border-color:#3d6d5c;background:rgba(76,175,143,.08)"></div>
     <div class="cols">
       <section class="col">
         <div class="hd">
@@ -81,6 +82,13 @@
     document.getElementById('q').innerHTML = `<span class="mono" style="color:var(--muted);font-size:.7rem">FROZEN QUESTION</span><br/><strong>${Q.query.text}</strong>`;
     document.getElementById('baseline').textContent = Q.baseline_contrast.plain_k_pro_expected;
 
+    const summaryEl = document.getElementById('summary');
+    if (Q.demo_summary) {
+      summaryEl.innerHTML = `<span class="mono" style="color:var(--muted);font-size:.7rem">DISCORDANCE VERDICT</span><br/><strong>${Q.demo_summary}</strong>`;
+    } else {
+      summaryEl.style.display = 'none';
+    }
+
     const aug = document.getElementById('aug');
     const blocks = [
       ['sup', 'Tumor-suppressive', Q.tumor_suppressive],
@@ -101,8 +109,11 @@
         <div class="c">${Q.tensions[0].summary}</div>
       </div>`;
 
+    const verdict = Q.adjudication.verdict || Q.adjudication.status || 'contested';
+    const next = (Q.adjudication.next_steps || []).join(' ');
+    const diff = (Q.why_not_plain_llm || []).slice(0, 2).map((b) => `• ${b}`).join(' ');
     document.getElementById('adj').innerHTML =
-      `<strong>needs_judgment: true</strong> — ${Q.adjudication.elicitation.message}`;
+      `<strong>${verdict}</strong>${next ? ` — ${next}` : ''}${diff ? `<br/><span style="opacity:.85">${diff}</span>` : ''}`;
 
     document.getElementById('copyQ').onclick = async () => {
       await navigator.clipboard.writeText(Q.query.text);

@@ -160,6 +160,12 @@
     }
   ],
   "adjudication": {
+    "verdict": "contested — evidence is split across related outcomes",
+    "summary": "The literature does not agree on whether activating this receptor helps or hurts prostate cancer. Weighted evidence is nearly tied, so the tool stops instead of declaring a winner.",
+    "next_steps": [
+      "Choose which outcome matters most for your question (proliferation vs. invasion/growth).",
+      "Or keep the split visible — do not merge into a single 'always true' rule."
+    ],
     "status": "deadlock",
     "needs_judgment": true,
     "reason": "Support and oppose masses are within balance_threshold on the same receptor/cell-line family.",
@@ -189,6 +195,40 @@
     "plain_k_pro_expected": "A smoothed or hedged single narrative that OR51E2 may have context-dependent effects in prostate cancer, without explicitly staging the Neuhaus vs Sanz/Rodriguez primary-literature split as a first-class tension.",
     "augmented_expected": "Explicit contested cluster with sources, weights, endpoint labels, confidence-qualified rules, and needs_judgment elicitation."
   },
+  "demo_summary": "Activating OR51E2 in prostate cancer is contested: two study-side(s) read tumor-suppressive, two read tumor-promoting. Studies measured different outcomes, so both sides could be partially true. Evidence weight is roughly balanced.",
+  "why_not_plain_llm": [
+    "Endpoint-aware tension: proliferation (Neuhaus) vs invasiveness (Sanz) flagged as related outcomes, not forced into a false same-endpoint contradiction.",
+    "Deterministic deadlock — triggers elicitation instead of merging opposing primary studies into one hedged paragraph.",
+    "ChEMBL potency grounding: IMIDAZOLINONE EC50=0.0076nM (agonist) — sub-nM binding data not inferable from abstracts alone.",
+    "Auditable weight math: Rodriguez xenograft (1.17) vs Sanz invasion assay (1.12) — formula shown, not a vibe score."
+  ],
+  "ligand_grounding": {
+    "chembl_target": "CHEMBL4523454",
+    "activity_count": 25,
+    "summary": "144 bioactivity records in ChEMBL for OR51E2, spanning 26 unique molecules and 25 EC50/IC50 potency measurements.",
+    "top_compounds": [
+      {"compound": "CHEMBL1328799", "potency_type": "EC50", "value": 0.00044, "units": "nM", "assay_type": "agonist", "source": "ChEMBL activity 19491371"},
+      {"compound": "IMIDAZOLINONE", "potency_type": "EC50", "value": 0.0076, "units": "nM", "assay_type": "agonist", "source": "ChEMBL activity 19491370"},
+      {"compound": "ISOTRETINOIN", "potency_type": "IC50", "value": 160.0, "units": "nM", "assay_type": "antagonist", "source": "ChEMBL activity 19491341"}
+    ],
+    "beta_ionone_note": "β-ionone is debated as a genuine OR51E2 agonist (Pronin 2021); ChEMBL lists patent-screen agonists/antagonists with measured EC50/IC50 but not β-ionone potency at this target.",
+    "plain_llm_gap": "A browser-only summary rarely attaches sub-nM EC50 values from ChEMBL to the contested β-ionone narrative."
+  },
+  "evidence_comparison": [
+    {
+      "higher": "Rodriguez et al. 2014",
+      "lower": "Sanz et al. 2014",
+      "weight_delta": 0.05,
+      "higher_weight": 1.17,
+      "lower_weight": 1.12,
+      "higher_reason": "primary_study (base=1.0) × (1 + replications unknown → +0.00, N=unknown → +0.000, quality [endpoint=tumor_growth → +0.05, in vivo/xenograft model → +0.08, recency (2014) → +0.01, mechanism specified → +0.03] = +0.170) = 1.170",
+      "lower_reason": "primary_study (base=1.0) × (1 + replications unknown → +0.00, N=unknown → +0.000, quality [endpoint=invasiveness → +0.05, named cell line → +0.03, recency (2014) → +0.01, mechanism specified → +0.03] = +0.120) = 1.120",
+      "why_higher_wins": [
+        "Different endpoints (tumor_growth vs invasiveness) — not a same-outcome contradiction.",
+        "Higher study uses in vivo/xenograft evidence (+quality bonus)."
+      ]
+    }
+  ],
   "scorecards": [
     {
       "source": "Neuhaus et al. 2009, J Biol Chem",
@@ -230,7 +270,8 @@
       "best_for": "Directly answers the 'proliferation' question this query is asking about (answers a related but distinct question here -- measures invasiveness, not proliferation).",
       "selection_reason": "Selected because it's part of the contested cluster -- one side of a tumor-promoting vs. tumor-suppressive split that the graph could not resolve on its own.",
       "contested": true,
-      "endpoint": "invasiveness"
+      "endpoint": "invasiveness",
+      "unique_insight": "Endpoint mismatch: measures 'invasiveness', not the query's 'proliferation' — both can be true without cancelling each other."
     },
     {
       "source": "Rodriguez et al. 2014, Oncogenesis",
@@ -249,7 +290,8 @@
       "best_for": "Supports the tumor-promoting case for OR51E2 in prostate cancer.",
       "selection_reason": "Selected because it's part of the contested cluster -- one side of a tumor-promoting vs. tumor-suppressive split that the graph could not resolve on its own.",
       "contested": true,
-      "endpoint": "tumor growth"
+      "endpoint": "tumor growth",
+      "unique_insight": "In vivo xenograft evidence — quality bonuses push this above cell-line-only promoting claims."
     },
     {
       "source": "PDB 8F76",

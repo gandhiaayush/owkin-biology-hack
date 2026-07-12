@@ -29,6 +29,99 @@ def db(tmp_path):
     yield path
 
 
+def test_demo_summary_present(db):
+    for r in SEED_RECORDS:
+        insert_record(r)
+    records = get_records("OR51E2", "prostate_cancer")
+    contract = to_demo_contract(records, "OR51E2", "prostate_cancer")
+    assert "demo_summary" in contract
+    assert isinstance(contract["demo_summary"], str)
+    assert len(contract["demo_summary"]) > 20
+    assert "contested" in contract["demo_summary"].lower()
+
+
+def test_adjudication_has_demo_friendly_verdict(db):
+    for r in SEED_RECORDS:
+        insert_record(r)
+    records = get_records("OR51E2", "prostate_cancer")
+    contract = to_demo_contract(records, "OR51E2", "prostate_cancer")
+    adj = contract["adjudication"]
+    assert "verdict" in adj
+    assert "contested" in adj["verdict"]
+    assert "needs_judgment" not in adj["verdict"]
+    assert adj["technical"]["balance_abs_delta"] == contract["scores"]["balance_abs_delta"]
+
+
+def test_tension_technical_fields_nested(db):
+    for r in SEED_RECORDS:
+        insert_record(r)
+    records = get_records("OR51E2", "prostate_cancer")
+    contract = to_demo_contract(records, "OR51E2", "prostate_cancer")
+    primary = contract["tensions"][0]
+    assert "technical" in primary
+    assert "same_endpoint" in primary["technical"]
+    assert "deadlock" in primary["technical"]
+    assert "same_endpoint" not in primary
+
+
+def test_seed_primary_studies_have_distinct_weights(db):
+    for r in SEED_RECORDS:
+        insert_record(r)
+    records = get_records("OR51E2", "prostate_cancer")
+    contract = to_demo_contract(records, "OR51E2", "prostate_cancer")
+    weights = [e["weight"] for e in contract["tumor_suppressive"] + contract["tumor_promoting"]]
+    assert len(set(weights)) >= 3, f"Expected differentiated weights, got {weights}"
+
+
+def test_tension_evidence_ids_match_buckets(db):
+    for r in SEED_RECORDS:
+        insert_record(r)
+    records = get_records("OR51E2", "prostate_cancer")
+    contract = to_demo_contract(records, "OR51E2", "prostate_cancer")
+    primary = contract["tensions"][0]
+    sup_ids = {e["id"] for e in contract["tumor_suppressive"]}
+    pro_ids = {e["id"] for e in contract["tumor_promoting"]}
+    assert set(primary["left"]["evidence_ids"]) <= sup_ids
+    assert set(primary["right"]["evidence_ids"]) <= pro_ids
+    assert len(set(primary["left"]["evidence_ids"])) == len(contract["tumor_suppressive"])
+    assert len(set(primary["right"]["evidence_ids"])) == len(contract["tumor_promoting"])
+
+
+def test_why_not_plain_llm_present(db):
+    for r in SEED_RECORDS:
+        insert_record(r)
+    records = get_records("OR51E2", "prostate_cancer")
+    contract = to_demo_contract(records, "OR51E2", "prostate_cancer")
+    assert "why_not_plain_llm" in contract
+    assert 1 <= len(contract["why_not_plain_llm"]) <= 4
+    assert any("endpoint" in b.lower() or "deadlock" in b.lower() or "weight" in b.lower()
+               for b in contract["why_not_plain_llm"])
+
+
+def test_evidence_comparison_shows_weight_audit(db):
+    for r in SEED_RECORDS:
+        insert_record(r)
+    records = get_records("OR51E2", "prostate_cancer")
+    contract = to_demo_contract(records, "OR51E2", "prostate_cancer")
+    assert "evidence_comparison" in contract
+    assert len(contract["evidence_comparison"]) >= 1
+    row = contract["evidence_comparison"][0]
+    assert "higher_weight" in row and "lower_weight" in row
+    assert "why_higher_wins" in row
+
+
+def test_scorecards_have_unique_insight_when_relevant(db):
+    for r in SEED_RECORDS:
+        insert_record(r)
+    records = get_records("OR51E2", "prostate_cancer")
+    contract = to_demo_contract(
+        records, "OR51E2", "prostate_cancer",
+        query_text="Does activating OR51E2 affect proliferation?",
+    )
+    insights = [c["unique_insight"] for c in contract["scorecards"] if c.get("unique_insight")]
+    assert len(insights) >= 1
+
+
 def test_top_level_keys_match_frozen_mock(db):
     """
     The exact set of top-level keys Person C's frontend destructures must be

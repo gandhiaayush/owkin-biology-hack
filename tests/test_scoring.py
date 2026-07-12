@@ -5,6 +5,7 @@ from discordance import (
     init_db, insert_record, get_records, compute_direction_scores,
     score_record, get_confidence_label, EvidenceRecord,
 )
+from discordance.scoring import score_record_with_reason
 
 
 def _make_record(**kwargs) -> EvidenceRecord:
@@ -63,6 +64,38 @@ def test_elicitation_fires_on_balanced_evidence():
     scores = compute_direction_scores(SEED_RECORDS)
     assert scores.consensus_status == "contested"
     assert scores.elicitation_needed is True
+
+
+def test_primary_studies_differentiated_by_quality_not_only_source_type():
+    """Two primary studies with different rigor should not collapse to identical weights."""
+    cell_line = _make_record(
+        source="Cell line 2010",
+        model_system="generic cell line",
+        endpoint="not specified",
+        mechanism="not specified",
+    )
+    xenograft = _make_record(
+        source="Xenograft 2021",
+        model_system="xenograft, mouse",
+        endpoint="tumor_growth",
+        mechanism="NF-kB pathway",
+        claim="PSGR promotes xenograft tumor growth",
+    )
+    assert score_record(xenograft) > score_record(cell_line)
+    assert score_record(xenograft) != score_record(cell_line)
+
+
+def test_quality_bonuses_visible_in_reason_string():
+    r = _make_record(
+        source="Rodriguez et al. 2014",
+        model_system="xenograft",
+        endpoint="tumor_growth",
+        mechanism="NF-kB pathway",
+    )
+    _, reason = score_record_with_reason(r)
+    assert "in vivo/xenograft" in reason
+    assert "endpoint=tumor_growth" in reason
+    assert "mechanism specified" in reason
 
 
 def test_patents_not_in_literature_consensus():

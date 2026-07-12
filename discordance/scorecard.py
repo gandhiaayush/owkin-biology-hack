@@ -90,6 +90,37 @@ def _best_for(r: EvidenceRecord, query_endpoint: str | None) -> str:
     return f"Supports the {r.direction.replace('_', '-')} case for {r.gene} in {r.cancer_type.replace('_', ' ')}."
 
 
+def _unique_insight(
+    r: EvidenceRecord,
+    query_endpoint: str | None,
+    contradictions: list[ContradictionPair],
+) -> str | None:
+    """One-line highlight of what a plain LLM summary would likely flatten or miss."""
+    note = (r.confidence_note or "").lower()
+    text = f"{r.claim} {r.mechanism}".lower()
+
+    if "controversy" in note or ("beta-ionone" in text and "not replicated" in note):
+        return (
+            "Flags field-wide β-ionone ligand dispute — a plain summary often treats "
+            "β-ionone as settled OR51E2 agonism."
+        )
+    if query_endpoint and r.endpoint and r.endpoint != "not specified" and r.endpoint != query_endpoint:
+        return (
+            f"Endpoint mismatch: measures '{r.endpoint}', not the query's '{query_endpoint}' — "
+            "both can be true without cancelling each other."
+        )
+    if r.source_type == "patent":
+        return "Patent edge = commercial interest only; excluded from direction mass by design."
+    if any(term in text for term in _IN_VIVO_TERMS) and r.direction == "tumor_promoting":
+        return "In vivo xenograft evidence — quality bonuses push this above cell-line-only promoting claims."
+    in_contradiction = any(
+        r in c.suppressive_records or r in c.promoting_records for c in contradictions
+    )
+    if in_contradiction and r.endpoint and r.endpoint != "not specified":
+        return f"Load-bearing contested source on endpoint '{r.endpoint}'."
+    return None
+
+
 def _selection_reason(
     r: EvidenceRecord,
     scores: DirectionScores,
@@ -169,6 +200,7 @@ def build_scorecards(
             selection_reason=_selection_reason(r, scores, contradictions, rank_of.get(id(r), 0)),
             contested=in_contradiction,
             endpoint=r.endpoint,
+            unique_insight=_unique_insight(r, query_endpoint, contradictions),
         ))
 
     for r in context_only:
@@ -188,6 +220,7 @@ def build_scorecards(
             ),
             contested=False,
             endpoint=r.endpoint,
+            unique_insight=_unique_insight(r, query_endpoint, contradictions),
         ))
 
     cards.sort(key=lambda c: (not c.contested, -c.weight))
@@ -220,4 +253,5 @@ def scorecard_to_dict(c: SourceScorecard) -> dict:
         "selection_reason": c.selection_reason,
         "contested": c.contested,
         "endpoint": c.endpoint,
+        "unique_insight": c.unique_insight,
     }
