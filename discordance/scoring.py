@@ -22,6 +22,33 @@ def score_record(r: EvidenceRecord) -> float:
     return base * (1 + replication_bonus + sample_bonus)
 
 
+def score_record_with_reason(r: EvidenceRecord) -> tuple[float, str]:
+    """Compute weight and return a human-readable explanation of how it was derived.
+
+    The reason string mirrors the actual score_record() formula exactly — any
+    change to score_record() must be reflected here to keep the display honest.
+    """
+    base = SOURCE_WEIGHTS.get(r.source_type, 0.5)
+    reps = r.independent_replications if r.independent_replications is not None else -1
+    replication_bonus = 0.2 * min(max(reps, 0), 5)
+    sample_bonus = 0.1 * min(r.sample_size or 0, 1000) / 1000
+    score = base * (1 + replication_bonus + sample_bonus)
+
+    rep_str = (
+        f"{r.independent_replications} independent replications → +{replication_bonus:.2f}"
+        if r.independent_replications is not None and r.independent_replications > 0
+        else ("replications unknown → +0.00" if r.independent_replications is None
+              else "0 replications → +0.00")
+    )
+    samp_str = (
+        f"N={r.sample_size} → +{sample_bonus:.3f}" if r.sample_size else "N=unknown → +0.000"
+    )
+    reason = (
+        f"{r.source_type} (base={base:.1f}) × (1 + {rep_str}, {samp_str}) = {score:.3f}"
+    )
+    return score, reason
+
+
 def get_confidence_label(records: list[EvidenceRecord]) -> str:
     if not records:
         return "no evidence"

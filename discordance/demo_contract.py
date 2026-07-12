@@ -23,7 +23,7 @@ import re
 from typing import Optional
 
 from .models import EvidenceRecord
-from .scoring import compute_direction_scores, score_record
+from .scoring import compute_direction_scores, score_record, score_record_with_reason
 from .contradiction import detect_contradictions
 from .rules import generate_rules
 from .graph import build_graph
@@ -62,11 +62,13 @@ def _evidence_id(r: EvidenceRecord, idx: int) -> str:
 
 
 def _evidence_entry(r: EvidenceRecord, idx: int, status: Optional[str]) -> dict:
+    weight, weight_reason = score_record_with_reason(r)
     entry = {
         "id": _evidence_id(r, idx),
         "claim": r.claim,
         "direction": "exploratory" if status == "exploratory" else r.direction,
-        "weight": round(score_record(r), 3),
+        "weight": round(weight, 3),
+        "weight_reason": weight_reason,
         "source": _source_block(r),
         "model": r.model_system,
         "endpoint": r.endpoint if getattr(r, "endpoint", "not specified") != "not specified" else "not specified",
@@ -255,6 +257,22 @@ def to_demo_contract(
             "tumor_promoting_mass": round(scores.promoting.score, 3),
             "balance_abs_delta": round(delta, 3),
             "balance_threshold": balance_threshold,
+            "weight_breakdown": {
+                "tumor_suppressive": [
+                    {"source": r.source[:60], "weight": round(score_record(r), 3),
+                     "reason": score_record_with_reason(r)[1]}
+                    for r in scores.suppressive.records
+                ],
+                "tumor_promoting": [
+                    {"source": r.source[:60], "weight": round(score_record(r), 3),
+                     "reason": score_record_with_reason(r)[1]}
+                    for r in scores.promoting.records
+                ],
+                "note": (
+                    "Individual weights sum to the mass totals above. "
+                    "Patents are tracked separately (commercial_interest only) and excluded from mass."
+                ),
+            },
         },
         "rules": rules_out,
         "adjudication": adjudication,
