@@ -20,9 +20,10 @@ from mcp.server.elicitation import AcceptedElicitation
 from mcp.shared.exceptions import McpError
 
 from discordance import (
-    init_db, insert_record, get_records,
+    init_db, insert_record, get_records, get_all_records,
     detect_contradictions, compute_direction_scores, generate_rules,
     EvidenceRecord, query_subgraph, tension_map_from_records,
+    find_cross_receptor_connections,
 )
 from discordance.elicitation import should_trigger_elicitation, build_elicitation_question
 from discordance.demo_contract import to_demo_contract
@@ -262,6 +263,27 @@ def get_tension_map(gene: str, cancer_type: str = "prostate_cancer") -> dict:
     payload["gene"] = gene
     payload["cancer_type"] = cancer_type
     return payload
+
+
+@mcp.tool()
+def cross_receptor_connections(
+    gene_a: str,
+    gene_b: str,
+    max_hops: int = 2,
+) -> dict:
+    """
+    Find indirect paths between two receptors' evidence through shared intermediate
+    nodes (Mechanism, Endpoint, ModelSystem, CancerType, Ligand). Walks max_hops
+    from every Claim node for each receptor and surfaces nodes reachable from both
+    sides — candidates for a non-obvious cross-receptor biological connection that
+    no single paper states directly.
+
+    Returns an honest_finding field that explicitly reports true negatives (no
+    non-trivial connection found) rather than manufacturing a weak link.
+    Use max_hops=2 (default) for Claim→concept→Claim paths.
+    """
+    all_records = get_all_records()
+    return find_cross_receptor_connections(all_records, gene_a, gene_b, max_hops=max_hops)
 
 
 @mcp.tool()

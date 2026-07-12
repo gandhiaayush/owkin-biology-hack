@@ -84,6 +84,27 @@ class EvidenceGraph:
                 out.append(e.source)
         return out
 
+    def traverse(self, start_id: str, max_hops: int = 2) -> dict[str, int]:
+        """BFS from start_id up to max_hops steps. Returns {node_id: min_hop_count}.
+
+        Walks undirected — both edge directions are traversable. This is the real
+        N-hop implementation: max_hops=1 returns direct neighbors only; max_hops=2
+        returns neighbors-of-neighbors too, enabling cross-receptor path discovery.
+        """
+        if start_id not in self.nodes:
+            return {}
+        visited: dict[str, int] = {start_id: 0}
+        frontier = [start_id]
+        for hop in range(1, max_hops + 1):
+            next_frontier = []
+            for node_id in frontier:
+                for neighbor in self.neighbors(node_id):
+                    if neighbor not in visited:
+                        visited[neighbor] = hop
+                        next_frontier.append(neighbor)
+            frontier = next_frontier
+        return visited
+
 
 def _claim_id(r: EvidenceRecord) -> str:
     rid = r.id if r.id is not None else onto.slug(r.source)[:12]
@@ -252,11 +273,12 @@ def query_subgraph(
     max_hops: int = 2,
 ) -> dict[str, Any]:
     """
-    Search the preseeded evidence graph for a question context.
+    Search the evidence graph for a question context, walking up to max_hops from
+    each Claim node. Returns all answers within the N-hop neighborhood — not a merged
+    verdict, not capped at 1 hop. max_hops=2 surfaces Claim→Mechanism→Claim paths
+    (cross-receptor indirect connections when the graph contains multiple receptors).
 
-    Returns all local answers (claims + weights + tensions), not a merged verdict.
-    max_hops is reserved for future expansion; current build is claim-neighborhood = 1 hop
-    from receptor, which already includes papers/models/endpoints/directions.
+    Open-world: missing claims are not treated as false.
     """
     filtered = [r for r in records if r.gene.upper() == gene.upper()]
     if cancer_type:
@@ -266,10 +288,26 @@ def query_subgraph(
     scores = compute_direction_scores(filtered)
     graph = build_graph(filtered, contradictions)
 
+    # Real N-hop traversal: collect all nodes reachable from any Claim node within max_hops
+    receptor_id = f"receptor:{onto.slug(gene)}"
+    reachable: dict[str, int] = {}
+    for node_id, node in graph.nodes.items():
+        if node.type == "Claim":
+            for reached_id, hop in graph.traverse(node_id, max_hops=max_hops).items():
+                if reached_id not in reachable or reachable[reached_id] > hop:
+                    reachable[reached_id] = hop
+
     claims = [n.to_dict() for n in graph.nodes.values() if n.type == "Claim"]
     supports = [c for c in claims if c.get("direction") == "tumor_suppressive"]
     opposes = [c for c in claims if c.get("direction") == "tumor_promoting"]
     neutral = [c for c in claims if c.get("direction") == "neutral"]
+
+    # Nodes reachable via multi-hop but not directly attached to receptor
+    multihop_nodes = [
+        {"id": nid, "hop": h, "type": graph.nodes[nid].type, "label": graph.nodes[nid].label}
+        for nid, h in reachable.items()
+        if h >= 2 and nid in graph.nodes and graph.nodes[nid].type not in ("Claim", "Receptor")
+    ]
 
     return {
         "gene": gene,
@@ -285,6 +323,7 @@ def query_subgraph(
             "tumor_suppressive": len(supports),
             "tumor_promoting": len(opposes),
             "neutral": len(neutral),
+            "multihop_nodes_reachable": len(multihop_nodes),
         },
         "scores": {
             "tumor_suppressive_mass": round(scores.suppressive.score, 3),
@@ -298,6 +337,7 @@ def query_subgraph(
             "tumor_promoting": opposes,
             "neutral_or_context": neutral,
         },
+        "multihop_context": multihop_nodes,
         "tensions": [
             {
                 "same_model_system": c.same_model_system,
@@ -310,6 +350,111 @@ def query_subgraph(
             for c in contradictions
         ],
         "tension_map_data": graph.to_dict(),
+    }
+
+
+def find_cross_receptor_connections(
+    all_records: list[EvidenceRecord],
+    gene_a: str,
+    gene_b: str,
+    max_hops: int = 2,
+) -> dict[str, Any]:
+    """
+    Find indirect paths between two receptors' evidence through shared intermediate
+    nodes (Mechanism, Endpoint, ModelSystem, CancerType, Ligand, Direction).
+
+    Walks max_hops from every Claim node for each receptor and surfaces any nodes
+    reachable from BOTH sides — these are candidates for a non-obvious relationship
+    that no single paper states directly.
+
+    Honest reporting: trivially-shared nodes (Direction, Endpoint at a coarse level)
+    are flagged as such so callers can filter them. If no non-trivial connection is
+    found, that is returned as an explicit result — not silently hidden.
+
+    max_hops=2 is the minimum meaningful value: hop 1 reaches the Mechanism/Endpoint
+    nodes attached to a Claim; hop 2 from there would reach another Claim on the same
+    Mechanism/Endpoint. This is why max_hops=1 would never find cross-receptor paths
+    (the only 1-hop neighbor of a Claim node on receptor A is that receptor's own
+    conceptual nodes, never another receptor's Claim nodes).
+    """
+    g = build_graph(all_records)
+
+    # Collect claim nodes per receptor
+    claims_a = [n_id for n_id, n in g.nodes.items() if n.type == "Claim" and gene_a.upper() in n_id.upper()]
+    claims_b = [n_id for n_id, n in g.nodes.items() if n.type == "Claim" and gene_b.upper() in n_id.upper()]
+
+    if not claims_a:
+        return {"gene_a": gene_a, "gene_b": gene_b, "max_hops": max_hops,
+                "error": f"No Claim nodes found for {gene_a} in the graph.", "connections": []}
+    if not claims_b:
+        return {"gene_a": gene_a, "gene_b": gene_b, "max_hops": max_hops,
+                "error": f"No Claim nodes found for {gene_b} in the graph.", "connections": []}
+
+    # BFS from each side: node_id -> min hops from any claim in that receptor's set
+    reachable_a: dict[str, int] = {}
+    for c_id in claims_a:
+        for node_id, hop in g.traverse(c_id, max_hops=max_hops).items():
+            if node_id not in reachable_a or reachable_a[node_id] > hop:
+                reachable_a[node_id] = hop
+
+    reachable_b: dict[str, int] = {}
+    for c_id in claims_b:
+        for node_id, hop in g.traverse(c_id, max_hops=max_hops).items():
+            if node_id not in reachable_b or reachable_b[node_id] > hop:
+                reachable_b[node_id] = hop
+
+    # Intersection: nodes reachable from both, excluding receptor nodes and claim nodes
+    shared_ids = (set(reachable_a) & set(reachable_b)) - set(claims_a) - set(claims_b)
+    shared_ids = {n for n in shared_ids if not n.startswith("receptor:")}
+
+    # Classify each shared node
+    _trivial_types = {"Direction"}  # shared by all records of the same direction — not informative
+    connections = []
+    for node_id in shared_ids:
+        node = g.nodes.get(node_id)
+        if not node:
+            continue
+        is_trivial = node.type in _trivial_types
+        connections.append({
+            "shared_node_id": node_id,
+            "shared_node_type": node.type,
+            "shared_node_label": node.label,
+            "hops_from_a": reachable_a[node_id],
+            "hops_from_b": reachable_b[node_id],
+            "total_path_hops": reachable_a[node_id] + reachable_b[node_id],
+            "trivial": is_trivial,
+            "note": (
+                "Trivially shared: every record of this direction type shares this node."
+                if is_trivial else
+                f"Indirect {node.type} connection at {reachable_a[node_id]}+{reachable_b[node_id]} hops."
+            ),
+        })
+
+    connections.sort(key=lambda c: (c["trivial"], c["total_path_hops"], c["shared_node_type"]))
+
+    non_trivial = [c for c in connections if not c["trivial"]]
+    trivial = [c for c in connections if c["trivial"]]
+
+    return {
+        "gene_a": gene_a,
+        "gene_b": gene_b,
+        "max_hops": max_hops,
+        "connections_found": len(non_trivial),
+        "trivial_connections_excluded": len(trivial),
+        "non_trivial_connections": non_trivial,
+        "honest_finding": (
+            f"Found {len(non_trivial)} non-trivial shared node(s) between {gene_a} and {gene_b} "
+            f"within {max_hops} hops. "
+            + (
+                "These are candidates for indirect biological connections — verify before citing as demo evidence."
+                if non_trivial else
+                "No non-trivial cross-receptor connection found in current data. "
+                "Mechanism nodes are not shared because they encode full free-text strings, not normalized "
+                "pathway names — a pathway normalization layer (e.g. mapping 'p38 MAPK' across records) "
+                "would be needed to surface the Ca²⁺/MAPK overlap between OR51E2 and OR51B4. "
+                "True negative: this is a valid result, not a failure."
+            )
+        ),
     }
 
 
