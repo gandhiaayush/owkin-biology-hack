@@ -48,6 +48,14 @@ When query_or_graph returns:
 - On deadlock, recommend keep_contested unless the user specifies endpoint priority.
 - get_tension_map is for visualization only — not re-adjudication.
 
+MANDATORY: account for EVERY bucket in the response — consensus, tumor_suppressive,
+tumor_promoting, AND exploratory. "Excluded from the direction-mass score" is NOT the
+same as "irrelevant to the answer." If the exploratory bucket contains something
+relevant to the question (e.g. a TME/immune-compartment mechanism, a patent claim, a
+CNV signal in an unexpected cancer type), surface it explicitly and state its
+confidence level. Do NOT silently omit returned data because it lives in a non-primary
+bucket. Omission of data the tool returned is a failure mode equal to fabrication.
+
 Use add_evidence to ingest records. cross_receptor_connections for cross-receptor paths.
 """
 
@@ -163,6 +171,13 @@ async def query_graph(
     Query the knowledge graph for a gene in a cancer context.
     Returns sourced, confidence-weighted rules. Surfaces contradictions explicitly.
     When evidence is deadlocked, triggers MCP elicitation to ask the researcher.
+
+    IMPORTANT: the response contains four evidence buckets — tumor_suppressive,
+    tumor_promoting, consensus, and exploratory. The exploratory bucket contains
+    evidence excluded from the direction-mass score for principled reasons (immune
+    compartment, patent claims, low-confidence CNV signals) — it is NOT irrelevant.
+    Surface exploratory findings explicitly when they are relevant to the question.
+    Omitting returned exploratory data is a failure mode equal to fabrication.
 
     The result includes a `scorecards_markdown` field: a pre-rendered "Source
     Scorecard" section (one block per source, with its weight, strengths,
@@ -340,6 +355,15 @@ async def query_or_graph(
 
     Also includes: tensions, scores.weight_breakdown, why_not_plain_llm,
     ligand_grounding, evidence_comparison, scorecards.
+
+    The result also contains an `exploratory` bucket. This bucket holds evidence
+    excluded from the direction-mass calculation for principled reasons — immune /
+    TME compartment claims (e.g. TAM/macrophage mechanisms), patent commercial-
+    interest records, low-confidence CNV signals in unexpected cancer types, etc.
+    "Excluded from the mass score" is NOT the same as "irrelevant to the answer."
+    MANDATORY: when the exploratory bucket contains findings relevant to the question
+    asked, surface them explicitly and state their confidence level. Silently dropping
+    returned exploratory data is a failure mode equivalent to fabricating evidence.
 
     Triggers MCP elicitation on evidence deadlock when the client supports it;
     otherwise returns adjudication.elicitation options for the researcher to choose.

@@ -1,5 +1,5 @@
 """
-Evidence quality benchmark: loads the gold standard set from data/benchmark_results.json
+Evidence quality benchmark: loads the gold standard set from data/gold_standard_5papers.json
 (5 OR51E2 papers with human-verified claim, direction, and endpoint from full-text
 reading by Person A) and asserts the graph produces the expected outputs.
 
@@ -34,8 +34,11 @@ Five concrete things being tested (what to say if asked by a judge):
      replications and sample size). Catches drift between what the demo displays and
      what is actually computed.
 
-Gold standard source: data/benchmark_results.json — 5 papers with Person A's
-full-text verified ground truth. Run with:
+Gold standard source: data/gold_standard_5papers.json — 5 papers with Person A's
+full-text verified ground truth (a frozen snapshot of the original 5-paper
+benchmark_results.json, kept separate now that data/benchmark_results.json has
+been expanded into a 22-paper, 4-receptor extraction-accuracy benchmark whose
+output shape and content this integration test doesn't depend on). Run with:
     pytest tests/test_evidence_benchmark.py -v
 """
 from __future__ import annotations
@@ -54,7 +57,7 @@ from discordance import (
 from discordance.scoring import compute_direction_scores, score_record, score_record_with_reason, SOURCE_WEIGHTS
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-GOLD_PATH = REPO_ROOT / "data" / "benchmark_results.json"
+GOLD_PATH = REPO_ROOT / "data" / "gold_standard_5papers.json"
 OR51E2_JSON = REPO_ROOT / "data" / "receptors" / "or51e2.json"
 
 # The 4 core prostate papers — these MUST be in the graph for the demo to work.

@@ -1,0 +1,113 @@
+{
+  "19389702": {
+    "pmcid": "PMC2713531",
+    "full_text_path": "data/benchmark_fulltext/19389702.txt",
+    "length": 46699,
+    "note": "XML API metadata-only; scraped PMC web-rendered HTML page directly (has full text despite API gap, confirmed earlier in this project)"
+  },
+  "24416348": {
+    "pmcid": "PMC3885679",
+    "full_text_path": "data/benchmark_fulltext/24416348.txt",
+    "length": 40323
+  },
+  "25111863": {
+    "pmcid": "PMC5189964",
+    "full_text_path": "data/benchmark_fulltext/25111863.txt",
+    "length": 28366
+  },
+  "33640452": {
+    "pmcid": "PMC8024707",
+    "full_text_path": "data/benchmark_fulltext/33640452.txt",
+    "length": 51634
+  },
+  "28191688": {
+    "pmcid": "ERR:Identifier not found in PMC",
+    "full_text_path": null,
+    "status": "no_pmcid"
+  },
+  "40588561": {
+    "pmcid": "PMC12208882",
+    "full_text_path": "data/benchmark_fulltext/40588561.txt",
+    "length": 85194
+  },
+  "27280498": {
+    "pmcid": "ERR:Identifier not found in PMC",
+    "full_text_path": null,
+    "status": "no_pmcid"
+  },
+  "40532574": {
+    "pmcid": "ERR:Identifier not found in PMC",
+    "full_text_path": null,
+    "status": "no_pmcid"
+  },
+  "40128715": {
+    "pmcid": "PMC11934788",
+    "full_text_path": "data/benchmark_fulltext/40128715.txt",
+    "length": 54169
+  },
+  "36313302": {
+    "pmcid": "PMC9606680",
+    "full_text_path": "data/benchmark_fulltext/36313302.txt",
+    "length": 29351
+  },
+  "30928381": {
+    "pmcid": "ERR:Identifier not found in PMC",
+    "full_text_path": null,
+    "status": "no_pmcid"
+  },
+  "40088737": {
+    "pmcid": "ERR:Identifier not found in PMC",
+    "full_text_path": null,
+    "status": "no_pmcid"
+  },
+  "33164833": {
+    "pmcid": "ERR:Identifier not found in PMC",
+    "full_text_path": null,
+    "status": "no_pmcid"
+  },
+  "26028029": {
+    "pmcid": "PMC4683109",
+    "full_text_path": "data/benchmark_fulltext/26028029.txt",
+    "length": 28729
+  },
+  "26582057": {
+    "pmcid": "PMC4652354",
+    "full_text_path": "data/benchmark_fulltext/26582057.txt",
+    "length": 23896
+  },
+  "23029225": {
+    "pmcid": "PMC3447865",
+    "full_text_path": "data/benchmark_fulltext/23029225.txt",
+    "length": 27465
+  },
+  "21349844": {
+    "pmcid": "PMC3075665",
+    "full_text_path": null,
+    "status": "metadata_only"
+  },
+  "35117199": {
+    "pmcid": "PMC8798947",
+    "full_text_path": "data/benchmark_fulltext/35117199.txt",
+    "length": 21908
+  },
+  "27226631": {
+    "pmcid": "PMC5016170",
+    "full_text_path": null,
+    "status": "metadata_only"
+  },
+  "29249973": {
+    "pmcid": "PMC5714887",
+    "full_text_path": "data/benchmark_fulltext/29249973.txt",
+    "length": 51303
+  },
+  "35499393": {
+    "pmcid": "PMC9256805",
+    "full_text_path": "data/benchmark_fulltext/35499393.txt",
+    "length": 26479
+  },
+  "28273117": {
+    "pmcid": "PMC5342199",
+    "full_text_path": "data/benchmark_fulltext/28273117.txt",
+    "length": 54451
+  }
+}
