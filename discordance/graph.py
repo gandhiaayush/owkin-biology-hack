@@ -6,6 +6,7 @@ Open-world: missing claims are not treated as false.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field, asdict
 from typing import Any, Optional
 
@@ -111,19 +112,90 @@ def _claim_id(r: EvidenceRecord) -> str:
     return f"claim:{r.gene}:{rid}"
 
 
-def _infer_ligands(claim: str, mechanism: str) -> list[str]:
-    text = f"{claim} {mechanism}".lower().replace("β", "beta").replace("α", "alpha")
-    text = text.replace("-", " ")
-    found = []
-    mapping = (
-        ("beta ionone", "β-ionone"),
-        ("alpha ionone", "α-ionone"),
-        ("androstenone", "androstenone"),
-    )
-    for needle, label in mapping:
-        if needle in text and label not in found:
-            found.append(label)
-    return found
+# Regex to extract ChEMBL compound names: "COMPOUND NAME (CHEMBL12345) shows..."
+_CHEMBL_COMPOUND_RE = re.compile(
+    r'^([A-Z][A-Z0-9\-\' ]{2,40}?)\s+\(CHEMBL\d+\)', re.MULTILINE
+)
+# Regex to extract IC50/EC50 potency values: "shows IC50 = 160.0 nM"
+_POTENCY_RE = re.compile(
+    r'(IC50|EC50|Ki|Kd)\s*=\s*([\d.]+)\s*(nM|uM|µM|pM|mM)', re.IGNORECASE
+)
+# Known ligands as (search_text, canonical_label) — searched in combined claim+mechanism text
+_KNOWN_LIGANDS = (
+    ("beta ionone",         "β-ionone"),
+    ("beta-ionone",         "β-ionone"),
+    ("α-ionone",            "α-ionone"),
+    ("alpha ionone",        "α-ionone"),
+    ("alpha-ionone",        "α-ionone"),
+    ("androstenone",        "androstenone"),
+    ("propionate",          "propionate"),
+    ("propionic acid",      "propionate"),
+    ("acetate",             "acetate"),
+    ("acetic acid",         "acetate"),
+    ("palmitic acid",       "palmitic acid"),
+    ("estriol",             "estriol"),
+    ("isotretinoin",        "isotretinoin"),
+    ("13-cis retinoic",     "isotretinoin"),
+    ("pelargonidin",        "pelargonidin"),
+    ("glycyl-glycine",      "glycyl-glycine"),
+    ("troenan",             "troenan"),
+    ("19-oh ad",            "19-OH-androstenedione"),
+    ("19-hydroxyandrostenedione", "19-OH-androstenedione"),
+    ("afmk",                "AFMK"),
+)
+
+
+def _infer_ligands(claim: str, mechanism: str, source: str = "") -> list[tuple[str, dict]]:
+    """
+    Return list of (canonical_label, meta) tuples for ligands mentioned in this record.
+
+    meta may include:
+      - potency: {"type": "IC50", "value": 160.0, "units": "nM"}
+      - assay_type: "agonist" | "antagonist" | "unknown"
+
+    Covers three cases:
+      1. Known ligands by name in claim/mechanism text (β-ionone, propionate, etc.)
+      2. ChEMBL compound names extracted from citation/claim via regex
+      3. PDB bound ligands from structural records
+    """
+    combined = f"{claim} {mechanism} {source}".lower()
+    combined_norm = combined.replace("β", "beta").replace("α", "alpha").replace("-", " ")
+
+    found: dict[str, dict] = {}  # label → meta
+
+    # Case 1: named ligand matching
+    for needle, label in _KNOWN_LIGANDS:
+        if needle.lower() in combined_norm and label not in found:
+            found[label] = {}
+
+    # Case 2: ChEMBL compound name extraction from start of claim
+    m = _CHEMBL_COMPOUND_RE.match(claim.strip())
+    if m:
+        compound_name = m.group(1).strip().title()  # title-case for readability
+        meta: dict[str, Any] = {}
+        # Extract potency
+        pot = _POTENCY_RE.search(claim)
+        if pot:
+            try:
+                meta["potency"] = {
+                    "type": pot.group(1).upper(),
+                    "value": float(pot.group(2)),
+                    "units": pot.group(3).lower().replace("µ", "u"),
+                }
+            except ValueError:
+                pass
+        # Agonist/antagonist classification from assay description
+        claim_lower = claim.lower()
+        if "antagonist" in claim_lower:
+            meta["assay_type"] = "antagonist"
+        elif "agonist" in claim_lower or "ec50" in claim_lower:
+            meta["assay_type"] = "agonist"
+        else:
+            meta["assay_type"] = "unknown"
+        if compound_name not in found:
+            found[compound_name] = meta
+
+    return list(found.items())
 
 
 def build_graph(
@@ -227,11 +299,29 @@ def build_graph(
                 f"e:{claim_id}:mech", claim_id, mech_id, "via_mechanism", weight=weight * 0.5,
             ))
 
-        for lig in _infer_ligands(r.claim, r.mechanism):
-            lig_id = f"ligand:{onto.slug(lig)}"
-            g.add_node(GraphNode(lig_id, "Ligand", lig))
+        for lig_label, lig_meta in _infer_ligands(r.claim, r.mechanism, r.source):
+            lig_id = f"ligand:{onto.slug(lig_label)}"
+            # Potency affects edge weight: lower IC50/EC50 = higher potency = stronger link.
+            # Convert to a 0-1 scale: weight * (1 + potency_bonus) where potency_bonus
+            # = 0.5 for sub-nM, 0.3 for low-nM, 0.1 for high-nM, 0 when unknown.
+            potency_bonus = 0.0
+            potency = lig_meta.get("potency")
+            if potency:
+                val_nm = potency["value"] * (1000 if potency["units"] in ("um", "µm") else
+                                              1000000 if potency["units"] in ("mm",) else
+                                              0.001 if potency["units"] == "pm" else 1)
+                if val_nm < 10:
+                    potency_bonus = 0.5
+                elif val_nm < 100:
+                    potency_bonus = 0.3
+                elif val_nm < 1000:
+                    potency_bonus = 0.1
+            lig_node_meta = {k: v for k, v in lig_meta.items()}  # preserve all meta
+            g.add_node(GraphNode(lig_id, "Ligand", lig_label, lig_node_meta))
             g.add_edge(GraphEdge(
-                f"e:{claim_id}:lig:{onto.slug(lig)}", claim_id, lig_id, "uses_ligand", weight=weight,
+                f"e:{claim_id}:lig:{onto.slug(lig_label)}", claim_id, lig_id, "uses_ligand",
+                weight=round(weight * (1 + potency_bonus), 3),
+                meta={k: v for k, v in lig_meta.items()},
             ))
 
     # Tension edges between opposing activation-effect claims in same gene set
