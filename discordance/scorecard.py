@@ -258,3 +258,30 @@ def scorecard_to_dict(c: SourceScorecard) -> dict:
         "endpoint": c.endpoint,
         "unique_insight": c.unique_insight,
     }
+
+
+def render_scorecards_markdown(cards: list[SourceScorecard]) -> str:
+    """
+    Render scorecards as ready-to-display markdown. This exists because a
+    calling model (K Pro, Claude, etc.) tends to paraphrase raw JSON fields
+    into free-form prose rather than presenting them as a distinct section --
+    handing it a pre-formatted block it can drop in verbatim is what actually
+    gets a "Source Scorecard" to show up as its own block instead of getting
+    dissolved into the narrative answer.
+    """
+    if not cards:
+        return ""
+
+    lines = ["## Source Scorecard", ""]
+    for c in cards:
+        tag = "CONTESTED" if c.contested else c.direction.replace("_", "-")
+        lines.append(f"### {c.source} — weight {c.weight} ({tag})")
+        lines.append(f"- **Why this weight:** {c.weight_reason}")
+        lines.append(f"- **Strengths:** {'; '.join(c.strengths)}")
+        lines.append(f"- **Limitations:** {'; '.join(c.limitations)}")
+        lines.append(f"- **Best used for:** {c.best_for}")
+        lines.append(f"- **Why it's shown here:** {c.selection_reason}")
+        if c.unique_insight:
+            lines.append(f"- **Easy to miss:** {c.unique_insight}")
+        lines.append("")
+    return "\n".join(lines).strip()
