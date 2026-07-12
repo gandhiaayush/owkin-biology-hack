@@ -1,6 +1,62 @@
-Replace this file with the real plain-K-Pro answer to the frozen OR51E2 question.
+REAL K PRO BASELINE ANSWER — captured 2026-07-11, evening
+Frozen question: Does activating OR51E2 / PSGR suppress or promote prostate cancer
+phenotypes? Summarize the evidence for LNCaP / prostate models, including β-ionone studies.
 
-Frozen question:
-Does activating OR51E2 / PSGR suppress or promote prostate cancer phenotypes? Summarize the evidence for LNCaP / prostate models, including β-ionone studies.
+IMPORTANT: this answer is significantly more sophisticated than the pre-written
+`baseline_contrast.plain_k_pro_expected` text in demos/mocks/or51e2-query.json predicted.
+That text assumed K Pro would give a smoothed/hedged narrative without staging the
+Neuhaus/Sanz/Rodriguez split as a first-class tension. K Pro's real answer already stages
+a pro-invasive vs tumor-suppressive split with citation counts. The demo's differentiation
+claim needs to be reframed around what K Pro's answer still doesn't do (structured/
+queryable/reusable evidence graph, explicit refusal to auto-resolve into one "bottom line"
+verdict, native TCGA/PDB/patent integration as typed data not just prose citations) rather
+than "we reveal a hidden contradiction K Pro smooths over" -- see team discussion before
+using this in the live demo.
 
-Until replaced, baseline-vs-augmented.html shows the expected failure mode from mocks/or51e2-query.json → baseline_contrast.plain_k_pro_expected.
+---
+
+Summary
+OR51E2 / PSGR in Prostate Cancer: Dual & Context-Dependent Role
+OR51E2 (PSGR) is a class A olfactory GPCR with highly prostate-specific expression (GTEx PEM-prostate = 0.81, Tau specificity = 0.87; ~40 TPM in reproductive organ per Open Targets), overexpressed in PIN and prostate cancer. The literature reveals contradictory, context-dependent effects, with the balance of evidence now leaning toward a tumor-suppressive role for the receptor itself, but with beta-ionone eliciting biased agonism that can promote invasion.
+
+Pro-invasive / Pro-metastatic Evidence
+Sanz et al. (2014, PLoS ONE, 114 citations): Beta-ionone stimulation of endogenous OR51E2 in LNCaP cells promoted invasion through collagen gels via PI3Kgamma-dependent signaling. Subcutaneous LNCaP xenografts in NSG mice treated with beta-ionone showed significantly enhanced metastasis emergence and spreading -- the landmark paper establishing the pro-invasive axis.
+
+Sanz et al. (2016, Oncotarget, 30 citations): Showed that alpha-ionone (previously considered an antagonist) is actually a full agonist at OR51E2 that promotes tumor growth rather than invasion. Beta-ionone promotes invasion; combination of alpha+beta-ionone increases total tumor burden more than either alone -- supporting biased ligand / differential effector coupling (analogous to other GPCRs).
+
+Rodriguez et al. (2014, Oncogenesis, 56 citations): PSGR overexpression in LNCaP xenografts formed larger tumors than controls; PSGR-transgenic mice developed PIN via chronic NF-kB / PI3K-AKT inflammatory signaling.
+
+Rodriguez et al. (2015, Oncogene, 33 citations): PSGR overexpression synergizes with PTEN loss to drive invasive adenocarcinoma in a bigenic mouse model; shRNA KD of PSGR in LNCaP inhibited both proliferation and migration.
+
+Li et al. (2020, Life Sciences, 27 citations): Exosomal PSGR from PC3 cells promoted EMT (up Vimentin/Snail, down E-cadherin), invasion, and stemness markers (SOX2, OCT4a) in low-invasive LNCaP and RWPE-1 cells.
+
+Marelli et al. (2025, Nature Immunology, 6 citations): In the TME, palmitic acid binds OR51E2 on tumor-associated macrophages (TAMs) enhancing their pro-tumor phenotype; in vivo deletion of chemosensors including OR51E2 in TAMs caused cancer regression and increased CD8+ T cell infiltration -- highlighting a non-cell-autonomous, immune-evasive role of OR51E2 in the tumor microenvironment.
+
+Tumor-Suppressive / Growth-Inhibitory Evidence
+Xie et al. (2019, Cancer Letters, 31 citations): Beta-ionone suppressed PCa cell growth both in vitro and in vivo by activating p38 and JNK, which phosphorylate the androgen receptor (AR) at Ser650, blocking AR nuclear translocation and transactivation. This directly opposes AR-driven proliferation -- a mechanism independent of (and opposing) the pro-invasive PI3Kgamma axis found by Sanz et al.
+
+Thomsen et al. (2025, BMC Cancer, 7 citations): CRISPR-Cas9 KO of OR51E2 in LNCaP cells caused increased proliferation, migration, adhesion, anchorage-independent colony formation, and tumor growth -- a more aggressive phenotype. Omics analyses implicated the STAT3/IL-6 inflammatory pathway. In the TCGA PRAD cohort, low OR51E2 expression correlated with worse prognosis and higher Gleason grade, establishing OR51E2 as a functional tumor suppressor.
+
+Pronin et al. (2021, J Biol Chem, 52 citations): Using an inducible overexpression system, OR51E2 overexpression in LNCaP cells suppressed proliferation, inducing cytostasis. This effect was LNCaP-specific (not seen in HEK293 cells) and was not replicated by other ORs or by cAMP elevation alone, suggesting a specific downstream mechanism.
+
+Abaffy et al. (2018, Front. Oncology, 48 citations): Activation by the endogenous ligand 19-hydroxyandrostenedione (an aromatase product) decreased cell viability, induced cell cycle arrest, and upregulated neuronal NE markers, suggesting OR51E2 activation drives neuroendocrine trans-differentiation -- a growth-suppressive (but lineage-plasticity-promoting) outcome.
+
+Synthesis: Biased Agonism & Dual Role
+Axis | Key finding | Model
+beta-ionone -> PI3Kgamma | Increased invasion, increased metastasis | LNCaP in vitro/NSG mice
+alpha-ionone -> growth signaling | Increased proliferation, increased tumor growth | LNCaP/xenograft
+beta-ionone -> p38/JNK/AR-pSer650 | Decreased AR transactivation, decreased growth | LNCaP/xenograft
+OR51E2 KO (CRISPR) | Increased proliferation, migration, worse TCGA prognosis | LNCaP/TCGA PRAD
+OR51E2 overexpression | Decreased proliferation | LNCaP inducible system
+OR51E2 on TAMs | Pro-tumor TME via palmitic acid | Human prostate tissue/mouse
+
+The receptor's intrinsic level appears tumor-suppressive (KO -> more aggressive; high expression -> better prognosis). Beta-ionone elicits biased downstream coupling: growth-inhibitory via p38/JNK/AR-Ser650 AND pro-invasive via PI3Kgamma, explaining the apparent paradox between Sanz and Xie findings. PSGR overexpression itself can activate NF-kB and cooperate with PTEN loss to accelerate tumor progression, pointing to dose/context-dependent oncogenic cooperation.
+
+Prior Knowledge Profile (Internal DB)
+Localisation: Transmembrane, cell-membrane (UniProt) -- accessible for cell-surface targeting
+Oncogenicity (IntOGen): Not formally annotated as TSG or oncogene in PRAD (IntOGen) -- consistent with the complex dual literature
+Druggability: Belongs to a druggable GPCR family; no high-quality structural ligand/pocket yet identified (ChEMBL)
+Safety: No safety flags in Open Targets
+Expression specificity: High prostate specificity (PEM = 0.81, Tau = 0.87 from GTEx) -- favorable on-target/off-tumor profile
+
+Bottom line: OR51E2/PSGR is best described as a context-dependent, ligand-biased regulator of prostate cancer. The receptor itself restrains tumor aggressiveness (supported by KO studies and TCGA prognosis data), but beta-ionone drives a pro-invasive PI3Kgamma axis while simultaneously activating a p38/JNK anti-proliferative axis. The TME adds another layer: OR51E2 on TAMs promotes an immunosuppressive niche. Therapeutic strategies will need to account for biased signaling and cell-type-specific expression.

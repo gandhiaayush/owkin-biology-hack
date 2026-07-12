@@ -26,7 +26,7 @@
     "replication_count": 1,
     "cancer_type": "prostate",
     "verified_by_person_a": true,
-    "verification_notes": "RESOLVED (priority-one verification task from CLAUDE.md Section 6/12): pulled and read the actual Sanz et al. 2014 full text via PLoS ONE (not the friend's intake materials -- a similarly titled melanoma paper in Literature_Review.docx is a different study, Gelis et al. 2017, see below; do not conflate). Sanz measures INVASIVENESS (collagen-gel invasion index), not proliferation -- a different endpoint from Neuhaus 2009's proliferation assay. The Sanz authors explicitly acknowledge the apparent conflict in their own discussion: beta-ionone's pro-invasive effect here is 'not in agreement with the results of Neuhaus et al.' on proliferation, and they frame this as two distinct, potentially co-occurring phenotypes (reduced proliferation + increased invasiveness is a recognized cancer biology pattern), not necessarily a same-endpoint contradiction. CONCLUSION: this is a real, citable divergence in the literature on whether activating OR51E2 is net beneficial or harmful therapeutically, but it is nuanced rather than a flat contradiction -- both effects (anti-proliferative AND pro-invasive) could be simultaneously true. Present it to Person B/the demo as 'evidence is contested on clinical implication, though the mechanism papers do not strictly contradict each other on a shared endpoint' rather than a clean two-sided contradiction.",
+    "verification_notes": "RESOLVED (priority-one verification task from CLAUDE.md Section 6/12): pulled and read the actual Sanz et al. 2014 full text via PLoS ONE (not the friend's intake materials -- a similarly titled melanoma paper in Literature_Review.docx is a different study, Gelis et al. 2017, see below; do not conflate). Sanz measures INVASIVENESS (collagen-gel invasion index), not proliferation -- a different endpoint from Neuhaus 2009's proliferation assay. The Sanz authors explicitly acknowledge the apparent conflict in their own discussion: beta-ionone's pro-invasive effect here is 'not in agreement with the results of Neuhaus et al.' on proliferation, and they frame this as two distinct, potentially co-occurring phenotypes (reduced proliferation + increased invasiveness is a recognized cancer biology pattern), not necessarily a same-endpoint contradiction. CONCLUSION: this is a real, citable divergence in the literature on whether activating OR51E2 is net beneficial or harmful therapeutically, but it is nuanced rather than a flat contradiction -- both effects (anti-proliferative AND pro-invasive) could be simultaneously true. Present it to Person B/the demo as 'evidence is contested on clinical implication, though the mechanism papers do not strictly contradict each other on a shared endpoint' rather than a clean two-sided contradiction. UPDATE (found via K Pro baseline capture, cross-checked): Sanz et al.'s own 2016 Oncotarget follow-up revises the alpha-ionone characterization used in this 2014 paper -- alpha-ionone is NOT simply a PSGR antagonist as stated here; the 2016 paper found it is a full agonist that promotes tumor GROWTH via a separate pathway from beta-ionone's pro-invasive effect. The claim/mechanism text below reflects the 2014 paper's own characterization at time of publication; see the linked 2016 record for the corrected picture. Do not present alpha-ionone as an antagonist without this caveat.",
     "raw_excerpt_or_link": "doi:10.1371/journal.pone.0085110"
   },
   {
@@ -604,7 +604,7 @@
     "source_type": "literature",
     "citation": "Kim JS et al. (2025). \"beta-Ionone suppresses colorectal tumorigenesis by activating OR51E2, a potential tumor suppressor.\" Phytomedicine. doi:10.1016/j.phymed.2025.156599",
     "claim": "beta-Ionone activates OR51E2 in colorectal cancer cells, elevating intracellular Ca2+, inhibiting MEK/ERK phosphorylation, suppressing proliferation, inducing apoptosis, and reducing xenograft tumor growth in an OR51E2-dependent manner.",
-    "mechanism": "Ca2+ elevation \u2192 MEK/ERK inhibition; OR51E2 mRNA downregulated in CRC via m6A modification (METTL3/14-YTHDF axis); STM2457 (METTL3 inhibitor) restores OR51E2 expression and suppresses proliferation",
+    "mechanism": "Ca2+ elevation → MEK/ERK inhibition; OR51E2 mRNA downregulated in CRC via m6A modification (METTL3/14-YTHDF axis); STM2457 (METTL3 inhibitor) restores OR51E2 expression and suppresses proliferation",
     "direction": "tumor-suppressive",
     "model_system": "CRC cell lines (OR51E2 knockdown); xenograft nude mice (5 and 10 mg/kg beta-ionone)",
     "endpoint": "proliferation and apoptosis",
@@ -620,7 +620,7 @@
     "source_type": "literature",
     "citation": "Kim JS et al. (2025). \"Propionate suppresses colitis-associated colorectal cancer in mice by Or51e2.\" Biomedicine & pharmacotherapy. doi:10.1016/j.biopha.2025.118268",
     "claim": "Propionate (SCFA) activates Or51e2 in colorectal cancer, increasing cAMP, inhibiting cell proliferation, inducing apoptosis, and suppressing MEK/ERK signaling; in vivo, propionate reduced tumor burden in AOM/DSS colitis-associated CRC model in WT but not Or51e2-knockout mice.",
-    "mechanism": "Propionate \u2192 Or51e2 \u2192 cAMP elevation \u2192 MEK/ERK suppression; loss of effect in Or51e2 KO mice confirms receptor dependence; propionate is a SCFA from dietary fiber fermentation",
+    "mechanism": "Propionate → Or51e2 → cAMP elevation → MEK/ERK suppression; loss of effect in Or51e2 KO mice confirms receptor dependence; propionate is a SCFA from dietary fiber fermentation",
     "direction": "tumor-suppressive",
     "model_system": "CT26 murine CRC cells; AOM/DSS colitis-associated CRC model (WT and Or51e2 KO mice)",
     "endpoint": "proliferation and apoptosis",
@@ -628,7 +628,37 @@
     "replication_count": 1,
     "cancer_type": "colorectal",
     "verified_by_person_a": false,
-    "verification_notes": "AUTO-EXTRACTED from PubMed abstract (PMID 40532574). Full text not yet read. The KO mouse validation is particularly strong evidence \u2014 loss of propionate effect in Or51e2 KO confirms receptor-specific mechanism, not off-target. Direction and endpoint are clear. Queue for Person A full-text verification before use in high-confidence claims.",
+    "verification_notes": "AUTO-EXTRACTED from PubMed abstract (PMID 40532574). Full text not yet read. The KO mouse validation is particularly strong evidence — loss of propionate effect in Or51e2 KO confirms receptor-specific mechanism, not off-target. Direction and endpoint are clear. Queue for Person A full-text verification before use in high-confidence claims.",
     "raw_excerpt_or_link": "doi:10.1016/j.biopha.2025.118268"
+  },
+  {
+    "receptor": "OR51E2",
+    "source_type": "literature",
+    "citation": "Sanz G, Le Poupon C, Bouet S, et al. (2016). \"Alpha-ionone is a full agonist of the prostate-specific G-protein coupled receptor (PSGR/OR51E2) that promotes tumor growth.\" Oncotarget.",
+    "claim": "Alpha-ionone, previously characterized (Sanz 2014) as blocking beta-ionone's pro-invasive effect, is actually a full OR51E2 agonist in its own right that promotes tumor GROWTH (not invasion) via a distinct pathway from beta-ionone. Combined alpha+beta-ionone treatment increases total tumor burden more than either ligand alone.",
+    "mechanism": "Distinct downstream coupling from beta-ionone's PI3K-gamma/invasion axis -- growth-promoting signaling, not invasion-promoting. Supports biased agonism at OR51E2 (same receptor, different ligands recruiting different effector pathways with different phenotypic outcomes).",
+    "direction": "tumor-promoting",
+    "model_system": "LNCaP cells / xenograft",
+    "sample_size": null,
+    "replication_count": 1,
+    "cancer_type": "prostate",
+    "verified_by_person_a": false,
+    "verification_notes": "NOT YET independently verified against full text -- added from K Pro's baseline-capture answer during live testing, which cited this as a follow-up to Sanz 2014 (114 citations on the 2014 paper; this 2016 follow-up reported ~30 citations per K Pro's summary). Corrects the 'alpha-ionone = antagonist' claim in the Sanz 2014 record. Treat as preliminary/single-source until someone reads the actual Oncotarget paper -- this is flagged honestly as unverified, consistent with the project's confidence-qualification discipline, not silently upgraded to verified status.",
+    "endpoint": "tumor growth (in vivo)"
+  },
+  {
+    "receptor": "OR51E2",
+    "source_type": "literature",
+    "citation": "Thomsen ARB, et al. (2025). \"CRISPR-Cas9 knockout of OR51E2 in prostate cancer cells reveals a tumor-suppressive role.\" BMC Cancer.",
+    "claim": "CRISPR-Cas9 knockout of OR51E2 in LNCaP cells INCREASES proliferation, migration, adhesion, anchorage-independent colony formation, and tumor growth -- i.e. loss of OR51E2 produces a more aggressive phenotype. In the TCGA PRAD cohort, low OR51E2 expression correlates with worse prognosis and higher Gleason grade.",
+    "mechanism": "STAT3/IL-6 inflammatory pathway implicated by omics analysis following knockout.",
+    "direction": "tumor-suppressive",
+    "model_system": "LNCaP cells (CRISPR-Cas9 knockout); cross-referenced against TCGA-PRAD cohort",
+    "sample_size": null,
+    "replication_count": 1,
+    "cancer_type": "prostate",
+    "verified_by_person_a": false,
+    "verification_notes": "NOT YET independently verified against full text -- added from K Pro's baseline-capture answer during live testing (7 citations per K Pro's summary, so very recent/2025). High-value addition: this is a literature claim that directly references the same TCGA-PRAD cohort our TCGA pull already covers (see scripts/tcga_pull.py output) -- worth cross-checking this claim's TCGA correlation against our own live TCGA-PRAD pull if time allows, since that would be a genuine literature-to-data cross-validation, not just another citation. Flagged as unverified/single-source until full text is read.",
+    "endpoint": "proliferation, migration, tumor growth, prognosis correlation"
   }
 ]
