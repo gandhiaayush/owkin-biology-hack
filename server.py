@@ -23,8 +23,9 @@ from discordance import (
     init_db, insert_record, get_records, get_all_records,
     detect_contradictions, compute_direction_scores, generate_rules,
     EvidenceRecord, query_subgraph, tension_map_from_records,
-    find_cross_receptor_connections,
+    find_cross_receptor_connections, build_scorecards, scorecard_to_dict,
 )
+from discordance.scorecard import infer_query_endpoint
 from discordance.elicitation import should_trigger_elicitation, build_elicitation_question
 from discordance.demo_contract import to_demo_contract
 
@@ -160,12 +161,17 @@ async def query_graph(
             "elicitation_response": None,
             "subgraph": {"nodes": [], "edges": [], "counts": {}},
             "tension_map_data": {"nodes": [], "edges": []},
+            "scorecards": [],
         }
 
     scores = compute_direction_scores(records)
     contradictions = detect_contradictions(records)
     rules = generate_rules(records)
     subgraph = query_subgraph(records, gene=gene, cancer_type=cancer_type)
+
+    scorecards = build_scorecards(
+        records, scores, contradictions, query_endpoint=infer_query_endpoint(query),
+    )
 
     elicitation_triggered = False
     elicitation_response = None
@@ -246,6 +252,7 @@ async def query_graph(
             "tensions": subgraph["tensions"],
         },
         "tension_map_data": subgraph["tension_map_data"],
+        "scorecards": [scorecard_to_dict(c) for c in scorecards],
     }
 
 
