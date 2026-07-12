@@ -130,12 +130,35 @@ def build_graph(
     records: list[EvidenceRecord],
     contradictions: Optional[list[ContradictionPair]] = None,
 ) -> EvidenceGraph:
-    """Materialize an ontology-aligned graph from evidence records."""
+    """Materialize an ontology-aligned graph from evidence records.
+
+    IMPORTANT: contradiction detection is scoped per (gene, cancer_type). Every
+    existing caller (query_graph, get_tension_map, demo_contract) always pre-filters
+    to a single gene+cancer_type before calling this, so this grouping was previously
+    a no-op in practice. It stopped being a no-op once find_cross_receptor_connections
+    started calling build_graph() with get_all_records() -- a mixed-gene, mixed-
+    cancer_type list. Without this grouping, detect_contradictions() paired
+    suppressive/promoting records across UNRELATED genes and cancer types as if they
+    contradicted each other (e.g. an OR51B4 colorectal-cancer claim flagged as
+    "tension_with" an OR51E2 prostate-cancer claim), producing tension_with edges
+    that corrupted downstream multi-hop traversal results. Caught by running
+    find_cross_receptor_connections against real data and manually tracing why a
+    cross-receptor "connection" existed at an implausibly short hop distance --
+    not caught by any unit test, since no prior test called build_graph() with
+    mixed-gene input. Fixed here at the source so every current and future caller
+    is protected, not just find_cross_receptor_connections.
+    """
     g = EvidenceGraph()
     if not records:
         return g
 
-    contradictions = contradictions if contradictions is not None else detect_contradictions(records)
+    if contradictions is None:
+        contradictions = []
+        groups: dict[tuple[str, str], list[EvidenceRecord]] = {}
+        for r in records:
+            groups.setdefault((r.gene, r.cancer_type), []).append(r)
+        for group_records in groups.values():
+            contradictions.extend(detect_contradictions(group_records))
     contested_sources: set[str] = set()
     for c in contradictions:
         for r in c.suppressive_records + c.promoting_records:
