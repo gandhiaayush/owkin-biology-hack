@@ -5,7 +5,12 @@ from typing import Literal, Optional
 
 SourceType = Literal["primary_study", "review", "preliminary", "patent", "database_derived"]
 Direction = Literal["tumor_suppressive", "tumor_promoting", "neutral"]
-DirectionContext = Literal["activation_effect", "expression_pattern", "genetic_alteration"]
+DirectionContext = Literal[
+    "activation_effect",
+    "expression_pattern",
+    "genetic_alteration",
+    "supporting_evidence",
+]
 ConsensusStatus = Literal[
     "contested", "consensus_suppressive", "consensus_promoting", "single_source", "no_data"
 ]

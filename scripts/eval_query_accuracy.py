@@ -58,12 +58,7 @@ GOLDEN_QUERIES: list[dict] = [
         "question": "Does activating OR51E2 / PSGR suppress or promote prostate cancer?",
         "ground_truth": {
             "consensus_status": "contested",
-            # After fixing direction_context (overexpression/CRISPR records excluded from
-            # the activation_effect mass), the Sanz ligand-activation promoting evidence
-            # outweighs Neuhaus suppressive evidence — elicitation correctly does NOT fire.
-            # The demo story is: "system reports contested without a deadlock, same_endpoint=False
-            # (different biological outcomes), and explains why Sanz has heavier mass."
-            "elicitation_needed": False,
+            "elicitation_needed": True,
             # The system must detect a tension — this is the primary demo case
             "tension_detected": True,
             # Sanz measures invasiveness, Neuhaus measures proliferation —
@@ -119,12 +114,10 @@ GOLDEN_QUERIES: list[dict] = [
         "cancer_type": "lung_cancer",
         "question": "Is OR2H1 expressed in lung cancer and can it be targeted therapeutically?",
         "ground_truth": {
-            # Known limitation: is_tumor_intrinsic_activation() returns False for Martin 2022
-            # because the CAR-T mechanism language makes the cell_compartment classifier
-            # identify it as immune-cell context. OR2H1 IS expressed on tumor cells (that's
-            # what makes it a CAR-T target), but the claim text is dominated by CAR-T language.
-            # Result: Martin is excluded from directional_pool → no_data.
-            # Fix needed: cell_compartment should classify by RECEPTOR LOCATION, not effector.
+            # Known limitation: cell_compartment() returns "immune_cell" for Martin 2022
+            # because the CAR-T mechanism language dominates. OR2H1 is on the TUMOR cell
+            # surface (that's the therapeutic target), not on immune cells. Fix needed:
+            # classify by receptor location, not effector cell type.
             "consensus_status": "no_data",
             "elicitation_needed": False,
             "tension_detected": False,

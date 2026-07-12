@@ -1,6 +1,7 @@
 from __future__ import annotations
 import re
 from .models import EvidenceRecord, ContradictionPair
+from .scoring import _activation_mass_pool
 from .normalize import (
     endpoints_confirmed_different,
     endpoints_overlap,
@@ -94,8 +95,14 @@ def detect_contradictions(
     Return ContradictionPair objects for opposing directions under the same direction_context.
     Uses tumor-intrinsic activation records only for the primary direction split.
     """
-    filtered = [r for r in records if r.direction_context == direction_context_filter]
-    tumor_intrinsic = [r for r in filtered if cell_compartment(r) == "tumor_cell" and r.source_type != "patent"]
+    if direction_context_filter == "activation_effect":
+        tumor_intrinsic = _activation_mass_pool(records)
+    else:
+        filtered = [r for r in records if r.direction_context == direction_context_filter]
+        tumor_intrinsic = [
+            r for r in filtered
+            if cell_compartment(r) == "tumor_cell" and r.source_type not in ("patent", "preliminary")
+        ]
 
     suppressive = [r for r in tumor_intrinsic if r.direction == "tumor_suppressive"]
     promoting = [r for r in tumor_intrinsic if r.direction == "tumor_promoting"]
@@ -138,7 +145,7 @@ def detect_auxiliary_tensions(records: list[EvidenceRecord]) -> list[dict]:
     alpha_full_agonist = [
         r for r in ligand_records
         if re.search(r"alpha-ionone|α-ionone", r.claim, re.I)
-        and re.search(r"full\s+\w*\s*agonist|agonist in its own right", r.claim, re.I)
+        and re.search(r"full.{0,20}agonist", r.claim, re.I)
     ]
     beta_driven = [r for r in ligand_records if re.search(r"beta-ionone|β-ionone", r.claim, re.I)]
     if controversy or (alpha_full_agonist and beta_driven):
@@ -174,10 +181,19 @@ def detect_auxiliary_tensions(records: list[EvidenceRecord]) -> list[dict]:
             "tumor_intrinsic_evidence_ids": [f"e{r.id}" for r in tumor_directional if r.id is not None],
         })
 
-    # 3. Gain-of-function vs loss-of-function
-    tumor = tumor_directional
-    ko_records = [r for r in tumor if re.search(r"knockout|knock-out|ko\b|crispr", r.claim, re.I)]
-    oe_records = [r for r in tumor if re.search(r"overexpression|transgenic|psgr-transgenic", r.claim, re.I)]
+    # 3. Gain-of-function vs loss-of-function (expression vs genetic manipulation)
+    ko_records = [
+        r for r in records
+        if r.direction_context == "genetic_alteration"
+        and r.direction in ("tumor_suppressive", "tumor_promoting")
+        and re.search(r"knockout|knock-out|knockdown|crispr|shrna|sirna", r.claim, re.I)
+    ]
+    oe_records = [
+        r for r in records
+        if r.direction_context == "expression_pattern"
+        and r.direction in ("tumor_suppressive", "tumor_promoting")
+        and re.search(r"overexpression|transgenic", r.claim, re.I)
+    ]
     if ko_records and oe_records:
         tensions.append({
             "id": "t_gain_loss",
