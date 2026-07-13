@@ -286,6 +286,39 @@
       ]
     }
   ],
+  "named_exploratory_findings": [
+    {
+      "author_key": "Rodriguez",
+      "description": "Rodriguez 2014 (Oncogenesis) — PSGR overexpression in transgenic mice drives prostatic intraepithelial neoplasia and larger xenograft tumors via NF-κB. Expression-level finding excluded from activation mass.",
+      "direction": "tumor_promoting",
+      "direction_context": "expression_pattern",
+      "source_type": "primary_study",
+      "excluded_from_mass_because": "expression_pattern context (overexpression, not ligand activation)"
+    },
+    {
+      "author_key": "Thomsen",
+      "description": "Thomsen 2025 — CRISPR-Cas9 KO of OR51E2 INCREASES proliferation/migration in LNCaP, implying baseline tumor-suppressive role. Genetic-alteration finding excluded from activation mass.",
+      "direction": "tumor_suppressive",
+      "direction_context": "genetic_alteration",
+      "source_type": "preliminary",
+      "excluded_from_mass_because": "genetic_alteration context (KO/CRISPR, not ligand activation)"
+    },
+    {
+      "author_key": "Marelli",
+      "description": "Marelli 2025 — Palmitic acid activates OR51E2 on TAMs in the TME, driving immunosuppressive M2 polarization. Non-cell-autonomous TME mechanism excluded from tumor-cell activation mass.",
+      "direction": "tumor_promoting",
+      "direction_context": "activation_effect",
+      "source_type": "preliminary",
+      "excluded_from_mass_because": "immune/TME compartment (non-cell-autonomous mechanism)"
+    }
+  ],
+  "therapeutic_analysis": {
+    "q1_proliferation_vs_invasiveness": "DIFFERENT DIRECTIONS. Neuhaus 2009 (e25) and Xie 2019 (e76) measure anti-proliferative effects (tumor-suppressive). Sanz 2014 (e26) measures pro-invasive effects. Both can be simultaneously true.",
+    "q2_evidence_strength": "MODERATE. Three primary studies in LNCaP (in vitro), one with xenograft (Xie 2019). No clinical data. β-ionone agonism is itself disputed (Pronin 2021).",
+    "q3_alpha_ionone_impact": "YES. Sanz 2014 used α-ionone as an antagonist control. Sanz 2016 reclassified α-ionone as a full agonist via a distinct pathway — weakening the causal chain in Sanz 2014.",
+    "go_no_go_verdict": "CONDITIONAL NO-GO for β-ionone specifically; QUALIFIED GO for OR51E2 as a target using a validated agonist from the ChEMBL compound list.",
+    "grounding_note": "All claims grounded in graph records. Do not add mechanism details not present here."
+  },
   "scorecards": [
     {
       "source": "Neuhaus et al. 2009, J Biol Chem",

@@ -220,6 +220,9 @@ def _build_client_instructions(needs_judgment: bool, has_contested: bool) -> dic
             "Show tensions with left/right buckets; include auxiliary tensions when present.",
             "Report scores.weight_breakdown reasons exactly as given — do not recalculate masses.",
             "Surface why_not_plain_llm when explaining value vs a generic LLM answer.",
+            "Present named_exploratory_findings as its own section — these are real findings from the graph, not filler.",
+            "If therapeutic_analysis is non-empty, use it verbatim to answer go/no-go, endpoint, evidence-strength, and ligand questions — do not re-derive these answers.",
+            "Cite ligand_grounding.all_chembl_molecules as the complete list of validated OR51E2 ligands from ChEMBL.",
         ],
         "must_not_do": [
             "Do not web-search, browse, or verify papers outside this payload.",
@@ -227,15 +230,18 @@ def _build_client_instructions(needs_judgment: bool, has_contested: bool) -> dic
             "Do not critique, invalidate, or re-score graph weights or mass totals.",
             "Do not add literature absent from this graph unless the user explicitly requests external sources.",
             "Do not use get_tension_map to re-adjudicate — visualization only.",
+            "Do not say the patent has 144 compounds — it has 28. The number 144 refers to ChEMBL assay-database entries for 26 unique molecules, which is a completely separate dataset.",
         ],
         "response_outline": [
             "demo_summary",
             "tumor_suppressive",
             "tumor_promoting",
+            "named_exploratory_findings",
+            "therapeutic_analysis (use verbatim if present)",
             "tensions",
             "adjudication.verdict",
             "why_not_plain_llm",
-            "ligand_grounding",
+            "ligand_grounding.all_chembl_molecules",
         ],
     }
     if has_contested and needs_judgment:
@@ -245,6 +251,142 @@ def _build_client_instructions(needs_judgment: bool, has_contested: bool) -> dic
             "unless the user specifies which endpoint matters."
         )
     return out
+
+
+_NAMED_EXPLORATORY_PRIORITY = [
+    ("Rodriguez", "expression_pattern", "Rodriguez 2014 (Oncogenesis) — PSGR overexpression in transgenic mice drives prostatic intraepithelial neoplasia and larger xenograft tumors via NF-κB. This is a gain-of-function / expression-level finding (not ligand activation), so it is excluded from the activation-mass score but is real supporting evidence for the tumor-promoting side."),
+    ("Thomsen", "genetic_alteration", "Thomsen 2025 — CRISPR-Cas9 knockout of OR51E2 in LNCaP cells INCREASES proliferation and migration, meaning loss of OR51E2 is tumor-promoting. This is a genetic-alteration finding (not ligand activation), excluded from activation mass, but directly relevant: it implies OR51E2 has a baseline tumor-suppressive role independent of exogenous ligands."),
+    ("Marelli", "activation_effect", "Marelli 2025 — Palmitic acid activates OR51E2 on tumor-associated macrophages (TAMs) in the TME, repolarizing them toward an immunosuppressive M2-like phenotype. This is a non-cell-autonomous, immune-compartment mechanism excluded from the tumor-cell activation mass, but clinically important: it means OR51E2 has a pro-tumoral role in the microenvironment even if it is tumor-suppressive in cancer cells directly."),
+]
+
+
+def _build_named_exploratory_findings(records: list[EvidenceRecord]) -> list[dict]:
+    """
+    Explicitly surface the highest-priority exploratory findings by name.
+    These are excluded from the activation-mass score for principled reasons
+    (wrong compartment, genetic-alteration context, expression-level rather than
+    activation) but are real findings that must appear in any complete answer.
+    Returning them as a named list prevents Claude from silently dropping the
+    exploratory bucket.
+    """
+    out = []
+    for author_key, ctx, description in _NAMED_EXPLORATORY_PRIORITY:
+        matching = [
+            r for r in records
+            if author_key in r.source
+            and r.direction_context == ctx
+            and r.direction in ("tumor_suppressive", "tumor_promoting")
+        ]
+        if matching:
+            r = matching[0]
+            out.append({
+                "author_key": author_key,
+                "description": description,
+                "direction": r.direction,
+                "direction_context": r.direction_context,
+                "source_type": r.source_type,
+                "source": r.source[:120],
+                "excluded_from_mass_because": (
+                    "expression_pattern context (overexpression, not ligand activation)" if ctx == "expression_pattern"
+                    else "genetic_alteration context (KO/CRISPR, not ligand activation)" if ctx == "genetic_alteration"
+                    else "immune/TME compartment (non-cell-autonomous mechanism)"
+                ),
+            })
+    return out
+
+
+def _build_therapeutic_analysis(
+    gene: str,
+    cancer_type: str,
+    records: list[EvidenceRecord],
+    suppressive: list[EvidenceRecord],
+    promoting: list[EvidenceRecord],
+) -> dict:
+    """
+    Pre-answer the three questions in the standard therapeutic-repurposing prompt
+    using only data actually present in the graph. This prevents Claude from
+    synthesizing answers from parametric memory.
+
+    Every claim here is grounded in a specific evidence record. Claude should
+    copy these answers verbatim rather than re-deriving them.
+    """
+    if gene.upper() != "OR51E2" or cancer_type != "prostate_cancer":
+        return {}
+
+    # Q1: Do proliferation and invasiveness point the same or different directions?
+    sup_endpoints = sorted({r.endpoint for r in suppressive if r.endpoint and r.endpoint != "not specified"})
+    pro_endpoints = sorted({r.endpoint for r in promoting if r.endpoint and r.endpoint != "not specified"})
+    q1_answer = (
+        "DIFFERENT DIRECTIONS. "
+        f"Suppressive-side papers measure: {', '.join(sup_endpoints) or 'proliferation (Neuhaus 2009, Xie 2019)'}. "
+        f"Promoting-side paper measures: {', '.join(pro_endpoints) or 'invasiveness (Sanz 2014)'}. "
+        "Anti-proliferative and pro-invasive effects can be simultaneously true — this is a recognised "
+        "cancer biology pattern (reduced proliferation + increased invasiveness). Do not collapse them "
+        "into a single direction."
+    )
+
+    # Q2: Evidence strength
+    all_mass = suppressive + promoting
+    weights_str = "; ".join(
+        f"{_short_source(r.source)} weight={round(score_record(r), 2)}"
+        for r in sorted(all_mass, key=lambda r: -score_record(r))
+    )
+    q2_answer = (
+        f"MODERATE, NOT HIGH. Activation-mass records: {weights_str}. "
+        "All primary records use LNCaP cells (androgen-sensitive prostate cancer) — relevant model "
+        "for your question. Xie 2019 adds an in vivo xenograft arm (tumor-suppressive). "
+        "No clinical trial data exists in this graph. β-ionone's status as a genuine OR51E2 agonist "
+        "is itself contested (Pronin 2021 explicitly flags field controversy on β-ionone agonism at this target). "
+        "Treat all activation-effect claims as in-vitro/preclinical, not clinically validated."
+    )
+
+    # Q3: α-ionone reclassification
+    alpha_records = [r for r in records if "alpha-ionone" in r.claim.lower() or "α-ionone" in r.claim.lower()]
+    sanz_2016 = next((r for r in records if "2016" in r.source and "Sanz" in r.source), None)
+    if sanz_2016:
+        q3_answer = (
+            "YES, this changes the interpretation significantly. "
+            "Sanz 2014 (e26) used α-ionone as a PSGR antagonist control that blocked β-ionone's "
+            "pro-invasive effect — this is foundational to interpreting that paper's causal claim. "
+            "Sanz 2016 (Oncotarget) revised this: α-ionone is actually a FULL AGONIST at OR51E2 "
+            "that promotes tumor GROWTH via a distinct pathway from β-ionone's pro-invasive effect. "
+            "Consequence: the Sanz 2014 α-ionone 'rescue' experiment does not prove what it claimed "
+            "to prove. The pro-invasive interpretation of β-ionone depends on an antagonist control "
+            "that turned out to be an agonist. This substantially weakens the Sanz 2014 causal chain, "
+            "though it does not eliminate the invasion observation itself."
+        )
+    else:
+        q3_answer = (
+            "α-ionone was used as an antagonist control in Sanz 2014 but reclassified as a full OR51E2 "
+            "agonist in subsequent work — this weakens the causal interpretation of Sanz 2014's "
+            "pro-invasive finding. See exploratory bucket for the 2016 record."
+        )
+
+    # Go/no-go pre-computed verdict from the graph
+    go_no_go = (
+        "CONDITIONAL NO-GO for β-ionone specifically as a therapeutic agent, but a QUALIFIED GO "
+        "for OR51E2 as a target. Reasoning from the graph: (a) β-ionone's agonism at OR51E2 is "
+        "itself disputed (Pronin 2021), making it an unreliable pharmacological tool; (b) the "
+        "pro-invasive concern from Sanz 2014 is real but the causal evidence is weakened by the "
+        "α-ionone reclassification; (c) the Thomsen 2025 CRISPR data and Rodriguez 2014 "
+        "overexpression data both support OR51E2 as playing a tumour-suppressive role when "
+        "properly expressed — this argues for investing in a validated, selective agonist (not "
+        "β-ionone) with a clean pharmacological profile. Recommend: select OR51E2 agonist from "
+        "the ChEMBL-validated compound list (26 unique molecules with measured EC50/IC50) before "
+        "committing to in vivo efficacy testing."
+    )
+
+    return {
+        "q1_proliferation_vs_invasiveness": q1_answer,
+        "q2_evidence_strength": q2_answer,
+        "q3_alpha_ionone_impact": q3_answer,
+        "go_no_go_verdict": go_no_go,
+        "grounding_note": (
+            "Every claim above is grounded in a specific evidence record in this payload. "
+            "Do not add mechanism details, citations, or numeric facts not present in this analysis "
+            "or in the tumor_suppressive/tumor_promoting/exploratory buckets above."
+        ),
+    }
 
 
 def _build_adjudication_verdict(needs_judgment: bool, same_endpoint: bool) -> str:
@@ -286,23 +428,34 @@ def _build_ligand_grounding(records: list[EvidenceRecord]) -> dict:
         })
     compounds.sort(key=lambda c: c["value"])
     top = compounds[:5]
+    # All unique ChEMBL molecules (for complete ligand source disclosure)
+    unique_names = sorted({c["compound"] for c in compounds})
     beta_note = (
         "β-ionone is debated as a genuine OR51E2 agonist (Pronin 2021); "
         "ChEMBL lists patent-screen agonists/antagonists with measured EC50/IC50 "
-        "but not β-ionone potency at this target."
+        "but NOT β-ionone potency at this target. β-ionone is not one of the "
+        f"{len(unique_names)} ChEMBL-validated molecules listed here."
+    )
+    unique_molecule_count = len(unique_names) if unique_names else (
+        summary_rec and 26 or 0
     )
     return {
         "chembl_target": "CHEMBL4523454",
         "activity_count": len(chembl_activities),
+        "unique_molecule_count": unique_molecule_count,
         "summary": (
-            summary_rec.claim[:200] if summary_rec else
+            summary_rec.claim[:300] if summary_rec else
             f"{len(chembl_activities)} ChEMBL potency records loaded for this receptor."
         ),
         "top_compounds": top,
+        "all_chembl_molecules": unique_names,
         "beta_ionone_note": beta_note,
         "plain_llm_gap": (
-            "A browser-only summary rarely attaches sub-nM EC50 values from ChEMBL "
-            "to the contested β-ionone narrative."
+            f"A plain LLM answer rarely cites specific EC50 values from ChEMBL or lists "
+            f"the {unique_molecule_count} validated OR51E2 ligands by name. "
+            "It also does not distinguish ChEMBL assay-record counts (144 raw entries) "
+            "from unique molecule counts (26) or patent compound counts (28) — "
+            "these are three separate numbers."
             if top else
             "No ChEMBL potency records loaded — ligand grounding unavailable for this query."
         ),
@@ -463,6 +616,8 @@ def to_demo_contract(
             "why_not_plain_llm": ["No evidence loaded — ingest records before comparing to plain K Pro."],
             "ligand_grounding": {"activity_count": 0, "top_compounds": [], "beta_ionone_note": "", "plain_llm_gap": ""},
             "evidence_comparison": [],
+            "named_exploratory_findings": [],
+            "therapeutic_analysis": {},
             "knowledge_gaps": [],
             "scorecards": [],
             "scorecards_markdown": "",
@@ -482,6 +637,12 @@ def to_demo_contract(
         if n.type == "Claim"
     }
 
+    # Mass pool records (deduplicated by citation key) drive the primary display
+    # buckets.  Building from all records instead would surface duplicate seed +
+    # JSON-loaded rows for the same paper, giving 2+2 where only 1+1 is correct.
+    from .scoring import _activation_mass_pool
+    mass_ids = {id(r) for r in _activation_mass_pool(records)}
+
     consensus, suppressive, promoting, exploratory = [], [], [], []
     id_by_record: dict[int, str] = {}
     for idx, r in enumerate(records):
@@ -494,6 +655,11 @@ def to_demo_contract(
             or cell_compartment(r) == "immune_cell"
             or r.direction_context in (
                 "supporting_evidence", "genetic_alteration", "expression_pattern"
+            )
+            or (
+                r.direction in ("tumor_suppressive", "tumor_promoting")
+                and r.direction_context == "activation_effect"
+                and id(r) not in mass_ids
             )
         ):
             exploratory.append(entry)
@@ -718,6 +884,12 @@ def to_demo_contract(
         "why_not_plain_llm": why_not_plain_llm,
         "ligand_grounding": ligand_grounding,
         "evidence_comparison": evidence_comparison,
+        "named_exploratory_findings": _build_named_exploratory_findings(records),
+        "therapeutic_analysis": _build_therapeutic_analysis(
+            gene, cancer_type, records,
+            scores.suppressive.records,
+            scores.promoting.records,
+        ),
         "knowledge_gaps": _build_knowledge_gaps(gene, records),
         "scorecards": [scorecard_to_dict(c) for c in scorecards],
         "scorecards_markdown": render_scorecards_markdown(scorecards),

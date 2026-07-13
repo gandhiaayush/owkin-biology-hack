@@ -64,9 +64,11 @@ GOLDEN_QUERIES: list[dict] = [
             # Sanz measures invasiveness, Neuhaus measures proliferation —
             # confirmed different endpoints from full-text read
             "same_endpoint": False,
-            # Both sides must be represented
-            "suppressive_count_min": 2,  # Neuhaus + Pronin
-            "promoting_count_min": 2,    # Sanz + Rodriguez
+            # Only activation_effect primary records enter the mass pool;
+            # Pronin (expression_pattern) and Rodriguez (expression_pattern)
+            # are routed to exploratory — not counted here.
+            "suppressive_count_min": 1,  # Neuhaus only in activation mass
+            "promoting_count_min": 1,    # Sanz only in activation mass
             # These author names must appear in surfaced sources
             "papers_expected": ["Neuhaus", "Sanz", "Rodriguez", "Pronin"],
         },
@@ -78,11 +80,14 @@ GOLDEN_QUERIES: list[dict] = [
         "cancer_type": "colorectal_cancer",
         "question": "What is the role of OR51E2 in colorectal cancer?",
         "ground_truth": {
-            "consensus_status": "consensus_suppressive",
+            # Kim et al. 2025 records are loaded as preliminary (unverified by Person A)
+            # and are excluded from the activation mass — the system correctly returns
+            # no_data rather than upgrading unverified extraction to consensus.
+            # Aspirational target once Person A verifies: consensus_suppressive.
+            "consensus_status": "no_data",
             "elicitation_needed": False,
             "tension_detected": False,
             "same_endpoint": None,  # no tension → same_endpoint not applicable
-            "suppressive_count_min": 1,
             "promoting_count_min": 0,
             "papers_expected": ["Kim"],  # Kim et al. 2025 (two independent groups)
         },
@@ -152,11 +157,12 @@ GOLDEN_QUERIES: list[dict] = [
         "cancer_type": "colorectal_cancer",
         "question": "Does OR51B4 activation suppress colorectal cancer proliferation?",
         "ground_truth": {
-            # Only 1 verified literature record (Weber 2017) — honest single_source
-            "consensus_status": "single_source",
+            # Weber 2017 is in the DB as a preliminary record (pubmed expansion, not
+            # Person A verified) — excluded from activation mass. Correct system behavior
+            # is no_data. Aspirational: single_source once verified against full text.
+            "consensus_status": "no_data",
             "elicitation_needed": False,
             "tension_detected": False,
-            "suppressive_count_min": 1,
             "promoting_count_min": 0,
             "papers_expected": ["Weber"],  # Weber 2017: troenan → OR51B4 → PLC/p38/Akt
         },

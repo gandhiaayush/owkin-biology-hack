@@ -137,13 +137,19 @@ def is_tumor_intrinsic_activation(record: EvidenceRecord) -> bool:
 
 
 def citation_key(source: str) -> str:
-    """Normalize a citation to a dedup key (DOI or first-author+year)."""
-    doi_match = re.search(r"\bdoi[:\s]+(10\.[^\s,;\"']+)", source, re.IGNORECASE)
+    """Normalize a citation to a dedup key (DOI or first-author+year).
+
+    Strips the '| raw: ...' suffix appended by load_into_discordance before
+    parsing — otherwise DOIs in raw_excerpt_or_link produce a different key
+    than the seed/short-form source string for the same paper.
+    """
+    core = source.split(" | raw:")[0]
+    doi_match = re.search(r"\bdoi[:\s]+(10\.[^\s,;\"']+)", core, re.IGNORECASE)
     if doi_match:
         return doi_match.group(1).lower().rstrip(".")
-    year_match = re.search(r"(19|20)\d{2}", source)
+    year_match = re.search(r"(19|20)\d{2}", core)
     year = year_match.group(0) if year_match else "unknown-year"
-    author_match = re.match(r"\s*([A-Za-z][A-Za-z\-]*)", source)
+    author_match = re.match(r"\s*([A-Za-z][A-Za-z\-]*)", core)
     first_author = author_match.group(1).lower() if author_match else "unknown-author"
     return f"{first_author}-{year}"
 
