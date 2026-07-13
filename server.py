@@ -356,6 +356,28 @@ async def query_or_graph(
     Also includes: tensions, scores.weight_breakdown, why_not_plain_llm,
     ligand_grounding, evidence_comparison, scorecards.
 
+    CRITICAL -- do not add ANY paper, citation, mechanism, pathway, or numeric
+    fact that is not literally present in this tool's returned data. This
+    includes plausible-sounding general pharmacology/GPCR-biology knowledge you
+    may know from training -- do not fold it in as if it came from the graph.
+    Confirmed via repeated live testing that without this instruction, this
+    exact failure recurs: a specific fabricated mechanism ("Golgi-localized
+    Gbeta-gamma-PI3Kgamma-ARF1 pathway activating ERK1/2") has been invented
+    TWICE in separate sessions, once attached to a fake citation ("Xu et al.
+    2022") and once laundered directly into a real paper's (Sanz 2014)
+    discussion with no fake citation attached -- the second form is more
+    dangerous because it isn't checkable by title alone. A fabricated "Sanz
+    2017" paper was also invented that duplicated a real experimental detail
+    (the gallein/AS605240 rescue) already present in an existing record, framed
+    as if it were separate, missing literature. Every specific claim in your
+    answer must be traceable to a specific evidence record actually present in
+    this response (reference record IDs, e.g. "e12", when citing specifics). If
+    you want to add general domain reasoning beyond the graph's contents,
+    explicitly label it "general knowledge, not from the graph" rather than
+    presenting it as a graph finding. If the graph doesn't cover something
+    relevant, say so plainly rather than filling the gap with an invented
+    paper or mechanism.
+
     The result also contains an `exploratory` bucket. This bucket holds evidence
     excluded from the direction-mass calculation for principled reasons — immune /
     TME compartment claims (e.g. TAM/macrophage mechanisms), patent commercial-
